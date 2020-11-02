@@ -17,4 +17,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="font_menu">
+        <item name="fontFamily">@font/dk_lemon_yellow_sun</item>
+    </style>
+
 </resources>

@@ -26,7 +26,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
 
-    private static final String DATABASE_NAME = "bank-database";
+    private static final String DATABASE_NAME = "raclettedb-database";
 
     public abstract AccountDao accountDao();
 
@@ -67,7 +67,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             database.setDatabaseCreated();
                         });
                     }
-                })//.fallbackToDestructiveMigration()  TODO A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
+                })//.fallbackToDestructiveMigration() // TODO A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
                 .build();
     }
 
