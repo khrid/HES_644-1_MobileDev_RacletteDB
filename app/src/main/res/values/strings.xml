@@ -9,8 +9,8 @@
     <string name="title_activity_client">Client</string>
     <string name="title_activity_accounts">Accounts</string>
     <string name="title_activity_cheeses">Cheeses</string>
-    <string name="disclaimer" translatable="false">Copyright &#169; 2017\nHES-SO Valais//Wallis Sierre</string>
-    <string name="impressum" translatable="false">644-1 Mobile &amp; Cloud Computing</string>
+    <string name="disclaimer" translatable="false"><![CDATA[ David Crittin & Sylvain Meyer]]></string>
+    <string name="impressum" translatable="false">644-1 Android project</string>
     <string name="title_activity_login">Login</string>
 
     <!-- Strings related to login -->
@@ -110,4 +110,7 @@
     <string name="title_favorites_cheesename">Cheese name</string>
     <string name="title_shieling">Shieling of the week</string>
     <string name="title_shieling_name">Shieling name</string>
+
+    <string name="action_admin">Administration</string>
+    <string name="login_title">Enable administrator mode</string>
 </resources>

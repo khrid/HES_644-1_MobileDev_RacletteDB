@@ -3,43 +3,54 @@ package ch.hevs.students.raclettedb.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+
 import androidx.annotation.NonNull;
-import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
+
+import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
-import ch.hevs.students.raclettedb.ui.account.AccountsActivity;
 import ch.hevs.students.raclettedb.ui.cheese.CheesesActivity;
-import ch.hevs.students.raclettedb.ui.client.ClientActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.LoginActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity;
-import ch.hevs.students.raclettedb.ui.transaction.TransactionActivity;
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String PREFS_NAME = "SharedPrefs";
     public static final String PREFS_USER = "LoggedIn";
+    public static final String PREFS_IS_ADMIN = "IsAdmin";
+
+    private final int isAdminDefaultValue = -1;
+
+    SharedPreferences sharedPreferences;
     /**
-     *  Frame layout: Which is going to be used as parent layout for child activity layout.
-     *  This layout is protected so that child activity can access this
+     * Frame layout: Which is going to be used as parent layout for child activity layout.
+     * This layout is protected so that child activity can access this
      */
     protected FrameLayout frameLayout;
 
     protected DrawerLayout drawerLayout;
 
-    protected NavigationView navigationView;
+    public NavigationView navigationView;
 
     /**
      * Static variable for selected item position. Which can be used in child activity to know which item is selected from the list.
      */
     protected static int position;
+
+    private int isAdmin = 0;
+
+    SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +61,37 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         frameLayout = findViewById(R.id.flContent);
 
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        navigationView = findViewById(R.id.base_nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         drawerLayout = findViewById(R.id.base_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                super.onDrawerStateChanged(newState);
+                isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
+                Log.d("TAG", "onDrawerStateChanged / " + isAdmin);
+                if (isAdmin > 0) {
+                    navigationView.getMenu().findItem(R.id.nav_admin).setTitle("Leave admin mode");
+                    navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_exit_to_app_black_24dp);
+                } else {
+                    navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.action_admin);
+                    navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
+                }
+            }
+        };
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = findViewById(R.id.base_nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
     protected void onResume() {
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        Log.d("TAG", "onResume");
         super.onResume();
     }
 
@@ -109,17 +139,32 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setCheckedItem(id);
 
-        if (id == R.id.nav_client) {
-            intent = new Intent(this, ClientActivity.class);
+        if (id == R.id.nav_admin) {
+            position = -1;
+            isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
+            Log.d("TAG", "onNavigationItemSelected / " + isAdmin);
+            if (isAdmin > 0) {
+                intent = null;
+                navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.action_admin);
+                navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
+                navigationView.getMenu().findItem(R.id.nav_admin).setChecked(false);
+                SharedPreferences.Editor editor = getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();
+                editor.putInt(BaseActivity.PREFS_IS_ADMIN, 0);
+                editor.apply();
+                navigationView.setCheckedItem(id);
+            } else {
+                intent = new Intent(this, LoginActivity.class);
+            }
         } else if (id == R.id.nav_cheeses) {
             intent = new Intent(this, CheesesActivity.class);
-        } else if (id == R.id.nav_accounts) {
+        }
+        /* else if (id == R.id.nav_accounts) {
             intent = new Intent(this, AccountsActivity.class);
         } else if (id == R.id.nav_transaction) {
             intent = new Intent(this, TransactionActivity.class);
         } else if (id == R.id.nav_logout) {
             logout();
-        }
+        }*/
         if (intent != null) {
             intent.setFlags(
                     Intent.FLAG_ACTIVITY_NO_ANIMATION
@@ -142,6 +187,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void close() {
+        SharedPreferences.Editor editor = getSharedPreferences(BaseActivity.PREFS_NAME, 0).edit();
+        editor.remove(BaseActivity.PREFS_IS_ADMIN);
+        editor.apply();
         this.finishAffinity();
     }
 }

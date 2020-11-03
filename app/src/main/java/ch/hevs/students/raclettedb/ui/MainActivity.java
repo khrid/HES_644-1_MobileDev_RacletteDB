@@ -1,10 +1,19 @@
 package ch.hevs.students.raclettedb.ui;
 
+import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -16,12 +25,13 @@ import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseListViewModel;
 
 public class MainActivity extends BaseActivity {
 
-    private CheeseListViewModel viewModel;
+    private int isAdmin = 0;
     private List<CheeseEntity> cheeses;
     private CheeseRepository cheeseRepository;
     private TextView tv_main_favorites_1;
     private TextView tv_main_favorites_2;
     private TextView tv_main_favorites_3;
+    SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +43,14 @@ public class MainActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         initiateView();
-
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
         cheeseRepository.getAllCheeses(getApplication()).observe(MainActivity.this, cheeseEntities -> {
             cheeses = cheeseEntities;
             updateContent();
         });
 
-
+        SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
     }
 
     @Override
@@ -48,6 +58,12 @@ public class MainActivity extends BaseActivity {
         super.onResume();
         setTitle(getString(R.string.app_name));
         navigationView.setCheckedItem(R.id.nav_none);
+        SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
+        if(isAdmin == 1) {
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.mainlayout), "Admin mode is active", Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 
     @Override
@@ -73,7 +89,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void updateContent() {
-        if (cheeses != null) {
+        if (cheeses != null && cheeses.size() > 0) {
             tv_main_favorites_1.setText(cheeses.get(0).getName());
             tv_main_favorites_2.setText(cheeses.get(1).getName());
             tv_main_favorites_3.setText(cheeses.get(2).getName());

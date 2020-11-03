@@ -12,6 +12,8 @@ import ch.hevs.students.raclettedb.database.repository.ClientRepository;
  */
 public class BaseApp extends Application {
 
+    public static final String ADMIN_PASSWORD = "castor";
+
     @Override
     public void onCreate() {
         super.onCreate();
