@@ -23,6 +23,8 @@ import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseListViewModel;
 
+// TEST COMMIT SYLVAIN
+
 public class MainActivity extends BaseActivity {
 
     private int isAdmin = 0;
