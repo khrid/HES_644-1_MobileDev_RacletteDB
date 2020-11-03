@@ -1,15 +1,10 @@
 package ch.hevs.students.raclettedb.ui;
 
-import android.app.Application;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
-import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.core.view.GravityCompat;
 
 import java.util.List;
 
