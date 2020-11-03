@@ -19,17 +19,22 @@ import java.util.List;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
+import ch.hevs.students.raclettedb.database.AppDatabase;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
+import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseListViewModel;
 
-// TEST COMMIT SYLVAIN
+import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
 
 public class MainActivity extends BaseActivity {
 
     private int isAdmin = 0;
     private List<CheeseEntity> cheeses;
     private CheeseRepository cheeseRepository;
+    private List<ShielingEntity> shielings;
+    private ShielingRepository shielingRepository;
     private TextView tv_main_favorites_1;
     private TextView tv_main_favorites_2;
     private TextView tv_main_favorites_3;
@@ -53,6 +58,8 @@ public class MainActivity extends BaseActivity {
 
         SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
+
+        initializeDemoData(AppDatabase.getInstance(this)); // INITIALISE LA BASE A CHAQUE DEMARRAGE
     }
 
     @Override
@@ -92,9 +99,10 @@ public class MainActivity extends BaseActivity {
 
     private void updateContent() {
         if (cheeses != null && cheeses.size() > 0) {
-            tv_main_favorites_1.setText(cheeses.get(0).getName());
+            /*tv_main_favorites_1.setText(cheeses.get(0).getName());
             tv_main_favorites_2.setText(cheeses.get(1).getName());
-            tv_main_favorites_3.setText(cheeses.get(2).getName());
+            tv_main_favorites_3.setText(cheeses.get(2).getName());*/
+            // TODO Réactiver ça quand initialisation base OK
         }
     }
 }

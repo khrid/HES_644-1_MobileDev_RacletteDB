@@ -1,30 +1,28 @@
-package ch.hevs.students.raclettedb.database.async.account;
+package ch.hevs.students.raclettedb.database.async.shieling;
 
 import android.app.Application;
 import android.os.AsyncTask;
-import android.util.Pair;
 
 import ch.hevs.students.raclettedb.BaseApp;
-import ch.hevs.students.raclettedb.database.entity.AccountEntity;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 
-public class Transaction extends AsyncTask<Pair<AccountEntity, AccountEntity>, Void, Void> {
+public class CreateShieling extends AsyncTask<ShielingEntity, Void, Void> {
 
     private Application application;
     private OnAsyncEventListener callback;
     private Exception exception;
 
-    public Transaction(Application application, OnAsyncEventListener callback) {
+    public CreateShieling(Application application, OnAsyncEventListener callback) {
         this.application = application;
         this.callback = callback;
     }
 
     @Override
-    protected Void doInBackground(Pair<AccountEntity, AccountEntity>... params) {
+    protected Void doInBackground(ShielingEntity... params) {
         try {
-            for (Pair<AccountEntity, AccountEntity> accountPair : params)
-                ((BaseApp) application).getDatabase().accountDao()
-                        .transaction(accountPair.first, accountPair.second);
+            for (ShielingEntity shieling : params)
+                ((BaseApp) application).getDatabase().shielingDao().insert(shieling);
         } catch (Exception e) {
             exception = e;
         }

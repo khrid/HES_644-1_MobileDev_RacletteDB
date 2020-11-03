@@ -10,17 +10,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--
-        <activity
-            android:name="ch.hevs.students.raclettedb.ui.mgmt.LoginActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        -->
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
@@ -39,46 +28,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.hevs.students.raclettedb.ui.MainActivity" />
         </activity>
-        <!--
-<activity
-            android:name="ch.hevs.students.raclettedb.ui.mgmt.RegisterActivity"
-            android:label="@string/action_register"
-            android:parentActivityName="ch.hevs.students.raclettedb.ui.mgmt.LoginActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ch.hevs.students.raclettedb.ui.mgmt.LoginActivity" />
-        </activity>
-        -->
         <activity
             android:name=".ui.mgmt.LoginActivity"
             android:label="@string/title_activity_client"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ch.hevs.students.raclettedb.ui.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.mgmt.AdminActivity"
-            android:label="@string/title_activity_client"
-            android:parentActivityName=".ui.mgmt.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ch.hevs.students.raclettedb.ui.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.transaction.TransactionActivity"
-            android:label="@string/title_activity_transaction"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="ch.hevs.students.raclettedb.ui.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ui.account.AccountsActivity"
-            android:label="@string/title_activity_accounts"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -95,13 +47,13 @@
                 android:value="ch.hevs.students.raclettedb.ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.account.EditAccountActivity"
-            android:label="@string/title_activity_edit_account"
-            android:parentActivityName=".ui.account.AccountsActivity"
+            android:name=".ui.shieling.ShielingsActivity"
+            android:label="@string/title_activity_shielings"
+            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ch.hevs.students.raclettedb.ui.account.AccountsActivity" />
+                android:value="ch.hevs.students.raclettedb.ui.MainActivity" />
         </activity>
         <activity
             android:name=".ui.cheese.EditCheeseActivity"
@@ -113,16 +65,17 @@
                 android:value="ch.hevs.students.raclettedb.ui.cheese.CheesesActivity" />
         </activity>
         <activity
-            android:name=".ui.BaseActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.account.AccountDetailActivity"
-            android:parentActivityName=".ui.account.AccountsActivity"
+            android:name=".ui.shieling.EditShielingActivity"
+            android:label="@string/title_activity_edit_shieling"
+            android:parentActivityName=".ui.shieling.ShielingsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ch.hevs.students.raclettedb.ui.account.AccountsActivity" />
+                android:value="ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity" />
         </activity>
+        <activity
+            android:name=".ui.BaseActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.cheese.CheeseDetailActivity"
             android:parentActivityName=".ui.cheese.CheesesActivity"
@@ -130,6 +83,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ch.hevs.students.raclettedb.ui.cheese.CheesesActivity" />
+        </activity>
+        <activity
+            android:name=".ui.shieling.ShielingDetailActivity"
+            android:parentActivityName=".ui.shieling.ShielingsActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity" />
         </activity>
     </application>
 

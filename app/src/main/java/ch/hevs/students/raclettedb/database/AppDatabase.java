@@ -12,14 +12,12 @@ import android.util.Log;
 
 import java.util.concurrent.Executors;
 
-import ch.hevs.students.raclettedb.database.dao.AccountDao;
 import ch.hevs.students.raclettedb.database.dao.CheeseDao;
-import ch.hevs.students.raclettedb.database.dao.ClientDao;
-import ch.hevs.students.raclettedb.database.entity.AccountEntity;
+import ch.hevs.students.raclettedb.database.dao.ShielingDao;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
-import ch.hevs.students.raclettedb.database.entity.ClientEntity;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 
-@Database(entities = {AccountEntity.class, ClientEntity.class, CheeseEntity.class}, version = 2)
+@Database(entities = {ShielingEntity.class,CheeseEntity.class}, version = 4)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";
@@ -28,11 +26,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "raclettedb-database";
 
-    public abstract AccountDao accountDao();
-
-    public abstract ClientDao clientDao();
-
     public abstract CheeseDao cheeseDao();
+    public abstract ShielingDao shielingDao();
 
     private final MutableLiveData<Boolean> mIsDatabaseCreated = new MutableLiveData<>();
 
@@ -67,7 +62,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             database.setDatabaseCreated();
                         });
                     }
-                })//.fallbackToDestructiveMigration() // TODO A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
+                }).fallbackToDestructiveMigration() // TODO A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
                 .build();
     }
 
@@ -75,9 +70,8 @@ public abstract class AppDatabase extends RoomDatabase {
         Executors.newSingleThreadExecutor().execute(() -> {
             database.runInTransaction(() -> {
                 Log.i(TAG, "Wipe database.");
-                database.clientDao().deleteAll();
-                database.accountDao().deleteAll();
                 database.cheeseDao().deleteAll();
+                database.shielingDao().deleteAll();
 
                 DatabaseInitializer.populateDatabase(database);
             });

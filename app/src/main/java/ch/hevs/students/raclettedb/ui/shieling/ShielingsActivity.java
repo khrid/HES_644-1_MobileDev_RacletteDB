@@ -1,16 +1,8 @@
-package ch.hevs.students.raclettedb.ui.account;
+package ch.hevs.students.raclettedb.ui.shieling;
 
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.core.view.GravityCompat;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,34 +10,47 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GravityCompat;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.adapter.RecyclerAdapter;
-import ch.hevs.students.raclettedb.database.entity.AccountEntity;
+import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
+import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
+import ch.hevs.students.raclettedb.ui.cheese.EditCheeseActivity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.util.RecyclerViewItemClickListener;
-import ch.hevs.students.raclettedb.viewmodel.account.AccountListViewModel;
+import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingListViewModel;
 
-public class AccountsActivity extends BaseActivity {
+public class ShielingsActivity extends BaseActivity {
 
-    private static final String TAG = "AccountsActivity";
+    private static final String TAG = "ShielingsActivity";
 
-    private List<AccountEntity> accounts;
-    private RecyclerAdapter<AccountEntity> adapter;
-    private AccountListViewModel viewModel;
+    private List<ShielingEntity> shielings;
+    private RecyclerAdapter<ShielingEntity> adapter;
+    private ShielingListViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_accounts, frameLayout);
+        getLayoutInflater().inflate(R.layout.activity_shielings, frameLayout);
 
-        setTitle(getString(R.string.title_activity_accounts));
+        setTitle(getString(R.string.title_activity_shielings));
         navigationView.setCheckedItem(position);
 
-        RecyclerView recyclerView = findViewById(R.id.accountsRecyclerView);
+        RecyclerView recyclerView = findViewById(R.id.shielingsRecyclerView);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -62,49 +67,52 @@ public class AccountsActivity extends BaseActivity {
         SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         String user = settings.getString(BaseActivity.PREFS_USER, null);
 
-        accounts = new ArrayList<>();
+        shielings = new ArrayList<>();
         adapter = new RecyclerAdapter<>(new RecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 Log.d(TAG, "clicked position:" + position);
-                Log.d(TAG, "clicked on: " + accounts.get(position).getName());
+                Log.d(TAG, "clicked on: " + shielings.get(position).getName());
 
-                Intent intent = new Intent(AccountsActivity.this, AccountDetailActivity.class);
+
+                Intent intent = new Intent(ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity.this, ShielingDetailActivity.class);
                 intent.setFlags(
                         Intent.FLAG_ACTIVITY_NO_ANIMATION |
-                        Intent.FLAG_ACTIVITY_NO_HISTORY
+                                Intent.FLAG_ACTIVITY_NO_HISTORY
                 );
-                intent.putExtra("accountId", accounts.get(position).getId());
+                intent.putExtra("shielingId", shielings.get(position).getId());
                 startActivity(intent);
+
             }
 
             @Override
             public void onItemLongClick(View v, int position) {
                 Log.d(TAG, "longClicked position:" + position);
-                Log.d(TAG, "longClicked on: " + accounts.get(position).getName());
+                Log.d(TAG, "longClicked on: " + shielings.get(position).getName());
 
                 createDeleteDialog(position);
             }
         });
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(AccountsActivity.this, EditAccountActivity.class);
-            intent.setFlags(
-                    Intent.FLAG_ACTIVITY_NO_ANIMATION |
-                    Intent.FLAG_ACTIVITY_NO_HISTORY
-            );
-            startActivity(intent);
-        }
+                    Intent intent = new Intent(ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity.this, EditShielingActivity.class);
+                    intent.setFlags(
+                            Intent.FLAG_ACTIVITY_NO_ANIMATION |
+                                    Intent.FLAG_ACTIVITY_NO_HISTORY
+                    );
+                    startActivity(intent);
+                }
         );
 
-        AccountListViewModel.Factory factory = new AccountListViewModel.Factory(
+        ShielingListViewModel.Factory factory = new ShielingListViewModel.Factory(
                 getApplication(), user);
-        viewModel = ViewModelProviders.of(this, factory).get(AccountListViewModel.class);
-        viewModel.getOwnAccounts().observe(this, accountEntities -> {
-            if (accountEntities != null) {
-                accounts = accountEntities;
-                adapter.setData(accounts);
+        viewModel = ViewModelProviders.of(this, factory).get(ShielingListViewModel.class);
+        viewModel.getShielings().observe(this, shielingEntities -> {
+            if (shielingEntities != null) {
+                shielings = shielingEntities;
+                adapter.setData(shielings);
             }
         });
 
@@ -125,27 +133,27 @@ public class AccountsActivity extends BaseActivity {
     }
 
     private void createDeleteDialog(final int position) {
-        final AccountEntity account = accounts.get(position);
+        final ShielingEntity shieling = shielings.get(position);
         LayoutInflater inflater = LayoutInflater.from(this);
         final View view = inflater.inflate(R.layout.row_delete_item, null);
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getString(R.string.title_activity_delete_account));
+        alertDialog.setTitle(getString(R.string.title_activity_delete_shieling));
         alertDialog.setCancelable(false);
 
         final TextView deleteMessage = view.findViewById(R.id.tv_delete_item);
-        deleteMessage.setText(String.format(getString(R.string.account_delete_msg), account.getName()));
+        deleteMessage.setText(String.format(getString(R.string.shieling_delete_msg), shieling.getName()));
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.action_accept), (dialog, which) -> {
-            Toast toast = Toast.makeText(this, getString(R.string.account_deleted), Toast.LENGTH_LONG);
-            viewModel.deleteAccount(account, new OnAsyncEventListener() {
+            Toast toast = Toast.makeText(this, getString(R.string.shieling_deleted), Toast.LENGTH_LONG);
+            viewModel.deleteShieling(shieling, new OnAsyncEventListener() {
                 @Override
                 public void onSuccess() {
-                    Log.d(TAG, "deleteAccount: success");
+                    Log.d(TAG, "deleteShieling: success");
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.d(TAG, "deleteAccount: failure", e);
+                    Log.d(TAG, "deleteShieling: failure", e);
                 }
             });
             toast.show();
@@ -156,3 +164,4 @@ public class AccountsActivity extends BaseActivity {
         alertDialog.show();
     }
 }
+

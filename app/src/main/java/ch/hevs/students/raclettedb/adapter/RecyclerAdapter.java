@@ -10,9 +10,8 @@ import java.util.List;
 import java.util.Objects;
 
 import ch.hevs.students.raclettedb.R;
-import ch.hevs.students.raclettedb.database.entity.AccountEntity;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
-import ch.hevs.students.raclettedb.database.entity.ClientEntity;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.util.RecyclerViewItemClickListener;
 
 public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
@@ -53,12 +52,10 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
     @Override
     public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
         T item = mData.get(position);
-        if (item.getClass().equals(AccountEntity.class))
-            holder.mTextView.setText(((AccountEntity) item).getName());
         if (item.getClass().equals(CheeseEntity.class))
             holder.mTextView.setText(((CheeseEntity) item).getName());
-        if (item.getClass().equals(ClientEntity.class))
-            holder.mTextView.setText(((ClientEntity) item).getFirstName() + " " + ((ClientEntity) item).getLastName());
+        if (item.getClass().equals(ShielingEntity.class))
+            holder.mTextView.setText(((ShielingEntity) item).getName());
     }
 
     @Override
@@ -88,34 +85,23 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    if (mData instanceof AccountEntity) { // TODO Ajouter Cheese ici
-                        return ((AccountEntity) mData.get(oldItemPosition)).getId().equals(((AccountEntity) data.get(newItemPosition)).getId());
-                    }
-                    if (mData instanceof ClientEntity) {
-                        return ((ClientEntity) mData.get(oldItemPosition)).getEmail().equals(
-                                ((ClientEntity) data.get(newItemPosition)).getEmail());
+                    if (mData instanceof CheeseEntity) { // TODO Ajouter Alpage ici
+                        return ((CheeseEntity) mData.get(oldItemPosition)).getId().equals(((CheeseEntity) data.get(newItemPosition)).getId());
                     }
                     return false;
                 }
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    if (mData instanceof AccountEntity) {
-                        AccountEntity newAccount = (AccountEntity) data.get(newItemPosition);
-                        AccountEntity oldAccount = (AccountEntity) mData.get(newItemPosition);
-                        return newAccount.getId().equals(oldAccount.getId())
-                                && Objects.equals(newAccount.getName(), oldAccount.getName())
-                                && Objects.equals(newAccount.getBalance(), oldAccount.getBalance())
-                                && newAccount.getOwner().equals(oldAccount.getOwner());
+                    if (mData instanceof CheeseEntity) {
+                        CheeseEntity newCheese = (CheeseEntity) data.get(newItemPosition);
+                        CheeseEntity oldCheese = (CheeseEntity) mData.get(newItemPosition);
+                        return newCheese.getName().equals(oldCheese.getName())
+                                && newCheese.getType().equals(oldCheese.getType())
+                                && newCheese.getDescription().equals(oldCheese.getDescription())
+                                && ((Integer)newCheese.getEan()).equals(((Integer)oldCheese.getEan()));
                     }
-                    if (mData instanceof ClientEntity) { // TODO Ajouter Cheese ici
-                        ClientEntity newClient = (ClientEntity) data.get(newItemPosition);
-                        ClientEntity oldClient = (ClientEntity) mData.get(newItemPosition);
-                        return Objects.equals(newClient.getEmail(), oldClient.getEmail())
-                                && Objects.equals(newClient.getFirstName(), oldClient.getFirstName())
-                                && Objects.equals(newClient.getLastName(), oldClient.getLastName())
-                                && newClient.getPassword().equals(oldClient.getPassword());
-                    }
+                    // TODO Ajouter alpage ici
                     return false;
                 }
             });

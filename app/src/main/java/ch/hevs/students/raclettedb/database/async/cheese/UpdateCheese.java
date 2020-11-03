@@ -21,8 +21,8 @@ public class UpdateCheese extends AsyncTask<CheeseEntity, Void, Void> {
     @Override
     protected Void doInBackground(CheeseEntity... params) {
         try {
-            for (CheeseEntity client : params)
-                ((BaseApp) application).getDatabase().cheeseDao().update(client);
+            for (CheeseEntity cheese : params)
+                ((BaseApp) application).getDatabase().cheeseDao().update(cheese);
         } catch (Exception e) {
             exception = e;
         }

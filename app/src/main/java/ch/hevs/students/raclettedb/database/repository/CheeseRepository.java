@@ -42,19 +42,19 @@ public class CheeseRepository {
         return ((BaseApp) application).getDatabase().cheeseDao().getAll();
     }
 
-    public void insert(final CheeseEntity client, OnAsyncEventListener callback,
+    public void insert(final CheeseEntity cheese, OnAsyncEventListener callback,
                        Application application) {
-        new CreateCheese(application, callback).execute(client);
+        new CreateCheese(application, callback).execute(cheese);
     }
 
-    public void update(final CheeseEntity client, OnAsyncEventListener callback,
+    public void update(final CheeseEntity cheese, OnAsyncEventListener callback,
                        Application application) {
-        new UpdateCheese(application, callback).execute(client);
+        new UpdateCheese(application, callback).execute(cheese);
     }
 
-    public void delete(final CheeseEntity client, OnAsyncEventListener callback,
+    public void delete(final CheeseEntity cheese, OnAsyncEventListener callback,
                        Application application) {
-        new DeleteCheese(application, callback).execute(client);
+        new DeleteCheese(application, callback).execute(cheese);
     }
 }
 

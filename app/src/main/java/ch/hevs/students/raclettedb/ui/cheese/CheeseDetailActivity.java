@@ -33,12 +33,12 @@ public class CheeseDetailActivity extends BaseActivity {
 
         navigationView.setCheckedItem(position);
 
-        Long accountId = getIntent().getLongExtra("cheeseId", 0L);
+        Long cheeseId = getIntent().getLongExtra("cheeseId", 0L);
 
         initiateView();
 
         CheeseViewModel.Factory factory = new CheeseViewModel.Factory(
-                getApplication(), accountId);
+                getApplication(), cheeseId);
         viewModel = ViewModelProviders.of(this, factory).get(CheeseViewModel.class);
         viewModel.getCheese().observe(this, cheeseEntity -> {
             if (cheeseEntity != null) {
@@ -51,7 +51,7 @@ public class CheeseDetailActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, EDIT_CHEESE, Menu.NONE, getString(R.string.title_activity_edit_account))
+        menu.add(0, EDIT_CHEESE, Menu.NONE, getString(R.string.title_activity_edit_cheese))
                 .setIcon(R.drawable.ic_edit_white_24dp)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;

@@ -7,23 +7,26 @@
     android:layout_marginRight="16dp"
     android:layout_marginTop="16dp"
     android:orientation="vertical"
-    tools:context="ch.hevs.students.raclettedb.ui.account.EditAccountActivity">
+    tools:context="ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/accountName"
+            android:id="@+id/shielingName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="@string/prompt_account_name"
-            android:inputType="textPersonName" />
+            android:hint="@string/prompt_shieling_name"
+            android:inputType="textNoSuggestions" />
+
+
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <Button
-        android:id="@+id/createAccountButton"
+        android:id="@+id/createShielingButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/action_create" />

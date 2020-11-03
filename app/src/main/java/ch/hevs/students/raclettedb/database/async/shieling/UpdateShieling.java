@@ -1,29 +1,28 @@
-package ch.hevs.students.raclettedb.database.async.client;
+package ch.hevs.students.raclettedb.database.async.shieling;
 
 import android.app.Application;
 import android.os.AsyncTask;
 
 import ch.hevs.students.raclettedb.BaseApp;
-import ch.hevs.students.raclettedb.database.entity.ClientEntity;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 
-public class DeleteClient extends AsyncTask<ClientEntity, Void, Void> {
+public class UpdateShieling extends AsyncTask<ShielingEntity, Void, Void> {
 
     private Application application;
     private OnAsyncEventListener callback;
     private Exception exception;
 
-    public DeleteClient(Application application, OnAsyncEventListener callback) {
+    public UpdateShieling(Application application, OnAsyncEventListener callback) {
         this.application = application;
         this.callback = callback;
     }
 
     @Override
-    protected Void doInBackground(ClientEntity... params) {
+    protected Void doInBackground(ShielingEntity... params) {
         try {
-            for (ClientEntity client : params)
-                ((BaseApp) application).getDatabase().clientDao()
-                        .delete(client);
+            for (ShielingEntity shieling : params)
+                ((BaseApp) application).getDatabase().shielingDao().update(shieling);
         } catch (Exception e) {
             exception = e;
         }
@@ -41,3 +40,4 @@ public class DeleteClient extends AsyncTask<ClientEntity, Void, Void> {
         }
     }
 }
+

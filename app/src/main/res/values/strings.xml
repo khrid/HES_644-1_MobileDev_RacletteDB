@@ -9,6 +9,7 @@
     <string name="title_activity_client">Client</string>
     <string name="title_activity_accounts">Accounts</string>
     <string name="title_activity_cheeses">Cheeses</string>
+    <string name="title_activity_shielings">Shielings</string>
     <string name="disclaimer" translatable="false"><![CDATA[ David Crittin & Sylvain Meyer]]></string>
     <string name="impressum" translatable="false">644-1 Android project</string>
     <string name="title_activity_login">Login</string>
@@ -51,6 +52,7 @@
     <string name="client_repeat_password">Repeat Password</string>
     <string name="title_activity_create_account">Create Account</string>
     <string name="title_activity_create_cheese">Create Cheese</string>
+    <string name="title_activity_create_shieling">Create Shieling</string>
     <string name="account_balance">Account Balance</string>
     <string name="action_deposit">Deposit</string>
     <string name="action_withdraw">Withdraw</string>
@@ -72,21 +74,28 @@
     <string name="client_edited">Client edited</string>
     <string name="prompt_account_name">Account Name</string>
     <string name="prompt_cheese_name">Cheese Name</string>
+    <string name="prompt_shieling_name">Shieling Name</string>
     <string name="prompt_cheese_type">Cheese Type</string>
     <string name="title_activity_edit_account">Edit Account</string>
     <string name="title_activity_edit_cheese">Edit Cheese</string>
+    <string name="title_activity_edit_shieling">Edit Shieling</string>
     <string name="account_created">Account created</string>
     <string name="cheese_created">Cheese created</string>
+    <string name="shieling_created">Shieling created</string>
     <string name="account_edited">Account edited</string>
     <string name="cheese_edited">Cheese edited</string>
+    <string name="shieling_edited">Shieling edited</string>
     <string name="client_deleted">Client deleted</string>
     <string name="account_deleted">Account deleted</string>
     <string name="cheese_deleted">Cheese deleted</string>
+    <string name="shieling_deleted">Shieling deleted</string>
     <string name="title_activity_delete_account">Delete Account</string>
     <string name="title_activity_delete_cheese">Delete Cheese</string>
+    <string name="title_activity_delete_shieling">Delete Shieling</string>
     <string name="title_activity_delete_client">Delete Client</string>
     <string name="account_delete_msg">Do you want to delete the account %1$s?</string>
     <string name="cheese_delete_msg">Do you want to delete the cheese %1$s?</string>
+    <string name="shieling_delete_msg">Do you want to delete the shieling %1$s?</string>
     <string name="client_delete_msg">Do you really want to delete the client %1$s? All accounts of this client will be deleted as well.</string>
     <string name="pref_header_language">Language</string>
     <string name="pref_about_text">This application was developed to provide a possibility to demonstrate how the newly released Android Architecture Components could be implemented in an application.</string>

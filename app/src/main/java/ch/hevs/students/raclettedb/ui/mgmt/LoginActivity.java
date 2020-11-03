@@ -2,30 +2,20 @@ package ch.hevs.students.raclettedb.ui.mgmt;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.google.android.material.navigation.NavigationView;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
-import ch.hevs.students.raclettedb.database.AppDatabase;
-import ch.hevs.students.raclettedb.database.repository.ClientRepository;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.ui.MainActivity;
-
-import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
 
 /**
  * A login screen that offers login via email/password.
@@ -36,8 +26,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText et_login_password;
     private Button bt_login;
     private ProgressBar progressBar;
-
-    private ClientRepository repository;
 
     private SharedPreferences settings;
 

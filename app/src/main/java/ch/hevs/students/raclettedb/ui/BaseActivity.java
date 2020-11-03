@@ -23,6 +23,7 @@ import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.ui.cheese.CheesesActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.LoginActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity;
+import ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity;
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -157,14 +158,10 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             }
         } else if (id == R.id.nav_cheeses) {
             intent = new Intent(this, CheesesActivity.class);
+        } else if (id == R.id.nav_shielings) {
+            intent = new Intent(this, ShielingsActivity.class);
         }
-        /* else if (id == R.id.nav_accounts) {
-            intent = new Intent(this, AccountsActivity.class);
-        } else if (id == R.id.nav_transaction) {
-            intent = new Intent(this, TransactionActivity.class);
-        } else if (id == R.id.nav_logout) {
-            logout();
-        }*/
+
         if (intent != null) {
             intent.setFlags(
                     Intent.FLAG_ACTIVITY_NO_ANIMATION

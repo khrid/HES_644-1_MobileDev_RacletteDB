@@ -21,8 +21,8 @@ public class DeleteCheese extends AsyncTask<CheeseEntity, Void, Void> {
     @Override
     protected Void doInBackground(CheeseEntity... params) {
         try {
-            for (CheeseEntity client : params)
-                ((BaseApp) application).getDatabase().cheeseDao().delete(client);
+            for (CheeseEntity cheese : params)
+                ((BaseApp) application).getDatabase().cheeseDao().delete(cheese);
         } catch (Exception e) {
             exception = e;
         }
