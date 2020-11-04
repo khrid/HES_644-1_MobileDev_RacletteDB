@@ -17,7 +17,7 @@ import ch.hevs.students.raclettedb.database.dao.ShielingDao;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 
-@Database(entities = {ShielingEntity.class,CheeseEntity.class}, version = 4)
+@Database(entities = {ShielingEntity.class,CheeseEntity.class}, version = 5)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";
@@ -62,7 +62,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             database.setDatabaseCreated();
                         });
                     }
-                }).fallbackToDestructiveMigration() // TODO A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
+                })//.fallbackToDestructiveMigration() // TODO A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
                 .build();
     }
 

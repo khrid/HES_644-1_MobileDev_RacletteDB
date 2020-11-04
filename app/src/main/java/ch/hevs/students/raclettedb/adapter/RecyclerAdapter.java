@@ -2,6 +2,9 @@ package ch.hevs.students.raclettedb.adapter;
 
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -23,11 +26,13 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     static class ViewHolder extends RecyclerView.ViewHolder {
+        Context mContext;
         // each data item is just a string in this case
         TextView mTextView;
-        ViewHolder(TextView textView) {
+        ViewHolder(/*Context context, */ TextView textView) {
             super(textView);
             mTextView = textView;
+            //mContext = context;
         }
     }
 
@@ -56,6 +61,8 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
             holder.mTextView.setText(((CheeseEntity) item).getName());
         if (item.getClass().equals(ShielingEntity.class))
             holder.mTextView.setText(((ShielingEntity) item).getName());
+
+        //holder.mTextView.setTypeface(Typeface.createFromAsset(holder.mContext.getAssets(),));
     }
 
     @Override

@@ -18,10 +18,10 @@ import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 @Dao
 public interface ShielingDao {
 
-    @Query("SELECT * FROM shieling WHERE id = :id")
+    @Query("SELECT * FROM shielings WHERE id = :id")
     LiveData<ShielingEntity> getById(Long id);
 
-    @Query("SELECT * from shieling ORDER BY name ASC")
+    @Query("SELECT * from shielings ORDER BY name ASC")
     LiveData<List<ShielingEntity>> getAll();
 
     @Insert()
@@ -36,7 +36,7 @@ public interface ShielingDao {
     @Delete
     void delete(ShielingEntity shieling);
 
-    @Query("DELETE FROM shieling")
+    @Query("DELETE FROM shielings")
     void deleteAll();
 
 }

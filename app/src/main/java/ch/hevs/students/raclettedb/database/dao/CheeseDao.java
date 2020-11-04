@@ -18,10 +18,10 @@ import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 public interface CheeseDao {
 
 
-    @Query("SELECT * FROM cheese WHERE id = :id")
+    @Query("SELECT * FROM cheeses WHERE id = :id")
     LiveData<CheeseEntity> getById(Long id);
 
-    @Query("SELECT * from cheese ORDER BY name ASC")
+    @Query("SELECT * from cheeses ORDER BY name ASC")
     LiveData<List<CheeseEntity>> getAll();
 
     @Insert()
@@ -36,7 +36,7 @@ public interface CheeseDao {
     @Delete
     void delete(CheeseEntity cheese);
 
-    @Query("DELETE FROM cheese")
+    @Query("DELETE FROM cheeses")
     void deleteAll();
 
 

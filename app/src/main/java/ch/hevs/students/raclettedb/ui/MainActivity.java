@@ -1,17 +1,12 @@
 package ch.hevs.students.raclettedb.ui;
 
-import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -24,7 +19,6 @@ import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
 import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
-import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseListViewModel;
 
 import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
 
@@ -38,6 +32,7 @@ public class MainActivity extends BaseActivity {
     private TextView tv_main_favorites_1;
     private TextView tv_main_favorites_2;
     private TextView tv_main_favorites_3;
+    private TextView tv_main_shieling_name;
     SharedPreferences settings;
 
     @Override
@@ -53,13 +48,21 @@ public class MainActivity extends BaseActivity {
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
         cheeseRepository.getAllCheeses(getApplication()).observe(MainActivity.this, cheeseEntities -> {
             cheeses = cheeseEntities;
-            updateContent();
+            tv_main_favorites_1.setText(cheeses.get(0).getName());
+            tv_main_favorites_2.setText(cheeses.get(1).getName());
+            tv_main_favorites_3.setText(cheeses.get(2).getName());
+        });
+
+        shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
+        shielingRepository.getAllShielings(getApplication()).observe(MainActivity.this, shielingEntities -> {
+            shielings = shielingEntities;
+            tv_main_shieling_name.setText(shielings.get(0).getName());
         });
 
         SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
 
-        initializeDemoData(AppDatabase.getInstance(this)); // INITIALISE LA BASE A CHAQUE DEMARRAGE
+
     }
 
     @Override
@@ -95,13 +98,16 @@ public class MainActivity extends BaseActivity {
         tv_main_favorites_1 = findViewById(R.id.tv_main_favorites_1);
         tv_main_favorites_2 = findViewById(R.id.tv_main_favorites_2);
         tv_main_favorites_3 = findViewById(R.id.tv_main_favorites_3);
+        tv_main_shieling_name = findViewById(R.id.tv_main_shieling_name);
+
     }
 
     private void updateContent() {
         if (cheeses != null && cheeses.size() > 0) {
-            /*tv_main_favorites_1.setText(cheeses.get(0).getName());
+            tv_main_favorites_1.setText(cheeses.get(0).getName());
             tv_main_favorites_2.setText(cheeses.get(1).getName());
-            tv_main_favorites_3.setText(cheeses.get(2).getName());*/
+            tv_main_favorites_3.setText(cheeses.get(2).getName());
+            //tv_main_shieling_name.setText(shielings.get(0).getName());
             // TODO Réactiver ça quand initialisation base OK
         }
     }
