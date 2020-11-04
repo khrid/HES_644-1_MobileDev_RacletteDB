@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
-            android:id="@+id/et_login_password"
+            android:id="@+id/etLoginPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="12"
@@ -25,7 +25,7 @@
             android:inputType="textPassword" />
 
         <Button
-            android:id="@+id/bt_login"
+            android:id="@+id/btLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/dk_lemon_yellow_sun"
@@ -34,7 +34,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_login_title"
+        android:id="@+id/tvLoginTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"

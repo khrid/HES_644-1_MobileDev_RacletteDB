@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -22,7 +23,9 @@ public class EditCheeseActivity extends BaseActivity {
     private boolean isEditMode;
     private Toast toast;
     private EditText etCheeseName;
+    private EditText etCheeseDescription;
     private EditText etCheeseType;
+    private TextView tvEditCheeseTitle;
 
     private CheeseViewModel viewModel;
 
@@ -34,24 +37,28 @@ public class EditCheeseActivity extends BaseActivity {
 
         navigationView.setCheckedItem(position);
 
-        etCheeseName = findViewById(R.id.cheeseName);
+        tvEditCheeseTitle = findViewById(R.id.tvEditCheeseTitle);
+        etCheeseName = findViewById(R.id.etCheeseName);
         etCheeseName.requestFocus();
-        etCheeseType = findViewById(R.id.cheeseType);
-        Button saveBtn = findViewById(R.id.createCheeseButton);
-        saveBtn.setOnClickListener(view -> {
-            saveChanges(etCheeseName.getText().toString(), etCheeseType.getText().toString());
+        etCheeseDescription = findViewById(R.id.etCheeseDescription);
+        etCheeseType = findViewById(R.id.etCheeseType);
+        Button btSaveCheese = findViewById(R.id.btSaveCheese);
+        btSaveCheese.setOnClickListener(view -> {
+            saveChanges(etCheeseName.getText().toString(),etCheeseDescription.getText().toString(), etCheeseType.getText().toString());
             onBackPressed();
             toast.show();
         });
 
         Long cheeseId = getIntent().getLongExtra("cheeseId", 0L);
         if (cheeseId == 0L) {
-            setTitle(getString(R.string.title_activity_create_cheese));
+            setTitle(R.string.empty);
+            tvEditCheeseTitle.setText("New cheese");
+            btSaveCheese.setText(R.string.action_create);
             toast = Toast.makeText(this, getString(R.string.cheese_created), Toast.LENGTH_LONG);
             isEditMode = false;
         } else {
-            setTitle(getString(R.string.title_activity_edit_cheese));
-            saveBtn.setText(R.string.action_update);
+            setTitle(R.string.empty);
+            btSaveCheese.setText(R.string.action_update);
             toast = Toast.makeText(this, getString(R.string.cheese_edited), Toast.LENGTH_LONG);
             isEditMode = true;
         }
@@ -64,16 +71,18 @@ public class EditCheeseActivity extends BaseActivity {
                 if (cheeseEntity != null) {
                     cheese = cheeseEntity;
                     etCheeseName.setText(cheese.getName());
+                    etCheeseDescription.setText(cheese.getDescription());
                     etCheeseType.setText(cheese.getType());
                 }
             });
         }
     }
 
-    private void saveChanges(String cheeseName, String cheeseType) {
+    private void saveChanges(String cheeseName, String description, String cheeseType) {
         if (isEditMode) {
             if(!"".equals(cheeseName)) {
                 cheese.setName(cheeseName);
+                cheese.setDescription(description);
                 cheese.setType(cheeseType);
                 viewModel.updateCheese(cheese, new OnAsyncEventListener() {
                     @Override
@@ -90,6 +99,7 @@ public class EditCheeseActivity extends BaseActivity {
         } else {
             CheeseEntity newCheese = new CheeseEntity();
             newCheese.setName(cheeseName);
+            newCheese.setDescription(description);
             newCheese.setType(cheeseType);
             viewModel.createCheese(newCheese, new OnAsyncEventListener() {
                 @Override

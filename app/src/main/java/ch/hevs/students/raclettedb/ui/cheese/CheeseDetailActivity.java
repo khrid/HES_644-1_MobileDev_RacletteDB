@@ -1,6 +1,7 @@
 package ch.hevs.students.raclettedb.ui.cheese;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,8 +24,13 @@ public class CheeseDetailActivity extends BaseActivity {
     private CheeseEntity cheese;
     private TextView tvCheeseName;
     private TextView tvCheeseType;
+    private TextView tvCheeseDescription;
+
 
     private CheeseViewModel viewModel;
+
+    private boolean isAdmin = false;
+    SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,9 @@ public class CheeseDetailActivity extends BaseActivity {
         navigationView.setCheckedItem(position);
 
         Long cheeseId = getIntent().getLongExtra("cheeseId", 0L);
+
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
         initiateView();
 
@@ -51,9 +60,11 @@ public class CheeseDetailActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, EDIT_CHEESE, Menu.NONE, getString(R.string.title_activity_edit_cheese))
-                .setIcon(R.drawable.ic_edit_white_24dp)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        if(isAdmin) {
+            menu.add(0, EDIT_CHEESE, Menu.NONE, getString(R.string.title_activity_edit_cheese))
+                    .setIcon(R.drawable.ic_edit_white_24dp)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
         return true;
     }
 
@@ -69,15 +80,17 @@ public class CheeseDetailActivity extends BaseActivity {
     }
 
     private void initiateView() {
-        tvCheeseName = findViewById(R.id.cheeseName);
-        tvCheeseType = findViewById(R.id.cheeseType);
+        tvCheeseName = findViewById(R.id.tvCheeseName);
+        tvCheeseType = findViewById(R.id.tvCheeseType);
+        tvCheeseDescription = findViewById(R.id.tvCheeseDescription);
     }
 
     private void updateContent() {
         if (cheese != null) {
-            setTitle(cheese.getName());
+            setTitle(R.string.empty);
             tvCheeseName.setText(cheese.getName());
             tvCheeseType.setText(cheese.getType());
+            tvCheeseDescription.setText(cheese.getDescription());
             Log.i(TAG, "Activity populated.");
         }
     }

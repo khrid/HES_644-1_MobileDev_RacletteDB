@@ -122,4 +122,6 @@
 
     <string name="action_admin">Administration</string>
     <string name="login_title">Enable administrator mode</string>
+
+    <string name="empty"></string>
 </resources>

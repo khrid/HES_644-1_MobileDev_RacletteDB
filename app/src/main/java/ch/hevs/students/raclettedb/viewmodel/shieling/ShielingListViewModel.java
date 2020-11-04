@@ -53,7 +53,7 @@ public class ShielingListViewModel extends AndroidViewModel {
 
         private final ShielingRepository shielingRepository;
 
-        public Factory(@NonNull Application application, String user) {
+        public Factory(@NonNull Application application) {
             this.application = application;
             shielingRepository = ((BaseApp) application).getShielingRepository();
         }

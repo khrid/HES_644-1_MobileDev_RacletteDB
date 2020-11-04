@@ -39,13 +39,20 @@ public class CheesesActivity extends BaseActivity {
     private RecyclerAdapter<CheeseEntity> adapter;
     private CheeseListViewModel viewModel;
 
+    private boolean isAdmin = false;
+    SharedPreferences settings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_cheeses, frameLayout);
 
-        setTitle(getString(R.string.title_activity_cheeses));
+        setTitle(getString(R.string.empty));
         navigationView.setCheckedItem(position);
+
+
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
         RecyclerView recyclerView = findViewById(R.id.cheesesRecyclerView);
 
@@ -59,7 +66,8 @@ public class CheesesActivity extends BaseActivity {
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 LinearLayoutManager.VERTICAL);
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        //recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.setNestedScrollingEnabled(false);
 
         SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         String user = settings.getString(BaseActivity.PREFS_USER, null);
@@ -86,23 +94,30 @@ public class CheesesActivity extends BaseActivity {
                 Log.d(TAG, "longClicked position:" + position);
                 Log.d(TAG, "longClicked on: " + cheeses.get(position).getName());
 
-                createDeleteDialog(position);
+                if(isAdmin) {
+                    createDeleteDialog(position);
+                }
             }
         });
 
+
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(view -> {
-                    Intent intent = new Intent(ch.hevs.students.raclettedb.ui.cheese.CheesesActivity.this, EditCheeseActivity.class);
-                    intent.setFlags(
-                            Intent.FLAG_ACTIVITY_NO_ANIMATION |
-                                    Intent.FLAG_ACTIVITY_NO_HISTORY
-                    );
-                    startActivity(intent);
-                }
-        );
+        if(isAdmin) {
+            fab.setOnClickListener(view -> {
+                        Intent intent = new Intent(ch.hevs.students.raclettedb.ui.cheese.CheesesActivity.this, EditCheeseActivity.class);
+                        intent.setFlags(
+                                Intent.FLAG_ACTIVITY_NO_ANIMATION |
+                                        Intent.FLAG_ACTIVITY_NO_HISTORY
+                        );
+                        startActivity(intent);
+                    }
+            );
+        } else {
+            fab.setVisibility(View.INVISIBLE);
+        }
 
         CheeseListViewModel.Factory factory = new CheeseListViewModel.Factory(
-                getApplication(), user);
+                getApplication());
         viewModel = ViewModelProviders.of(this, factory).get(CheeseListViewModel.class);
         viewModel.getCheeses().observe(this, cheeseEntities -> {
             if (cheeseEntities != null) {
@@ -135,7 +150,7 @@ public class CheesesActivity extends BaseActivity {
         alertDialog.setTitle(getString(R.string.title_activity_delete_cheese));
         alertDialog.setCancelable(false);
 
-        final TextView deleteMessage = view.findViewById(R.id.tv_delete_item);
+        final TextView deleteMessage = view.findViewById(R.id.tvDeleteItem);
         deleteMessage.setText(String.format(getString(R.string.cheese_delete_msg), cheese.getName()));
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.action_accept), (dialog, which) -> {

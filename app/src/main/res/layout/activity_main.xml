@@ -8,7 +8,7 @@
     tools:context=".ui.MainActivity">
 
     <TextView
-        android:id="@+id/tv_main_shieling_name"
+        android:id="@+id/tvMainShielingName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -18,10 +18,10 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_main_shieling" />
+        app:layout_constraintTop_toBottomOf="@+id/ivMainShieling" />
 
     <ImageView
-        android:id="@+id/iv_main_shieling"
+        android:id="@+id/ivMainShieling"
         android:layout_width="300dp"
         android:layout_height="200dp"
         android:layout_marginTop="24dp"
@@ -29,11 +29,11 @@
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_main_shieling"
+        app:layout_constraintTop_toBottomOf="@+id/tvMainShieling"
         app:srcCompat="@drawable/placeholder" />
 
     <TextView
-        android:id="@+id/tv_main_shieling"
+        android:id="@+id/tvMainShieling"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
     <ImageView
-        android:id="@+id/iv_main_logo"
+        android:id="@+id/ivLogoRacletteDb"
         android:layout_width="231dp"
         android:layout_height="88dp"
         android:layout_marginTop="16dp"
@@ -56,7 +56,7 @@
         app:srcCompat="@drawable/logo_raclettedb" />
 
     <TextView
-        android:id="@+id/tv_main_favorites"
+        android:id="@+id/tvMainFavoritesTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -65,7 +65,7 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_main_logo" />
+        app:layout_constraintTop_toBottomOf="@+id/ivLogoRacletteDb" />
 
     <TableLayout
         android:id="@+id/tableLayout"
@@ -74,28 +74,28 @@
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_main_favorites">
+        app:layout_constraintTop_toBottomOf="@+id/tvMainFavoritesTitle">
 
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/iv_main_favorites_1"
+                android:id="@+id/ivMainFavorites1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="8dp"
                 app:srcCompat="@drawable/placeholder" />
 
             <ImageView
-                android:id="@+id/iv_main_favorites_2"
+                android:id="@+id/ivMainFavorites2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="8dp"
                 app:srcCompat="@drawable/placeholder" />
 
             <ImageView
-                android:id="@+id/iv_main_favorites_3"
+                android:id="@+id/ivMainFavorites3"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:padding="8dp"
@@ -107,7 +107,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tv_main_favorites_1"
+                android:id="@+id/tvMainFavorites1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/dk_lemon_yellow_sun"
@@ -115,7 +115,7 @@
                 android:textAlignment="center" />
 
             <TextView
-                android:id="@+id/tv_main_favorites_2"
+                android:id="@+id/tvMainFavorites2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/dk_lemon_yellow_sun"
@@ -123,7 +123,7 @@
                 android:textAlignment="center" />
 
             <TextView
-                android:id="@+id/tv_main_favorites_3"
+                android:id="@+id/tvMainFavorites3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/dk_lemon_yellow_sun"

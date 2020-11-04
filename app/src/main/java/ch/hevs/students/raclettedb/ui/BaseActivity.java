@@ -49,7 +49,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
      */
     protected static int position;
 
-    private int isAdmin = 0;
+    private boolean isAdmin = false;
 
     SharedPreferences settings;
 
@@ -59,6 +59,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_base);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // reset des SharedPreferences
+        //getSharedPreferences(BaseActivity.PREFS_NAME, 0).edit().clear().apply();
 
         frameLayout = findViewById(R.id.flContent);
 
@@ -71,9 +74,10 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDrawerStateChanged(int newState) {
                 super.onDrawerStateChanged(newState);
-                isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
+                //isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
+                isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
                 Log.d("TAG", "onDrawerStateChanged / " + isAdmin);
-                if (isAdmin > 0) {
+                if (isAdmin) {
                     navigationView.getMenu().findItem(R.id.nav_admin).setTitle("Leave admin mode");
                     navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_exit_to_app_black_24dp);
                 } else {
@@ -85,7 +89,6 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
 
     }
 
@@ -142,15 +145,17 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_admin) {
             position = -1;
-            isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
+            //isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
+            isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
             Log.d("TAG", "onNavigationItemSelected / " + isAdmin);
-            if (isAdmin > 0) {
+            if (isAdmin) {
                 intent = null;
                 navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.action_admin);
                 navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
                 navigationView.getMenu().findItem(R.id.nav_admin).setChecked(false);
                 SharedPreferences.Editor editor = getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putInt(BaseActivity.PREFS_IS_ADMIN, 0);
+                editor.putBoolean(BaseActivity.PREFS_IS_ADMIN, false);
                 editor.apply();
                 navigationView.setCheckedItem(id);
             } else {

@@ -36,8 +36,8 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        et_login_password = findViewById(R.id.et_login_password);
-        bt_login = findViewById(R.id.bt_login);
+        et_login_password = findViewById(R.id.etLoginPassword);
+        bt_login = findViewById(R.id.btLogin);
         bt_login.setOnClickListener(view -> attemptLogin());
     }
 
@@ -67,7 +67,8 @@ public class LoginActivity extends AppCompatActivity {
                 // We need an Editor object to make preference changes.
                 // All objects are from android.context.Context
                 SharedPreferences.Editor editor = getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();
-                editor.putInt(BaseActivity.PREFS_IS_ADMIN, 1);
+                //editor.putInt(BaseActivity.PREFS_IS_ADMIN, 1);
+                editor.putBoolean(BaseActivity.PREFS_IS_ADMIN, true);
                 editor.apply();
                 Log.d("TAG", "admin mode activated");
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);

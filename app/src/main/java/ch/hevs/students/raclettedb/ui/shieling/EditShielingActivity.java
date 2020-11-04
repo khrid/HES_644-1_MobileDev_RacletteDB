@@ -1,9 +1,11 @@
 package ch.hevs.students.raclettedb.ui.shieling;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -22,9 +24,10 @@ public class EditShielingActivity extends BaseActivity {
     private boolean isEditMode;
     private Toast toast;
     private EditText etShielingName;
+    private EditText etShielingDescription;
+    private TextView tvEditShielingTitle;
 
     private ShielingViewModel viewModel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +36,13 @@ public class EditShielingActivity extends BaseActivity {
 
         navigationView.setCheckedItem(position);
 
-        etShielingName = findViewById(R.id.shielingName);
+        tvEditShielingTitle = findViewById(R.id.tvEditShielingTitle);
+        etShielingName = findViewById(R.id.etShielingName);
         etShielingName.requestFocus();
-        Button saveBtn = findViewById(R.id.createShielingButton);
-        saveBtn.setOnClickListener(view -> {
-            saveChanges(etShielingName.getText().toString());
+        etShielingDescription = findViewById(R.id.etShielingDescription);
+        Button btSaveShieling = findViewById(R.id.btSaveShieling);
+        btSaveShieling.setOnClickListener(view -> {
+            saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString());
             onBackPressed();
             toast.show();
         });
@@ -49,7 +54,7 @@ public class EditShielingActivity extends BaseActivity {
             isEditMode = false;
         } else {
             setTitle(getString(R.string.title_activity_edit_shieling));
-            saveBtn.setText(R.string.action_update);
+            btSaveShieling.setText(R.string.action_update);
             toast = Toast.makeText(this, getString(R.string.shieling_edited), Toast.LENGTH_LONG);
             isEditMode = true;
         }
@@ -67,10 +72,11 @@ public class EditShielingActivity extends BaseActivity {
         }
     }
 
-    private void saveChanges(String shielingName) {
+    private void saveChanges(String shielingName, String description) {
         if (isEditMode) {
             if(!"".equals(shielingName)) {
                 shieling.setName(shielingName);
+                shieling.setDescription(description);
                 viewModel.updateShieling(shieling, new OnAsyncEventListener() {
                     @Override
                     public void onSuccess() {
@@ -86,6 +92,7 @@ public class EditShielingActivity extends BaseActivity {
         } else {
             ShielingEntity newShieling = new ShielingEntity();
             newShieling.setName(shielingName);
+            newShieling.setDescription(description);
             viewModel.createShieling(newShieling, new OnAsyncEventListener() {
                 @Override
                 public void onSuccess() {

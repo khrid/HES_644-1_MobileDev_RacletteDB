@@ -1,6 +1,7 @@
 package ch.hevs.students.raclettedb.ui.shieling;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,8 +23,12 @@ public class ShielingDetailActivity extends BaseActivity {
 
     private ShielingEntity shieling;
     private TextView tvShielingName;
+    private TextView tvShielingDescription;
 
     private ShielingViewModel viewModel;
+
+    private boolean isAdmin = false;
+    SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,9 @@ public class ShielingDetailActivity extends BaseActivity {
         navigationView.setCheckedItem(position);
 
         Long shielingId = getIntent().getLongExtra("shielingId", 0L);
+
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
         initiateView();
 
@@ -50,9 +58,11 @@ public class ShielingDetailActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, EDIT_SHIELING, Menu.NONE, getString(R.string.title_activity_edit_shieling))
-                .setIcon(R.drawable.ic_edit_white_24dp)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        if(isAdmin) {
+            menu.add(0, EDIT_SHIELING, Menu.NONE, getString(R.string.title_activity_edit_shieling))
+                    .setIcon(R.drawable.ic_edit_white_24dp)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
         return true;
     }
 
@@ -68,13 +78,15 @@ public class ShielingDetailActivity extends BaseActivity {
     }
 
     private void initiateView() {
-        tvShielingName = findViewById(R.id.shielingName);
+        tvShielingName = findViewById(R.id.tvShielingName);
+        tvShielingDescription = findViewById(R.id.tvShielingDescription);
     }
 
     private void updateContent() {
         if (shieling != null) {
-            setTitle(shieling.getName());
+            setTitle(R.string.empty);
             tvShielingName.setText(shieling.getName());
+            tvShielingDescription.setText(shieling.getDescription());
             Log.i(TAG, "Activity populated.");
         }
     }

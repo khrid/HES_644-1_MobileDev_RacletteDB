@@ -17,6 +17,9 @@ public class ShielingEntity {
     @ColumnInfo(name = "name")
     private String name;
 
+    @ColumnInfo(name = "description")
+    private String description;
+
     public ShielingEntity() {
     }
 
@@ -32,6 +35,10 @@ public class ShielingEntity {
         return name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setId(@NonNull Long id) {
         this.id = id;
     }
@@ -40,6 +47,9 @@ public class ShielingEntity {
         this.name=name;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     @Override
     public boolean equals(Object obj) {

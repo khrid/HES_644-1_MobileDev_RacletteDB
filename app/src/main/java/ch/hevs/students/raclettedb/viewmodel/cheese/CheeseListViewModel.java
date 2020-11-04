@@ -53,7 +53,7 @@ public class CheeseListViewModel extends AndroidViewModel {
 
         private final CheeseRepository cheeseRepository;
 
-        public Factory(@NonNull Application application, String user) {
+        public Factory(@NonNull Application application) {
             this.application = application;
             cheeseRepository = ((BaseApp) application).getCheeseRepository();
         }

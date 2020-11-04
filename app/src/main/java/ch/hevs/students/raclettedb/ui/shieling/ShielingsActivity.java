@@ -25,11 +25,8 @@ import java.util.List;
 
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.adapter.RecyclerAdapter;
-import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
-import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
-import ch.hevs.students.raclettedb.ui.cheese.EditCheeseActivity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.util.RecyclerViewItemClickListener;
 import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingListViewModel;
@@ -42,13 +39,19 @@ public class ShielingsActivity extends BaseActivity {
     private RecyclerAdapter<ShielingEntity> adapter;
     private ShielingListViewModel viewModel;
 
+    private boolean isAdmin = false;
+    SharedPreferences settings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_shielings, frameLayout);
 
-        setTitle(getString(R.string.title_activity_shielings));
+        setTitle(getString(R.string.empty));
         navigationView.setCheckedItem(position);
+
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
         RecyclerView recyclerView = findViewById(R.id.shielingsRecyclerView);
 
@@ -62,7 +65,7 @@ public class ShielingsActivity extends BaseActivity {
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 LinearLayoutManager.VERTICAL);
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        //recyclerView.addItemDecoration(dividerItemDecoration);
 
         SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         String user = settings.getString(BaseActivity.PREFS_USER, null);
@@ -82,7 +85,6 @@ public class ShielingsActivity extends BaseActivity {
                 );
                 intent.putExtra("shielingId", shielings.get(position).getId());
                 startActivity(intent);
-
             }
 
             @Override
@@ -90,24 +92,29 @@ public class ShielingsActivity extends BaseActivity {
                 Log.d(TAG, "longClicked position:" + position);
                 Log.d(TAG, "longClicked on: " + shielings.get(position).getName());
 
-                createDeleteDialog(position);
+                if(isAdmin) {
+                    createDeleteDialog(position);
+                }
             }
         });
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
-
-        fab.setOnClickListener(view -> {
-                    Intent intent = new Intent(ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity.this, EditShielingActivity.class);
-                    intent.setFlags(
-                            Intent.FLAG_ACTIVITY_NO_ANIMATION |
-                                    Intent.FLAG_ACTIVITY_NO_HISTORY
-                    );
-                    startActivity(intent);
-                }
-        );
+        if(isAdmin) {
+            fab.setOnClickListener(view -> {
+                        Intent intent = new Intent(ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity.this, EditShielingActivity.class);
+                        intent.setFlags(
+                                Intent.FLAG_ACTIVITY_NO_ANIMATION |
+                                        Intent.FLAG_ACTIVITY_NO_HISTORY
+                        );
+                        startActivity(intent);
+                    }
+            );
+        } else {
+            fab.setVisibility(View.INVISIBLE);
+        }
 
         ShielingListViewModel.Factory factory = new ShielingListViewModel.Factory(
-                getApplication(), user);
+                getApplication());
         viewModel = ViewModelProviders.of(this, factory).get(ShielingListViewModel.class);
         viewModel.getShielings().observe(this, shielingEntities -> {
             if (shielingEntities != null) {
@@ -140,7 +147,7 @@ public class ShielingsActivity extends BaseActivity {
         alertDialog.setTitle(getString(R.string.title_activity_delete_shieling));
         alertDialog.setCancelable(false);
 
-        final TextView deleteMessage = view.findViewById(R.id.tv_delete_item);
+        final TextView deleteMessage = view.findViewById(R.id.tvDeleteItem);
         deleteMessage.setText(String.format(getString(R.string.shieling_delete_msg), shieling.getName()));
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.action_accept), (dialog, which) -> {
