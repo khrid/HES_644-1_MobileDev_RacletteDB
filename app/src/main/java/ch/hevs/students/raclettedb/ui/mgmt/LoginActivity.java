@@ -70,17 +70,17 @@ public class LoginActivity extends AppCompatActivity {
                 //editor.putInt(BaseActivity.PREFS_IS_ADMIN, 1);
                 editor.putBoolean(BaseActivity.PREFS_IS_ADMIN, true);
                 editor.apply();
-                Log.d("TAG", "admin mode activated");
+                //Log.d("TAG", R.string.admin_enabled);
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 et_login_password.setText("");
             } else {
-                et_login_password.setError(getString(R.string.error_incorrect_password));
+                et_login_password.setError(getString(R.string.admin_incorrect_password));
                 et_login_password.requestFocus();
                 et_login_password.setText("");
             }
         } else {
-            et_login_password.setError(getString(R.string.error_incorrect_password));
+            et_login_password.setError(getString(R.string.admin_incorrect_password));
             et_login_password.requestFocus();
             et_login_password.setText("");
         }

@@ -49,13 +49,14 @@ public class EditShielingActivity extends BaseActivity {
 
         Long shielingId = getIntent().getLongExtra("shielingId", 0L);
         if (shielingId == 0L) {
-            setTitle(getString(R.string.title_activity_create_shieling));
-            toast = Toast.makeText(this, getString(R.string.shieling_created), Toast.LENGTH_LONG);
+            setTitle(getString(R.string.empty));
+            tvEditShielingTitle.setText(R.string.shieling_new_title);
+            toast = Toast.makeText(this, getString(R.string.shieling_new_created), Toast.LENGTH_LONG);
             isEditMode = false;
         } else {
             setTitle(getString(R.string.title_activity_edit_shieling));
-            btSaveShieling.setText(R.string.action_update);
-            toast = Toast.makeText(this, getString(R.string.shieling_edited), Toast.LENGTH_LONG);
+            btSaveShieling.setText(R.string.update);
+            toast = Toast.makeText(this, getString(R.string.shieling_edit_edited), Toast.LENGTH_LONG);
             isEditMode = true;
         }
 

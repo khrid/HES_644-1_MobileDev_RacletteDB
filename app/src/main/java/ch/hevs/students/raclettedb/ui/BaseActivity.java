@@ -78,10 +78,10 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                 isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
                 Log.d("TAG", "onDrawerStateChanged / " + isAdmin);
                 if (isAdmin) {
-                    navigationView.getMenu().findItem(R.id.nav_admin).setTitle("Leave admin mode");
+                    navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_exit);
                     navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_exit_to_app_black_24dp);
                 } else {
-                    navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.action_admin);
+                    navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_enter);
                     navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
                 }
             }
@@ -150,7 +150,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             Log.d("TAG", "onNavigationItemSelected / " + isAdmin);
             if (isAdmin) {
                 intent = null;
-                navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.action_admin);
+                navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_enter);
                 navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
                 navigationView.getMenu().findItem(R.id.nav_admin).setChecked(false);
                 SharedPreferences.Editor editor = getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();

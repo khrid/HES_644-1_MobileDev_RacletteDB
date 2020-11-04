@@ -52,14 +52,14 @@ public class EditCheeseActivity extends BaseActivity {
         Long cheeseId = getIntent().getLongExtra("cheeseId", 0L);
         if (cheeseId == 0L) {
             setTitle(R.string.empty);
-            tvEditCheeseTitle.setText("New cheese");
-            btSaveCheese.setText(R.string.action_create);
-            toast = Toast.makeText(this, getString(R.string.cheese_created), Toast.LENGTH_LONG);
+            tvEditCheeseTitle.setText(R.string.cheese_new_title);
+            btSaveCheese.setText(R.string.save);
+            toast = Toast.makeText(this, getString(R.string.cheese_new_created), Toast.LENGTH_LONG);
             isEditMode = false;
         } else {
             setTitle(R.string.empty);
-            btSaveCheese.setText(R.string.action_update);
-            toast = Toast.makeText(this, getString(R.string.cheese_edited), Toast.LENGTH_LONG);
+            btSaveCheese.setText(R.string.update);
+            toast = Toast.makeText(this, getString(R.string.cheese_edit_edited), Toast.LENGTH_LONG);
             isEditMode = true;
         }
 

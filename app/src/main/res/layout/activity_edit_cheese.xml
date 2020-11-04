@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ch.hevs.students.raclettedb.ui.cheese.EditCheeseActivity">
@@ -13,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/dk_lemon_yellow_sun"
-        android:text="Edit cheese"
+        android:text="@string/cheese_edit_title"
         android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/dk_lemon_yellow_sun"
-            android:hint="Cheese name" />
+            android:hint="@string/cheese_common_hint_cheese_name" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -55,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/dk_lemon_yellow_sun"
-            android:hint="Cheese description"
+            android:hint="@string/cheese_common_hint_cheese_description"
             android:inputType="textMultiLine"
             android:lineSpacingExtra="10sp"
             android:singleLine="false" />
@@ -77,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/dk_lemon_yellow_sun"
-            android:hint="Cheese type"
+            android:hint="@string/cheese_common_hint_cheese_type"
             android:inputType="textMultiLine"
             android:singleLine="false" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -87,9 +86,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Save"
+        android:fontFamily="@font/dk_lemon_yellow_sun"
+        android:text="@string/save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:fontFamily="@font/dk_lemon_yellow_sun"
         app:layout_constraintTop_toBottomOf="@+id/tilCheeseType" />
 </androidx.constraintlayout.widget.ConstraintLayout>

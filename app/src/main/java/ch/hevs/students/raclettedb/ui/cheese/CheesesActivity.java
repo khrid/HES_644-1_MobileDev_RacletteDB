@@ -147,14 +147,14 @@ public class CheesesActivity extends BaseActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         final View view = inflater.inflate(R.layout.row_delete_item, null);
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getString(R.string.title_activity_delete_cheese));
+        alertDialog.setTitle(getString(R.string.cheeses_list_delete_title));
         alertDialog.setCancelable(false);
 
         final TextView deleteMessage = view.findViewById(R.id.tvDeleteItem);
-        deleteMessage.setText(String.format(getString(R.string.cheese_delete_msg), cheese.getName()));
+        deleteMessage.setText(String.format(getString(R.string.cheeses_list_delete_text), cheese.getName()));
 
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.action_accept), (dialog, which) -> {
-            Toast toast = Toast.makeText(this, getString(R.string.cheese_deleted), Toast.LENGTH_LONG);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.execute), (dialog, which) -> {
+            Toast toast = Toast.makeText(this, getString(R.string.cheeses_list_deleted), Toast.LENGTH_LONG);
             viewModel.deleteCheese(cheese, new OnAsyncEventListener() {
                 @Override
                 public void onSuccess() {
@@ -169,7 +169,7 @@ public class CheesesActivity extends BaseActivity {
             toast.show();
         });
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.action_cancel), (dialog, which) -> alertDialog.dismiss());
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), (dialog, which) -> alertDialog.dismiss());
         alertDialog.setView(view);
         alertDialog.show();
     }

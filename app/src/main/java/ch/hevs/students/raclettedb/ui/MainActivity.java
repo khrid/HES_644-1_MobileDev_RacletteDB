@@ -2,6 +2,8 @@ package ch.hevs.students.raclettedb.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
+import java.util.Locale;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
@@ -42,8 +45,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        changeLocale("fr");
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
+        //recreate();
 
         //initializeDemoData(AppDatabase.getInstance(this)); // INITIALISE LA BASE A CHAQUE DEMARRAGE
 
@@ -92,7 +97,7 @@ public class MainActivity extends BaseActivity {
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
         Log.d("TAG", isAdmin+"");
         if(isAdmin) {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.mainlayout), "Admin mode is active", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.mainlayout), R.string.admin_mode_active, Snackbar.LENGTH_LONG);
             snackbar.show();
         }
     }
@@ -104,11 +109,11 @@ public class MainActivity extends BaseActivity {
             return;
         }
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getString(R.string.action_close));
+        alertDialog.setTitle(getString(R.string.close));
         alertDialog.setCancelable(false);
-        alertDialog.setMessage(getString(R.string.close_msg));
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.action_close), (dialog, which) -> close());
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.action_cancel), (dialog, which) -> alertDialog.dismiss());
+        alertDialog.setMessage(getString(R.string.close_application));
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.close), (dialog, which) -> close());
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), (dialog, which) -> alertDialog.dismiss());
         alertDialog.show();
 
     }
@@ -153,5 +158,14 @@ public class MainActivity extends BaseActivity {
         );
         intent.putExtra("shielingId", shielingId);
         startActivity(intent);
+    }
+
+    public void changeLocale(String code) {
+        Locale locale = new Locale(code);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        Resources resources = getResources();
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
     }
 }
