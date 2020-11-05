@@ -1,7 +1,9 @@
 package ch.hevs.students.raclettedb.ui.cheese;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,15 +11,17 @@ import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
+import ch.hevs.students.raclettedb.util.Utils;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel;
 
 public class EditCheeseActivity extends BaseActivity {
 
-    private static final String TAG = "EditCheeseActivity";
+    private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-EditCheeseActivity";
 
     private CheeseEntity cheese;
     private boolean isEditMode;
@@ -29,11 +33,17 @@ public class EditCheeseActivity extends BaseActivity {
 
     private CheeseViewModel viewModel;
 
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_edit_cheese, frameLayout);
+
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
 
         navigationView.setCheckedItem(position);
 
@@ -76,6 +86,19 @@ public class EditCheeseActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        if(!settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false)) {
+            finish();
+        }
+        super.onResume();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return false;
     }
 
     private void saveChanges(String cheeseName, String description, String cheeseType) {

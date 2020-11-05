@@ -28,10 +28,15 @@ public class ShielingDetailActivity extends BaseActivity {
     private ShielingViewModel viewModel;
 
     private boolean isAdmin = false;
-    SharedPreferences settings;
+
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Récupération du stockage commun
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_shieling, frameLayout);
 
@@ -39,7 +44,6 @@ public class ShielingDetailActivity extends BaseActivity {
 
         Long shielingId = getIntent().getLongExtra("shielingId", 0L);
 
-        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
         initiateView();
@@ -57,15 +61,23 @@ public class ShielingDetailActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
         if(isAdmin) {
             menu.add(0, EDIT_SHIELING, Menu.NONE, getString(R.string.title_activity_edit_shieling))
                     .setIcon(R.drawable.ic_edit_white_24dp)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            super.onCreateOptionsMenu(menu);
+            return true;
         }
-        return true;
+        return false;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item= menu.findItem(R.id.action_settings);
+        item.setVisible(false);
+        super.onPrepareOptionsMenu(menu);
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == EDIT_SHIELING) {

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -23,24 +24,28 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.adapter.RecyclerAdapter;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.util.RecyclerViewItemClickListener;
+import ch.hevs.students.raclettedb.util.Utils;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseListViewModel;
 
 public class CheesesActivity extends BaseActivity {
 
-    private static final String TAG = "CheesesActivity";
+    private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-CheesesActivity";
 
     private List<CheeseEntity> cheeses;
     private RecyclerAdapter<CheeseEntity> adapter;
     private CheeseListViewModel viewModel;
 
     private boolean isAdmin = false;
-    SharedPreferences settings;
+
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,7 @@ public class CheesesActivity extends BaseActivity {
 
 
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
         RecyclerView recyclerView = findViewById(R.id.cheesesRecyclerView);
@@ -127,6 +133,11 @@ public class CheesesActivity extends BaseActivity {
         });
 
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return false;
     }
 
     @Override

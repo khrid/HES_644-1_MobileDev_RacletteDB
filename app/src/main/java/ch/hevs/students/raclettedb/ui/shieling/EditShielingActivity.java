@@ -29,8 +29,14 @@ public class EditShielingActivity extends BaseActivity {
 
     private ShielingViewModel viewModel;
 
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Récupération du stockage commun
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_edit_shieling, frameLayout);
 
@@ -71,6 +77,14 @@ public class EditShielingActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        if(!settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false)) {
+            finish();
+        }
+        super.onResume();
     }
 
     private void saveChanges(String shielingName, String description) {

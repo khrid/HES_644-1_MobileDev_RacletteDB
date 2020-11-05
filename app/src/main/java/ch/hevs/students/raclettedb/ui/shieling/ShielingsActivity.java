@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -40,10 +41,15 @@ public class ShielingsActivity extends BaseActivity {
     private ShielingListViewModel viewModel;
 
     private boolean isAdmin = false;
-    SharedPreferences settings;
+
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Récupération du stockage commun
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_shielings, frameLayout);
 
@@ -124,6 +130,11 @@ public class ShielingsActivity extends BaseActivity {
         });
 
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return false;
     }
 
     @Override

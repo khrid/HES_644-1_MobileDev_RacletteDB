@@ -1,7 +1,11 @@
 package ch.hevs.students.raclettedb.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +22,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Locale;
+
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.ui.cheese.CheesesActivity;
@@ -30,10 +36,10 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     public static final String PREFS_NAME = "SharedPrefs";
     public static final String PREFS_USER = "LoggedIn";
     public static final String PREFS_IS_ADMIN = "IsAdmin";
+    public static final String PREFS_APP_LANGUAGE = "AppLanguage";
+    public static final String PREFS_APP_LANGUAGE_CHANGED = "AppLanguageChanged";
 
-    private final int isAdminDefaultValue = -1;
-
-    SharedPreferences sharedPreferences;
+    private static final String TAG = "TAG-"+BaseApp.APP_NAME+"-"+BaseActivity.class.getSimpleName();
     /**
      * Frame layout: Which is going to be used as parent layout for child activity layout.
      * This layout is protected so that child activity can access this
@@ -76,7 +82,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                 super.onDrawerStateChanged(newState);
                 //isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
                 isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
-                Log.d("TAG", "onDrawerStateChanged / " + isAdmin);
+                Log.d(TAG, "onDrawerStateChanged / " + isAdmin);
                 if (isAdmin) {
                     navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_exit);
                     navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_exit_to_app_black_24dp);
@@ -94,8 +100,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onResume() {
-        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
-        Log.d("TAG", "onResume");
+        //settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        //changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+        //Log.d(TAG, "onResume");
         super.onResume();
     }
 
@@ -147,16 +154,16 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             position = -1;
             //isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
             isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
-            Log.d("TAG", "onNavigationItemSelected / " + isAdmin);
+            Log.d(TAG, "onNavigationItemSelected / " + isAdmin);
             if (isAdmin) {
                 intent = null;
                 navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_enter);
                 navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
                 navigationView.getMenu().findItem(R.id.nav_admin).setChecked(false);
                 SharedPreferences.Editor editor = getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();
-                editor.putInt(BaseActivity.PREFS_IS_ADMIN, 0);
                 editor.putBoolean(BaseActivity.PREFS_IS_ADMIN, false);
                 editor.apply();
+                recreate();
                 navigationView.setCheckedItem(id);
             } else {
                 intent = new Intent(this, LoginActivity.class);
@@ -193,5 +200,39 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         editor.remove(BaseActivity.PREFS_IS_ADMIN);
         editor.apply();
         this.finishAffinity();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        SharedPreferences prefs = newBase.getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE);
+        String localeString = prefs.getString(BaseActivity.PREFS_APP_LANGUAGE, "en");
+        Locale myLocale = new Locale(localeString);
+        Locale.setDefault(myLocale);
+        Configuration config = newBase.getResources().getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            config.setLocale(myLocale);
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.N){
+                Context newContext = newBase.createConfigurationContext(config);
+                super.attachBaseContext(newContext);
+                return;
+            }
+        } else {
+            config.locale = myLocale;
+        }
+        super.attachBaseContext(newBase);
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+    }
+
+
+
+    public void changeLocale(String code) {
+        Log.d(TAG, "changeLocale("+code+")");
+        Locale locale = new Locale(code);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        Resources resources = getResources();
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        recreate();
     }
 }

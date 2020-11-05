@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,13 +15,19 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NavUtils;
 
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;
+import java.util.Locale;
 
+import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
+import ch.hevs.students.raclettedb.ui.BaseActivity;
+import ch.hevs.students.raclettedb.util.Utils;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -34,6 +41,8 @@ import ch.hevs.students.raclettedb.R;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends PreferenceActivity {
+
+    private static final String TAG = "TAG-"+BaseApp.APP_NAME+"-SettingsActivity";
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -149,7 +158,8 @@ public class SettingsActivity extends PreferenceActivity {
      */
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
-                || AboutPreferenceFragment.class.getName().equals(fragmentName);
+                || AboutPreferenceFragment.class.getName().equals(fragmentName)
+                || LanguageChangePreferenceFragment.class.getName().equals(fragmentName);
     }
 
     /**
@@ -178,6 +188,48 @@ public class SettingsActivity extends PreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public static class LanguageChangePreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_language);
+            setHasOptionsMenu(true);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+            super.onPause();
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if(key.equals(BaseActivity.PREFS_APP_LANGUAGE)) {
+                Utils.changeLocale(sharedPreferences.getString(key,"en"), getActivity());
+                /*SharedPreferences.Editor editor = this.getActivity().getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();
+                //editor.putInt(BaseActivity.PREFS_IS_ADMIN, 1);
+                editor.putString(BaseActivity.PREFS_APP_LANGUAGE, sharedPreferences.getString(key,"en"));
+                editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, true);
+                editor.apply();
+                String newLocale = sharedPreferences.getString(key,"en");
+                Log.d(TAG, "user changed language -> " + newLocale);
+                Locale locale = new Locale(newLocale);
+                Locale.setDefault(locale);
+                Configuration config = new Configuration();
+                config.locale = locale;
+                getActivity().getResources().updateConfiguration(config, null);
+                getActivity().recreate();*/
+            }
         }
     }
 }

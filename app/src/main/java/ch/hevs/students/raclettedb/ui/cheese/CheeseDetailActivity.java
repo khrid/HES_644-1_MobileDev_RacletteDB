@@ -10,14 +10,16 @@ import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
+import ch.hevs.students.raclettedb.util.Utils;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel;
 
 public class CheeseDetailActivity extends BaseActivity {
 
-    private static final String TAG = "CheeseDetailActivity";
+    private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-CheeseDetailActivity";
 
     private static final int EDIT_CHEESE = 1;
 
@@ -30,7 +32,9 @@ public class CheeseDetailActivity extends BaseActivity {
     private CheeseViewModel viewModel;
 
     private boolean isAdmin = false;
-    SharedPreferences settings;
+
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class CheeseDetailActivity extends BaseActivity {
         Long cheeseId = getIntent().getLongExtra("cheeseId", 0L);
 
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
         initiateView();
@@ -58,13 +63,35 @@ public class CheeseDetailActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+
+        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+        Log.d(TAG, settings.toString());
+        if(settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
+            Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"), this);
+            editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
+            editor.apply();
+        }
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
         if(isAdmin) {
             menu.add(0, EDIT_CHEESE, Menu.NONE, getString(R.string.title_activity_edit_cheese))
                     .setIcon(R.drawable.ic_edit_white_24dp)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            super.onCreateOptionsMenu(menu);
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item= menu.findItem(R.id.action_settings);
+        item.setVisible(false);
+        super.onPrepareOptionsMenu(menu);
         return true;
     }
 

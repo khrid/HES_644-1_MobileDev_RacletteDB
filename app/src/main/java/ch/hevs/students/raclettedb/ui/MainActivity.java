@@ -25,10 +25,14 @@ import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
 import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity;
+import ch.hevs.students.raclettedb.util.Utils;
 
 public class MainActivity extends BaseActivity {
 
+    private static final String TAG = "TAG-"+BaseApp.APP_NAME+"-"+MainActivity.class.getSimpleName();
+
     private boolean isAdmin = false;
+    private String currentLocale = "";
     private List<CheeseEntity> cheeses;
     private CheeseRepository cheeseRepository;
     private List<ShielingEntity> shielings;
@@ -41,11 +45,20 @@ public class MainActivity extends BaseActivity {
     private ImageView ivMainFavorites3;
     private TextView tvMainShielingName;
     private ImageView ivMainShieling;
-    SharedPreferences settings;
+
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        changeLocale("fr");
+        // Récupération du stockage commun
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
+        // Est-ce que l'utilisateur est admin ?
+        isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
+
+        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
         //recreate();
@@ -79,20 +92,19 @@ public class MainActivity extends BaseActivity {
             tvMainShielingName.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
             ivMainShieling.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
         });
-
-        SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
-        //isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
-        isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
-
-
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         setTitle(getString(R.string.app_name));
         navigationView.setCheckedItem(R.id.nav_none);
-        SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+        Log.d(TAG, settings.toString());
+        if(settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
+            Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"), this);
+            editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
+            editor.apply();
+        }
         //isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
         Log.d("TAG", isAdmin+"");
@@ -100,6 +112,7 @@ public class MainActivity extends BaseActivity {
             Snackbar snackbar = Snackbar.make(findViewById(R.id.mainlayout), R.string.admin_mode_active, Snackbar.LENGTH_LONG);
             snackbar.show();
         }
+        super.onResume();
     }
 
     @Override
@@ -161,11 +174,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void changeLocale(String code) {
-        Locale locale = new Locale(code);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        Resources resources = getResources();
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        Log.d(TAG, "code=" + code + " // currentLocale="+currentLocale);
+        //if(!currentLocale.equals(code)) {
+            currentLocale = code;
+            Log.d(TAG, "changeLocale(" + code + ")");
+            Locale locale = new Locale(code);
+            Locale.setDefault(locale);
+            Configuration config = new Configuration();
+            config.locale = locale;
+            Resources resources = getResources();
+            resources.updateConfiguration(config, resources.getDisplayMetrics());
+            recreate();
+        //}
     }
 }

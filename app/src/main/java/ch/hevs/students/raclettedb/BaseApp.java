@@ -11,6 +11,8 @@ import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
  */
 public class BaseApp extends Application {
 
+    public static final String APP_NAME = "RacletteDB";
+
     public static final String ADMIN_PASSWORD = "castor";
 
     @Override
