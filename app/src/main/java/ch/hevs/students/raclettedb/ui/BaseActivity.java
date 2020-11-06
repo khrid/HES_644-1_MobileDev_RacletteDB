@@ -26,10 +26,13 @@ import java.util.Locale;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
+import ch.hevs.students.raclettedb.database.AppDatabase;
 import ch.hevs.students.raclettedb.ui.cheese.CheesesActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.LoginActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity;
+
+import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,6 +40,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     public static final String PREFS_USER = "LoggedIn";
     public static final String PREFS_IS_ADMIN = "IsAdmin";
     public static final String PREFS_APP_LANGUAGE = "AppLanguage";
+    public static final String PREFS_APP_LANGUAGE_DEFAULT = "system";
     public static final String PREFS_APP_LANGUAGE_CHANGED = "AppLanguageChanged";
 
     private static final String TAG = "TAG-"+BaseApp.APP_NAME+"-"+BaseActivity.class.getSimpleName();
@@ -61,6 +65,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //initializeDemoData(AppDatabase.getInstance(this)); // INITIALISE LA BASE A CHAQUE DEMARRAGE
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -101,7 +106,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         //settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
-        //changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+        //changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));
         //Log.d(TAG, "onResume");
         super.onResume();
     }
@@ -205,7 +210,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void attachBaseContext(Context newBase) {
         SharedPreferences prefs = newBase.getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE);
-        String localeString = prefs.getString(BaseActivity.PREFS_APP_LANGUAGE, "en");
+        String localeString = prefs.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT);
         Locale myLocale = new Locale(localeString);
         Locale.setDefault(myLocale);
         Configuration config = newBase.getResources().getConfiguration();

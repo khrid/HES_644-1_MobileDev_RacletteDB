@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_reset_db"
+        android:title="@string/settings_data_room_reset" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_reset_prefs"
+        android:title="@string/settings_data_prefs_reset" />
+</PreferenceScreen>

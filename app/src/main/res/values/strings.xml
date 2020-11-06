@@ -74,12 +74,21 @@
     <!-- Settings -->
     <string name="pref_key_language" translatable="false">AppLanguage</string>
     <string name="settings_action">Settings</string>
-    <string name="settings_about">Settings</string>
+    <string name="settings_about">About</string>
     <string name="settings_language">Language</string>
     <string name="settings_language_title">Application language</string>
     <string name="settings_language_choose">Choose language</string>
     <string name="language_en">English 🇬🇧</string>
     <string name="language_fr">French 🇫🇷</string>
+    <string name="settings_data">Data</string>
+    <string name="settings_data_room_reset">Reset Room database</string>
+    <string name="settings_data_room_reset_dialog_title">Room database reset</string>
+    <string name="settings_data_room_reset_dialog_text">Do you really want to restore the Room database to its initial content?</string>
+    <string name="settings_data_room_reset_successful">Room database reset successful</string>
+    <string name="settings_data_prefs_reset">Reset sharedPreferences</string>
+    <string name="settings_data_prefs_reset_dialog_title">sharedPreferences reset</string>
+    <string name="settings_data_prefs_reset_dialog_text">Do you really want to reset the shared preferences?</string>
+    <string name="settings_data_prefs_reset_successful">Shared preferences reset successful</string>
 
     <!-- Common / Misc -->
     <string name="close_application">Do you really want to close the application?</string>
@@ -93,6 +102,4 @@
     <!-- A trier -->
     <string name="pref_header_about">About</string>
     <string name="pref_about_text">This application was developed to provide a possibility to demonstrate how the newly released Android Architecture Components could be implemented in an application.</string>
-
-
 </resources>

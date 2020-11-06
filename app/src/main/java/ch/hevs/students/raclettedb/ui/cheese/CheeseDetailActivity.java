@@ -65,10 +65,10 @@ public class CheeseDetailActivity extends BaseActivity {
     @Override
     protected void onResume() {
 
-        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));
         Log.d(TAG, settings.toString());
         if(settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
-            Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"), this);
+            Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
             editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
             editor.apply();
         }

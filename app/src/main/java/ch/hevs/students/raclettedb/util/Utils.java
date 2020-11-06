@@ -37,6 +37,15 @@ public class Utils {
         resources.updateConfiguration(config, resources.getDisplayMetrics());
         // On force la recréation de l'activity pour prendre en compte la nouvelle locale
         activity.recreate();
-        Log.d(TAG, "language in prefs after apply : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+        Log.d(TAG, "language in prefs after apply : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)+", has changed : " + settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
+    }
+
+    public static void resetToSystemLocale(Activity activity) {
+        settings = activity.getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
+        editor.putString(BaseActivity.PREFS_APP_LANGUAGE, Resources.getSystem().getConfiguration().locale.getLanguage());
+        editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, true);
+        editor.apply();
+        activity.recreate();
     }
 }

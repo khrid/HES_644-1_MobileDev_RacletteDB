@@ -7,7 +7,7 @@
         android:dialogTitle="@string/settings_language_choose"
         android:entries="@array/languages_entries"
         android:entryValues="@array/languages_values"
-        android:defaultValue="@string/language_en">
+        android:summary="%s">
     </ListPreference>
 
 </PreferenceScreen>

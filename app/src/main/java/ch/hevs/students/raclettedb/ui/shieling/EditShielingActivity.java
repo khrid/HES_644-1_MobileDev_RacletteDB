@@ -74,6 +74,7 @@ public class EditShielingActivity extends BaseActivity {
                 if (shielingEntity != null) {
                     shieling = shielingEntity;
                     etShielingName.setText(shieling.getName());
+                    etShielingDescription.setText(shieling.getDescription());
                 }
             });
         }
