@@ -61,8 +61,6 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
             holder.mTextView.setText(((CheeseEntity) item).getName());
         if (item.getClass().equals(ShielingEntity.class))
             holder.mTextView.setText(((ShielingEntity) item).getName());
-
-        //holder.mTextView.setTypeface(Typeface.createFromAsset(holder.mContext.getAssets(),));
     }
 
     @Override

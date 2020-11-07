@@ -82,28 +82,30 @@ public class MainActivity extends BaseActivity {
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
         cheeseRepository.getAllCheeses(getApplication()).observe(MainActivity.this, cheeseEntities -> {
             //cheeses = cheeseEntities;
-            /*
-            tvMainFavorites1.setText(cheeseEntities.get(0).getName());
-            tvMainFavorites2.setText(cheeseEntities.get(1).getName());
-            tvMainFavorites3.setText(cheeseEntities.get(2).getName());
 
-            tvMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(0).getId()));
-            ivMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(0).getId()));
-            tvMainFavorites2.setOnClickListener(v -> showCheese(cheeseEntities.get(1).getId()));
-            ivMainFavorites2.setOnClickListener(v -> showCheese(cheeseEntities.get(1).getId()));
-            tvMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(2).getId()));
-            ivMainFavorites3.setOnClickListener(v -> showCheese(cheeseEntities.get(2).getId()));
-             */
-            // TODO Enlever commentaires
+            if(cheeseEntities.size()>0) {
+                tvMainFavorites1.setText(cheeseEntities.get(0).getName());
+                tvMainFavorites2.setText(cheeseEntities.get(1).getName());
+                tvMainFavorites3.setText(cheeseEntities.get(2).getName());
+
+                tvMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(0).getId()));
+                ivMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(0).getId()));
+                tvMainFavorites2.setOnClickListener(v -> showCheese(cheeseEntities.get(1).getId()));
+                ivMainFavorites2.setOnClickListener(v -> showCheese(cheeseEntities.get(1).getId()));
+                tvMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(2).getId()));
+                ivMainFavorites3.setOnClickListener(v -> showCheese(cheeseEntities.get(2).getId()));
+            }
         });
 
         shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
         shielingRepository.getAllShielings(getApplication()).observe(MainActivity.this, shielingEntities -> {
             //shielings = shielingEntities;
-            /*tvMainShielingName.setText(shielingEntities.get(0).getName());
-            tvMainShielingName.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
-            ivMainShieling.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));*/
-            // TODO ENlever commentaires
+
+            if(shielingEntities.size()>0) {
+                tvMainShielingName.setText(shielingEntities.get(0).getName());
+                tvMainShielingName.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
+                ivMainShieling.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
+            }
         });
     }
 

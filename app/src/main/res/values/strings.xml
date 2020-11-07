@@ -33,6 +33,7 @@
     <!-- Cheese detail - read -->
     <string name="cheese_detail_placeholder_title">Cheese name</string>
     <string name="cheese_detail_description_title">Description</string>
+    <string name="cheese_detail_shieling_title">Shieling</string>
     <string name="cheese_detail_type_title">Type</string>
     <!-- Cheese detail - edit -->
     <string name="cheese_edit_action">Edit cheese</string>

@@ -22,13 +22,11 @@ public class CheeseRepository {
 
     public static CheeseRepository getInstance() {
         if (instance == null) {
-            instance = new CheeseRepository();
-            // TODO Ajouter le check de la deuxième table de la DB
-            /*synchronized (AccountRepository.class) {
+            synchronized (ShielingRepository.class) {
                 if (instance == null) {
-                    instance = new ClientRepository();
+                    instance = new CheeseRepository();
                 }
-            }*/
+            }
         }
         return instance;
     }

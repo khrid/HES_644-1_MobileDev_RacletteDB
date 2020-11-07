@@ -25,6 +25,7 @@ public class CheeseDetailActivity extends BaseActivity {
 
     private CheeseEntity cheese;
     private TextView tvCheeseName;
+    private TextView tvCheeseShieling;
     private TextView tvCheeseType;
     private TextView tvCheeseDescription;
 
@@ -108,6 +109,7 @@ public class CheeseDetailActivity extends BaseActivity {
 
     private void initiateView() {
         tvCheeseName = findViewById(R.id.tvCheeseName);
+        tvCheeseShieling = findViewById(R.id.tvCheeseShieling);
         tvCheeseType = findViewById(R.id.tvCheeseType);
         tvCheeseDescription = findViewById(R.id.tvCheeseDescription);
     }
@@ -116,6 +118,7 @@ public class CheeseDetailActivity extends BaseActivity {
         if (cheese != null) {
             setTitle(R.string.empty);
             tvCheeseName.setText(cheese.getName());
+            tvCheeseShieling.setText(cheese.getShieling().toString());
             tvCheeseType.setText(cheese.getType());
             tvCheeseDescription.setText(cheese.getDescription());
             Log.i(TAG, "Activity populated.");

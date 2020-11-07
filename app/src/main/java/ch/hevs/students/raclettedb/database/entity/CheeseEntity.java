@@ -3,15 +3,33 @@ package ch.hevs.students.raclettedb.database.entity;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "cheeses")
+@Entity(tableName = "cheeses",
+        foreignKeys =
+        @ForeignKey(
+                entity = ShielingEntity.class,
+                parentColumns = "id",
+                childColumns = "shieling",
+                onDelete = ForeignKey.CASCADE
+        ),
+        indices = {
+                @Index(
+                        value = {"shieling"}
+                )})
+
 public class CheeseEntity {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
     @ColumnInfo(name = "id")
     private Long id;
+
+    @NonNull
+    @ColumnInfo(name = "shieling")
+    private Long shieling;
 
     @NonNull
     @ColumnInfo(name = "name")
@@ -29,13 +47,16 @@ public class CheeseEntity {
     public CheeseEntity() {
     }
 
-    public CheeseEntity(@NonNull String name) {
+    public CheeseEntity(@NonNull String name, @NonNull Long shieling) {
         this.name=name;
+        this.shieling=shieling;
     }
 
     public Long getId(){
         return id;
     }
+
+    public Long getShieling() { return  shieling; }
 
     public String getName(){
         return name;
@@ -63,6 +84,10 @@ public class CheeseEntity {
 
     public void setId(@NonNull Long id) {
         this.id = id;
+    }
+
+    public void setShieling(Long shieling) {
+        this.shieling = shieling;
     }
 
     public void setEan(int ean) {

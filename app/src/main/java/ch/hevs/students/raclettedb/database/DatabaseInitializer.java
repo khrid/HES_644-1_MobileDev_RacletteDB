@@ -20,36 +20,34 @@ public class DatabaseInitializer {
     }
 
 
-    private static void addCheese(final AppDatabase db, final String name) {
-        CheeseEntity cheese = new CheeseEntity(name);
+    private static void addCheese(final AppDatabase db, final String name, final Long shieling) {
+        CheeseEntity cheese = new CheeseEntity(name, shieling);
         db.cheeseDao().insert(cheese);
     }
 
-    private static void addShieling(final AppDatabase db, final String name) {
+    private static long addShieling(final AppDatabase db, final String name) {
         ShielingEntity shieling = new ShielingEntity(name);
-        db.shielingDao().insert(shieling);
+        return db.shielingDao().insert(shieling);
     }
 
     private static void populateWithTestData(AppDatabase db) {
 
-        addShieling(db,"Alpage 1");
-        addShieling(db,"Alpage 2");
-        addShieling(db,"Alpage 3");
-        addShieling(db,"Alpage 4");
+        long anniviers = addShieling(db,"Val d'Anniviers");
+        long bagnes = addShieling(db,"Val de Bagnes");
+        long turtmann = addShieling(db,"Turtmanntal");
 
 
         try {
-            // Let's ensure that the clients are already stored in the database before we continue.
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        addCheese(db,"Anniviers");
-        addCheese(db,"Bagnes");
-        addCheese(db,"Tourtemagne");
-        addCheese(db,"Martigny");
-        addCheese(db,"Brigue");
+        addCheese(db,"Vissoie", anniviers);
+        addCheese(db,"Bagnes 4", bagnes);
+        addCheese(db,"Bagnes 7", bagnes);
+        addCheese(db,"Turtmann 1", turtmann);
+        addCheese(db,"Turtmann 3", turtmann);
     }
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
