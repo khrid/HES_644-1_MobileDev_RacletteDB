@@ -35,9 +35,12 @@ public class CheeseRepository {
         return ((BaseApp) application).getDatabase().cheeseDao().getById(cheeseId);
     }
 
-
     public LiveData<List<CheeseEntity>> getAllCheeses(Application application) {
         return ((BaseApp) application).getDatabase().cheeseDao().getAll();
+    }
+
+    public LiveData<List<CheeseEntity>> getShielingsCheeses(Application application, Long shieling) {
+        return ((BaseApp) application).getDatabase().cheeseDao().getByShieling(shieling);
     }
 
     public void insert(final CheeseEntity cheese, OnAsyncEventListener callback,

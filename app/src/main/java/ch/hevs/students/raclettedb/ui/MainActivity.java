@@ -167,7 +167,6 @@ public class MainActivity extends BaseActivity {
             tvMainFavorites2.setText(cheeses.get(1).getName());
             tvMainFavorites3.setText(cheeses.get(2).getName());
             //tv_main_shieling_name.setText(shielings.get(0).getName());
-            // TODO Réactiver ça quand initialisation base OK
         }
     }
 

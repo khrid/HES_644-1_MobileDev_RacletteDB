@@ -21,6 +21,9 @@ public interface CheeseDao {
     @Query("SELECT * FROM cheeses WHERE id = :id")
     LiveData<CheeseEntity> getById(Long id);
 
+    @Query("SELECT * FROM cheeses WHERE shieling = :shieling")
+    LiveData<List<CheeseEntity>> getByShieling(Long shieling);
+
     @Query("SELECT * from cheeses ORDER BY name ASC")
     LiveData<List<CheeseEntity>> getAll();
 

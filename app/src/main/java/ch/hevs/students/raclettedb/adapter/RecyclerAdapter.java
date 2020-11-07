@@ -90,8 +90,11 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    if (mData instanceof CheeseEntity) { // TODO Ajouter Alpage ici
+                    if (mData instanceof CheeseEntity) {
                         return ((CheeseEntity) mData.get(oldItemPosition)).getId().equals(((CheeseEntity) data.get(newItemPosition)).getId());
+                    }
+                    if (mData instanceof ShielingEntity) {
+                        return ((ShielingEntity) mData.get(oldItemPosition)).getId().equals(((ShielingEntity) data.get(newItemPosition)).getId());
                     }
                     return false;
                 }
@@ -106,7 +109,12 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
                                 && newCheese.getDescription().equals(oldCheese.getDescription())
                                 && ((Integer)newCheese.getEan()).equals(((Integer)oldCheese.getEan()));
                     }
-                    // TODO Ajouter alpage ici
+                    if (mData instanceof ShielingEntity) {
+                        ShielingEntity newShieling = (ShielingEntity) data.get(newItemPosition);
+                        ShielingEntity oldShieling = (ShielingEntity) mData.get(newItemPosition);
+                        return newShieling.getName().equals(oldShieling.getName())
+                                && newShieling.getDescription().equals(oldShieling.getDescription());
+                    }
                     return false;
                 }
             });

@@ -23,12 +23,6 @@ public class ShielingRepository {
     public static ShielingRepository getInstance() {
         if (instance == null) {
             instance = new ShielingRepository();
-            // TODO Ajouter le check de la deuxième table de la DB
-            /*synchronized (AccountRepository.class) {
-                if (instance == null) {
-                    instance = new ClientRepository();
-                }
-            }*/
         }
         return instance;
     }

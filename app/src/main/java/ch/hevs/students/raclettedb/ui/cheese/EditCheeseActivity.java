@@ -20,7 +20,6 @@ import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.adapter.ListAdapter;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
-import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel;
@@ -43,7 +42,8 @@ public class EditCheeseActivity extends BaseActivity {
     private Button btSaveCheese;
 
     private CheeseViewModel cheeseViewModel;
-    private ShielingListViewModel shielingViewModel;
+    private ShielingViewModel shielingViewModel;
+    private ShielingListViewModel shielingListViewModel;
     private ListAdapter<ShielingEntity> adapterShieling;
 
 
@@ -95,6 +95,16 @@ public class EditCheeseActivity extends BaseActivity {
 
     private void setupViewModels() {
 
+        ShielingListViewModel.Factory shielingFactory = new ShielingListViewModel.Factory(
+                getApplication());
+        shielingListViewModel = ViewModelProviders.of(this, shielingFactory).get(ShielingListViewModel.class);
+        shielingListViewModel.getShielings().observe(this, shielingEntities -> {
+            if (shielingEntities != null) {
+
+                updateShielingSpinner(shielingEntities);
+            }
+        });
+
         CheeseViewModel.Factory cheeseFactory = new CheeseViewModel.Factory(
                 getApplication(), cheeseId);
         cheeseViewModel = ViewModelProviders.of(this, cheeseFactory).get(CheeseViewModel.class);
@@ -105,33 +115,19 @@ public class EditCheeseActivity extends BaseActivity {
                     etCheeseName.setText(cheese.getName());
                     etCheeseDescription.setText(cheese.getDescription());
                     etCheeseType.setText(cheese.getType());
-                    //spinCheeseShieling.setSelection(adapterShieling.getPosition());
 
-                    //ShielingRepository toto = ((BaseApp)getApplication()).getShielingRepository().getShieling();
-
-                    //Long ID = cheese.getShieling();
-
-                    //Log.d("ALPAGE DU FORMAGE", ID.toString());
-
-
-
-                    //Log.d("ALPAGE DU FORMAGE", ((BaseApp)getApplication()).getShielingRepository().getShieling(cheese.getShieling(),getApplication()).getValue().getName());
-
-                    // TODO Ajouter valeur actuelle
+                    // TODO A faire comme ça ?
+                    ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
+                            getApplication(), cheese.getShieling());
+                    shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
+                    shielingViewModel.getShieling().observe(this, shielingEntity -> {
+                        if (shielingEntity != null) {
+                            spinCheeseShieling.setSelection(adapterShieling.getPosition(shielingEntity));
+                        }
+                    });
                 }
             });
         }
-
-        ShielingListViewModel.Factory shielingFactory = new ShielingListViewModel.Factory(
-                getApplication());
-        shielingViewModel = ViewModelProviders.of(this, shielingFactory).get(ShielingListViewModel.class);
-        shielingViewModel.getShielings().observe(this, shielingEntities -> {
-            if (shielingEntities != null) {
-
-                updateShielingSpinner(shielingEntities);
-            }
-        });
-
     }
 
 

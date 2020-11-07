@@ -16,6 +16,7 @@ import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.Utils;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel;
+import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
 public class CheeseDetailActivity extends BaseActivity {
 
@@ -30,7 +31,8 @@ public class CheeseDetailActivity extends BaseActivity {
     private TextView tvCheeseDescription;
 
 
-    private CheeseViewModel viewModel;
+    private CheeseViewModel cheeseViewModel;
+    private ShielingViewModel shielingViewModel;
 
     private boolean isAdmin = false;
 
@@ -54,8 +56,8 @@ public class CheeseDetailActivity extends BaseActivity {
 
         CheeseViewModel.Factory factory = new CheeseViewModel.Factory(
                 getApplication(), cheeseId);
-        viewModel = ViewModelProviders.of(this, factory).get(CheeseViewModel.class);
-        viewModel.getCheese().observe(this, cheeseEntity -> {
+        cheeseViewModel = ViewModelProviders.of(this, factory).get(CheeseViewModel.class);
+        cheeseViewModel.getCheese().observe(this, cheeseEntity -> {
             if (cheeseEntity != null) {
                 cheese = cheeseEntity;
                 updateContent();
@@ -118,9 +120,20 @@ public class CheeseDetailActivity extends BaseActivity {
         if (cheese != null) {
             setTitle(R.string.empty);
             tvCheeseName.setText(cheese.getName());
-            tvCheeseShieling.setText(cheese.getShieling().toString());
+            //tvCheeseShieling.setText(cheese.getShieling().toString());
             tvCheeseType.setText(cheese.getType());
             tvCheeseDescription.setText(cheese.getDescription());
+
+            // TODO A faire comme ça ?
+            ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
+                    getApplication(), cheese.getShieling());
+            shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
+            shielingViewModel.getShieling().observe(this, shielingEntity -> {
+                if (shielingEntity != null) {
+                    tvCheeseShieling.setText(shielingEntity.getName());
+                }
+            });
+
             Log.i(TAG, "Activity populated.");
         }
     }

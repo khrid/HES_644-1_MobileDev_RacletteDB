@@ -30,7 +30,9 @@ import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.util.RecyclerViewItemClickListener;
+import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseShielingListViewModel;
 import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingListViewModel;
+import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
 public class ShielingsActivity extends BaseActivity {
 
@@ -38,7 +40,8 @@ public class ShielingsActivity extends BaseActivity {
 
     private List<ShielingEntity> shielings;
     private RecyclerAdapter<ShielingEntity> adapter;
-    private ShielingListViewModel viewModel;
+    private ShielingListViewModel shielingListViewModel;
+    private CheeseShielingListViewModel cheeseShielingListViewModel;
 
     private boolean isAdmin = false;
 
@@ -121,8 +124,8 @@ public class ShielingsActivity extends BaseActivity {
 
         ShielingListViewModel.Factory factory = new ShielingListViewModel.Factory(
                 getApplication());
-        viewModel = ViewModelProviders.of(this, factory).get(ShielingListViewModel.class);
-        viewModel.getShielings().observe(this, shielingEntities -> {
+        shielingListViewModel = ViewModelProviders.of(this, factory).get(ShielingListViewModel.class);
+        shielingListViewModel.getShielings().observe(this, shielingEntities -> {
             if (shielingEntities != null) {
                 shielings = shielingEntities;
                 adapter.setData(shielings);
@@ -159,11 +162,25 @@ public class ShielingsActivity extends BaseActivity {
         alertDialog.setCancelable(false);
 
         final TextView deleteMessage = view.findViewById(R.id.tvDeleteItem);
-        deleteMessage.setText(String.format(getString(R.string.shielings_list_delete_text), shieling.getName()));
 
+        // TODO A faire comme ça ?
+        /*
+        CheeseShielingListViewModel.Factory factory = new CheeseShielingListViewModel.Factory(
+                getApplication(), shieling.getId());
+        cheeseShielingListViewModel = ViewModelProviders.of(this, factory).get(CheeseShielingListViewModel.class);
+        int SIZE = cheeseShielingListViewModel.getShielingsCheeses().getValue().size();
+        cheeseShielingListViewModel.getShielingsCheeses().observe(this, cheeseEntities -> {
+            if (cheeseEntities!=null || cheeseEntities.size()>0) {
+                deleteMessage.setText(String.format(getString(R.string.shielings_list_delete_text), shieling.getName()));
+            }else{
+                deleteMessage.setText(String.format(getString(R.string.shielings_list_delete_text), shieling.getName()));
+            }
+        });
+*/
+        deleteMessage.setText(String.format(getString(R.string.shielings_list_delete_text), shieling.getName()));
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.execute), (dialog, which) -> {
             Toast toast = Toast.makeText(this, getString(R.string.shielings_list_deleted), Toast.LENGTH_LONG);
-            viewModel.deleteShieling(shieling, new OnAsyncEventListener() {
+            shielingListViewModel.deleteShieling(shieling, new OnAsyncEventListener() {
                 @Override
                 public void onSuccess() {
                     Log.d(TAG, "deleteShieling: success");
