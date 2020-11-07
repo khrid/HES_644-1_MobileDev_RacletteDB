@@ -52,7 +52,7 @@
     <string name="shielings_list_title">Shielings</string>
     <string name="shielings_list_delete_title">Delete shieling</string>
     <string name="shielings_list_delete_text">Do you want to delete the shieling %1$s</string>
-    <string name="shielings_list_delete_warning_text">Do you want to delete the shieling %1$s</string>
+    <string name="shielings_list_delete_warning_text">Do you want to delete the shieling %1$s This will delete the cheeses that belong to it</string>
     <string name="shielings_list_deleted">Shieling deleted</string>
     <!-- Shieling detail - read -->
     <string name="shieling_detail_placeholder_title">Shieling name</string>
