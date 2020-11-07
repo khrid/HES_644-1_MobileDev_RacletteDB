@@ -73,6 +73,7 @@ public class MainActivity extends BaseActivity {
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
         cheeseRepository.getAllCheeses(getApplication()).observe(MainActivity.this, cheeseEntities -> {
             //cheeses = cheeseEntities;
+            /*
             tvMainFavorites1.setText(cheeseEntities.get(0).getName());
             tvMainFavorites2.setText(cheeseEntities.get(1).getName());
             tvMainFavorites3.setText(cheeseEntities.get(2).getName());
@@ -83,14 +84,17 @@ public class MainActivity extends BaseActivity {
             ivMainFavorites2.setOnClickListener(v -> showCheese(cheeseEntities.get(1).getId()));
             tvMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(2).getId()));
             ivMainFavorites3.setOnClickListener(v -> showCheese(cheeseEntities.get(2).getId()));
+             */
+            // TODO Enlever commentaires
         });
 
         shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
         shielingRepository.getAllShielings(getApplication()).observe(MainActivity.this, shielingEntities -> {
             //shielings = shielingEntities;
-            tvMainShielingName.setText(shielingEntities.get(0).getName());
+            /*tvMainShielingName.setText(shielingEntities.get(0).getName());
             tvMainShielingName.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
-            ivMainShieling.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
+            ivMainShieling.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));*/
+            // TODO ENlever commentaires
         });
     }
 
@@ -105,7 +109,6 @@ public class MainActivity extends BaseActivity {
             editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
             editor.apply();
         }
-        //isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
         Log.d("TAG", isAdmin+"");
         if(isAdmin) {

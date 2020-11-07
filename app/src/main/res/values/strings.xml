@@ -45,6 +45,7 @@
     <string name="cheese_common_hint_cheese_name">Cheese name</string>
     <string name="cheese_common_hint_cheese_description">Cheese description</string>
     <string name="cheese_common_hint_cheese_type">Cheese type</string>
+    <string name="cheese_common_hint_cheese_shieling">Cheese\'s shieling</string>
 
     <!-- Shieling list -->
     <string name="shielings_list_title">Shielings</string>

@@ -6,23 +6,31 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
+import ch.hevs.students.raclettedb.adapter.ListAdapter;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
-import ch.hevs.students.raclettedb.util.Utils;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel;
+import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingListViewModel;
+import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
 public class EditCheeseActivity extends BaseActivity {
 
     private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-EditCheeseActivity";
 
+    private Long cheeseId;
     private CheeseEntity cheese;
     private boolean isEditMode;
     private Toast toast;
@@ -30,8 +38,13 @@ public class EditCheeseActivity extends BaseActivity {
     private EditText etCheeseDescription;
     private EditText etCheeseType;
     private TextView tvEditCheeseTitle;
+    private Spinner spinCheeseShieling;
+    private Button btSaveCheese;
 
-    private CheeseViewModel viewModel;
+    private CheeseViewModel cheeseViewModel;
+    private ShielingListViewModel shielingViewModel;
+    private ListAdapter<ShielingEntity> adapterShieling;
+
 
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
@@ -52,14 +65,15 @@ public class EditCheeseActivity extends BaseActivity {
         etCheeseName.requestFocus();
         etCheeseDescription = findViewById(R.id.etCheeseDescription);
         etCheeseType = findViewById(R.id.etCheeseType);
-        Button btSaveCheese = findViewById(R.id.btSaveCheese);
+
+        btSaveCheese = findViewById(R.id.btSaveCheese);
         btSaveCheese.setOnClickListener(view -> {
             saveChanges(etCheeseName.getText().toString(),etCheeseDescription.getText().toString(), etCheeseType.getText().toString());
             onBackPressed();
             toast.show();
         });
 
-        Long cheeseId = getIntent().getLongExtra("cheeseId", 0L);
+        cheeseId = getIntent().getLongExtra("cheeseId", 0L);
         if (cheeseId == 0L) {
             setTitle(R.string.empty);
             tvEditCheeseTitle.setText(R.string.cheese_new_title);
@@ -73,11 +87,17 @@ public class EditCheeseActivity extends BaseActivity {
             isEditMode = true;
         }
 
-        CheeseViewModel.Factory factory = new CheeseViewModel.Factory(
+        setupShielingSpinner();
+        setupViewModels();
+    }
+
+    private void setupViewModels() {
+
+        CheeseViewModel.Factory cheeseFactory = new CheeseViewModel.Factory(
                 getApplication(), cheeseId);
-        viewModel = ViewModelProviders.of(this, factory).get(CheeseViewModel.class);
+        cheeseViewModel = ViewModelProviders.of(this, cheeseFactory).get(CheeseViewModel.class);
         if (isEditMode) {
-            viewModel.getCheese().observe(this, cheeseEntity -> {
+            cheeseViewModel.getCheese().observe(this, cheeseEntity -> {
                 if (cheeseEntity != null) {
                     cheese = cheeseEntity;
                     etCheeseName.setText(cheese.getName());
@@ -86,7 +106,18 @@ public class EditCheeseActivity extends BaseActivity {
                 }
             });
         }
+
+        ShielingListViewModel.Factory shielingFactory = new ShielingListViewModel.Factory(
+                getApplication());
+        shielingViewModel = ViewModelProviders.of(this, shielingFactory).get(ShielingListViewModel.class);
+        shielingViewModel.getShielings().observe(this, shielingEntities -> {
+            if (shielingEntities != null) {
+                updateShielingSpinner(shielingEntities);
+            }
+        });
+
     }
+
 
     @Override
     protected void onResume() {
@@ -101,13 +132,25 @@ public class EditCheeseActivity extends BaseActivity {
         return false;
     }
 
+
+    private void setupShielingSpinner() {
+        spinCheeseShieling = findViewById(R.id.spinCheeseShieling);
+        adapterShieling = new ListAdapter<>(this, R.layout.row_shieling, new ArrayList<>());
+        spinCheeseShieling.setAdapter(adapterShieling);
+    }
+
+    private void updateShielingSpinner(List<ShielingEntity> shielings) {
+        adapterShieling.updateData(new ArrayList<>(shielings));
+    }
+
+
     private void saveChanges(String cheeseName, String description, String cheeseType) {
         if (isEditMode) {
             if(!"".equals(cheeseName)) {
                 cheese.setName(cheeseName);
                 cheese.setDescription(description);
                 cheese.setType(cheeseType);
-                viewModel.updateCheese(cheese, new OnAsyncEventListener() {
+                cheeseViewModel.updateCheese(cheese, new OnAsyncEventListener() {
                     @Override
                     public void onSuccess() {
                         Log.d(TAG, "updateCheese: success");
@@ -124,7 +167,7 @@ public class EditCheeseActivity extends BaseActivity {
             newCheese.setName(cheeseName);
             newCheese.setDescription(description);
             newCheese.setType(cheeseType);
-            viewModel.createCheese(newCheese, new OnAsyncEventListener() {
+            cheeseViewModel.createCheese(newCheese, new OnAsyncEventListener() {
                 @Override
                 public void onSuccess() {
                     Log.d(TAG, "createCheese: success");
@@ -137,4 +180,6 @@ public class EditCheeseActivity extends BaseActivity {
             });
         }
     }
+
+
 }

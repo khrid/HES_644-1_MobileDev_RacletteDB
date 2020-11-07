@@ -80,7 +80,6 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDrawerStateChanged(int newState) {
                 super.onDrawerStateChanged(newState);
-                //isAdmin = settings.getInt(BaseActivity.PREFS_IS_ADMIN, 0);
                 isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
                 Log.d(TAG, "onDrawerStateChanged / " + isAdmin);
                 if (isAdmin) {
