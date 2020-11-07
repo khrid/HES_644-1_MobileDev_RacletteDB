@@ -14,20 +14,27 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NavUtils;
 
-import android.util.Log;
-import android.view.MenuItem;
-
 import java.util.List;
-import java.util.Locale;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
+import ch.hevs.students.raclettedb.database.AppDatabase;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.Utils;
+
+import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -42,7 +49,10 @@ import ch.hevs.students.raclettedb.util.Utils;
  */
 public class SettingsActivity extends PreferenceActivity {
 
-    private static final String TAG = "TAG-"+BaseApp.APP_NAME+"-SettingsActivity";
+    private static final String TAG = "TAG-" + BaseApp.APP_NAME + "-SettingsActivity";
+
+    static SharedPreferences settings;
+    static SharedPreferences.Editor editor;
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -70,6 +80,20 @@ public class SettingsActivity extends PreferenceActivity {
         }
         return true;
     };
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResume");
+        // Récupération du stockage commun
+        /*settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
+        if(settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
+            Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
+            editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
+            editor.apply();
+        }*/
+        super.onResume();
+    }
 
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -104,6 +128,17 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
+        editor = settings.edit();
+        if (settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
+            //Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
+            //editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
+            //editor.apply();
+            // On force la recréation de l'activity pour prendre en compte la nouvelle locale
+            //Log.d(TAG, "Recreating activity");
+            //recreate();
+            //getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
+        }
         setupActionBar();
         setActionBarTitle(getString(R.string.title_activity_settings));
     }
@@ -159,7 +194,8 @@ public class SettingsActivity extends PreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || AboutPreferenceFragment.class.getName().equals(fragmentName)
-                || LanguageChangePreferenceFragment.class.getName().equals(fragmentName);
+                || LanguageChangePreferenceFragment.class.getName().equals(fragmentName)
+                || ResetDatabaseFragment.class.getName().equals(fragmentName);
     }
 
     /**
@@ -173,11 +209,6 @@ public class SettingsActivity extends PreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_about);
             setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
         }
 
         @Override
@@ -197,7 +228,18 @@ public class SettingsActivity extends PreferenceActivity {
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_language);
+
             setHasOptionsMenu(true);
+
+            ListPreference pref = (ListPreference) findPreference("AppLanguage");
+            String[] arrays = getResources().getStringArray(R.array.languages_values);
+            String target = settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT);
+            for (int i = 0; i < arrays.length; i++) {
+                if (arrays[i].equals(target)) {
+                    pref.setValueIndex(i);
+                }
+            }
+            Log.d(TAG, pref.getEntries().length + "");
         }
 
         @Override
@@ -214,22 +256,69 @@ public class SettingsActivity extends PreferenceActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if(key.equals(BaseActivity.PREFS_APP_LANGUAGE)) {
-                Utils.changeLocale(sharedPreferences.getString(key,"en"), getActivity());
-                /*SharedPreferences.Editor editor = this.getActivity().getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();
-                //editor.putInt(BaseActivity.PREFS_IS_ADMIN, 1);
-                editor.putString(BaseActivity.PREFS_APP_LANGUAGE, sharedPreferences.getString(key,"en"));
-                editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, true);
-                editor.apply();
-                String newLocale = sharedPreferences.getString(key,"en");
-                Log.d(TAG, "user changed language -> " + newLocale);
-                Locale locale = new Locale(newLocale);
-                Locale.setDefault(locale);
-                Configuration config = new Configuration();
-                config.locale = locale;
-                getActivity().getResources().updateConfiguration(config, null);
-                getActivity().recreate();*/
+            if (key.equals(BaseActivity.PREFS_APP_LANGUAGE)) {
+                Utils.changeLocale(sharedPreferences.getString(key, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), getActivity());
             }
         }
     }
+
+    public static class ResetDatabaseFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_reset);
+            setHasOptionsMenu(true);
+            SwitchPreference spResetDb = (SwitchPreference) findPreference("pref_reset_db");
+            if (spResetDb != null) {
+                spResetDb.setOnPreferenceChangeListener((preference, newValue) -> {
+                    if (newValue.equals(true)) {
+                        Log.d(TAG, "activé");
+                        createDeleteDialog(0);
+                    }
+                    return false;
+                });
+            }
+
+            SwitchPreference spResetPrefs = (SwitchPreference) findPreference("pref_reset_prefs");
+            if (spResetPrefs != null) {
+                spResetPrefs.setOnPreferenceChangeListener((preference, newValue) -> {
+                    if (newValue.equals(true)) {
+                        Log.d(TAG, "activé");
+                        createDeleteDialog(1);
+                    }
+                    return false;
+                });
+            }
+        }
+
+        private void createDeleteDialog(int target) {
+            Context ctx = getContext();
+            LayoutInflater inflater = LayoutInflater.from(ctx);
+            final View view = inflater.inflate(R.layout.dialog_reset_db, null);
+            final AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
+            alertDialog.setTitle(getString(R.string.settings_data_room_reset_dialog_title));
+            alertDialog.setCancelable(false);
+
+            final TextView deleteMessage = view.findViewById(R.id.tvResetdb);
+            deleteMessage.setText(getString(R.string.settings_data_room_reset_dialog_text));
+
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.execute), (dialog, which) -> {
+                Toast toast = Toast.makeText(ctx, getString(R.string.settings_data_room_reset_successful), Toast.LENGTH_LONG);
+                if (target == 0) {
+                    initializeDemoData(AppDatabase.getInstance(ctx));
+                } else if (target == 1) {
+                    settings.edit().clear().apply();
+                    Log.d(TAG, settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));
+                    Utils.resetToSystemLocale(getActivity());
+                }
+                toast.show();
+            });
+
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), (dialog, which) -> alertDialog.dismiss());
+            alertDialog.setView(view);
+            alertDialog.show();
+        }
+
+    }
+
 }

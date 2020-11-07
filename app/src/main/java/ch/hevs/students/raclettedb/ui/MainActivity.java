@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
+import ch.hevs.students.raclettedb.database.AppDatabase;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
@@ -26,6 +27,8 @@ import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity;
 import ch.hevs.students.raclettedb.util.Utils;
+
+import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
 
 public class MainActivity extends BaseActivity {
 
@@ -51,19 +54,25 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //getSharedPreferences(BaseActivity.PREFS_NAME, 0).edit().clear().apply();
         // Récupération du stockage commun
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
         // Est-ce que l'utilisateur est admin ?
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
-        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+        if(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT).equals(BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)) {
+            //Log.d(TAG, "system default locale 3 "+Resources.getSystem().getConfiguration().locale.getLanguage());
+            Utils.resetToSystemLocale(this);
+        }
+
+        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));
 
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
         //recreate();
 
-        //initializeDemoData(AppDatabase.getInstance(this)); // INITIALISE LA BASE A CHAQUE DEMARRAGE
+
 
         setTitle(getString(R.string.app_name));
         navigationView.setCheckedItem(R.id.nav_none);
@@ -102,12 +111,16 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         setTitle(getString(R.string.app_name));
         navigationView.setCheckedItem(R.id.nav_none);
-        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"));
+        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)+ ", has changed="+settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
         Log.d(TAG, settings.toString());
         if(settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
-            Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, "en"), this);
+            //Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
             editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
             editor.apply();
+            // On force la recréation de l'activity pour prendre en compte la nouvelle locale
+            Log.d(TAG, "Recreating activity");
+            recreate();
+            //getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
         }
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
         Log.d("TAG", isAdmin+"");

@@ -7,6 +7,10 @@
         android:icon="@drawable/ic_translate_24px"
         android:title="@string/settings_language" />
     <header
+        android:fragment="ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity$ResetDatabaseFragment"
+        android:icon="@drawable/ic_database"
+        android:title="@string/settings_data" />
+    <header
         android:fragment="ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity$AboutPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"
         android:title="@string/settings_about" />

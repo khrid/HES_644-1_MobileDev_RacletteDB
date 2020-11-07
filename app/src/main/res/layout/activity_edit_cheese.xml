@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context="ch.hevs.students.raclettedb.ui.cheese.EditCheeseActivity">
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
     <TextView
         android:id="@+id/tvEditCheeseTitle"
         android:layout_width="wrap_content"
@@ -81,32 +91,6 @@
             android:singleLine="false" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilCheeseShieling"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilCheeseType">
-
-
-        <Spinner
-            android:id="@+id/spinCheeseShieling"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/dk_lemon_yellow_sun"
-            android:hint="@string/cheese_common_hint_cheese_shieling"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-
     <Button
         android:id="@+id/btSaveCheese"
         android:layout_width="wrap_content"
@@ -116,5 +100,8 @@
         android:text="@string/save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilCheeseShieling" />
+        app:layout_constraintTop_toBottomOf="@+id/tilCheeseType" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
