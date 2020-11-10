@@ -1,18 +1,33 @@
 package ch.hevs.students.raclettedb.ui.cheese;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ch.hevs.students.raclettedb.BaseApp;
@@ -40,6 +55,9 @@ public class EditCheeseActivity extends BaseActivity {
     private TextView tvEditCheeseTitle;
     private Spinner spinCheeseShieling;
     private Button btSaveCheese;
+    private ImageView ivCheese;
+
+    private String currentPhotoPath = BaseActivity.IMAGE_CHEESE_DEFAULT;
 
     private CheeseViewModel cheeseViewModel;
     private ShielingViewModel shielingViewModel;
@@ -69,11 +87,13 @@ public class EditCheeseActivity extends BaseActivity {
 
         btSaveCheese = findViewById(R.id.btSaveCheese);
         btSaveCheese.setOnClickListener(view -> {
-            saveChanges(etCheeseName.getText().toString(),etCheeseDescription.getText().toString(), etCheeseType.getText().toString(),((ShielingEntity)spinCheeseShieling.getSelectedItem()).getId());
+            saveChanges(etCheeseName.getText().toString(),etCheeseDescription.getText().toString(), etCheeseType.getText().toString(),((ShielingEntity)spinCheeseShieling.getSelectedItem()).getId(), ivCheese.getTag().toString());
 
             onBackPressed();
             toast.show();
         });
+
+
 
         cheeseId = getIntent().getLongExtra("cheeseId", 0L);
         if (cheeseId == 0L) {
@@ -89,8 +109,58 @@ public class EditCheeseActivity extends BaseActivity {
             isEditMode = true;
         }
 
+        ivCheese = findViewById(R.id.ivEditCheesePhoto);
+        ivCheese.setOnClickListener(v -> takePicture());
+
+        ivCheese.setImageResource(R.drawable.placeholder_cheese);
+
         setupShielingSpinner();
         setupViewModels();
+    }
+
+    private boolean removePicture() {
+        currentPhotoPath = "";
+        ivCheese.setImageResource(R.drawable.placeholder_cheese);
+        Toast.makeText(this, getString(R.string.cheese_picture_removed), Toast.LENGTH_LONG).show();
+        return true;
+    }
+
+    private void takePicture() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            //...
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "ch.hevs.students.raclettedb.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, 1);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            //Bitmap thumbnail = (Bitmap) data.getExtras().get(MediaStore.EXTRA_OUTPUT);
+            //ivCheese.setImageBitmap(thumbnail);
+
+            File imageFile = getImageFile();
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            currentPhotoPath = imageFile.getAbsolutePath();
+            ivCheese.setTag(currentPhotoPath);
+            ivCheese.setImageBitmap(bitmap);
+        }
     }
 
     private void setupViewModels() {
@@ -116,6 +186,14 @@ public class EditCheeseActivity extends BaseActivity {
                     etCheeseDescription.setText(cheese.getDescription());
                     etCheeseType.setText(cheese.getType());
 
+                    if(!TextUtils.isEmpty(cheese.getImagePath())) {
+                        if(!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                            Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
+                            ivCheese.setImageBitmap(bitmap);
+                            ivCheese.setTag(cheese.getImagePath());
+                            ivCheese.setOnLongClickListener(v -> removePicture());
+                        }
+                    }
                     // TODO A faire comme ça ?
                     ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
                             getApplication(), cheese.getShieling());
@@ -156,13 +234,14 @@ public class EditCheeseActivity extends BaseActivity {
     }
 
 
-    private void saveChanges(String cheeseName, String description, String cheeseType, Long Shieling) {
+    private void saveChanges(String cheeseName, String description, String cheeseType, Long Shieling, String imagePath) {
         if (isEditMode) {
             if(!"".equals(cheeseName)) {
                 cheese.setName(cheeseName);
                 cheese.setDescription(description);
                 cheese.setType(cheeseType);
                 cheese.setShieling(Shieling);
+                cheese.setImagePath(imagePath);
                 cheeseViewModel.updateCheese(cheese, new OnAsyncEventListener() {
                     @Override
                     public void onSuccess() {
@@ -181,6 +260,7 @@ public class EditCheeseActivity extends BaseActivity {
             newCheese.setDescription(description);
             newCheese.setType(cheeseType);
             newCheese.setShieling(Shieling);
+            //newCheese.setImagePath(imagePath);
             cheeseViewModel.createCheese(newCheese, new OnAsyncEventListener() {
                 @Override
                 public void onSuccess() {
@@ -195,5 +275,38 @@ public class EditCheeseActivity extends BaseActivity {
         }
     }
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private File getImageFile() {
+        String Path = Environment.getExternalStorageDirectory() + "/MyApp";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File f = new File(Path);
+        File imageFiles[] = storageDir.listFiles();
+
+        if (imageFiles == null || imageFiles.length == 0) {
+            return null;
+        }
+
+        File lastModifiedFile = imageFiles[0];
+        for (int i = 1; i < imageFiles.length; i++) {
+            if (lastModifiedFile.lastModified() < imageFiles[i].lastModified()) {
+                lastModifiedFile = imageFiles[i];
+            }
+        }
+        return lastModifiedFile;
+    }
 }

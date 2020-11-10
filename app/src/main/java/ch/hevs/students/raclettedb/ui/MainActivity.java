@@ -4,13 +4,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.GravityCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -19,7 +30,6 @@ import java.util.Locale;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
-import ch.hevs.students.raclettedb.database.AppDatabase;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
@@ -28,11 +38,9 @@ import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity;
 import ch.hevs.students.raclettedb.util.Utils;
 
-import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
-
 public class MainActivity extends BaseActivity {
 
-    private static final String TAG = "TAG-"+BaseApp.APP_NAME+"-"+MainActivity.class.getSimpleName();
+    private static final String TAG = "TAG-" + BaseApp.APP_NAME + "-" + MainActivity.class.getSimpleName();
 
     private boolean isAdmin = false;
     private String currentLocale = "";
@@ -40,12 +48,8 @@ public class MainActivity extends BaseActivity {
     private CheeseRepository cheeseRepository;
     private List<ShielingEntity> shielings;
     private ShielingRepository shielingRepository;
-    private TextView tvMainFavorites1;
-    private ImageView ivMainFavorites1;
-    private TextView tvMainFavorites2;
-    private ImageView ivMainFavorites2;
-    private TextView tvMainFavorites3;
-    private ImageView ivMainFavorites3;
+    private TextView[] tvMainFavorites;
+    private ImageView[] ivMainFavorites;
     private TextView tvMainShielingName;
     private ImageView ivMainShieling;
 
@@ -61,17 +65,16 @@ public class MainActivity extends BaseActivity {
         // Est-ce que l'utilisateur est admin ?
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
-        if(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT).equals(BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)) {
+        if (settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT).equals(BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)) {
             //Log.d(TAG, "system default locale 3 "+Resources.getSystem().getConfiguration().locale.getLanguage());
             Utils.resetToSystemLocale(this);
         }
 
-        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));
+        Log.d(TAG, "Current locale : " + settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));
 
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
         //recreate();
-
 
 
         setTitle(getString(R.string.app_name));
@@ -79,21 +82,61 @@ public class MainActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         initiateView();
+        // on vide le tablelayout
+        TableLayout tl = findViewById(R.id.tableLayout);
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
         cheeseRepository.getAllCheeses(getApplication()).observe(MainActivity.this, cheeseEntities -> {
+            tl.removeAllViews();
             //cheeses = cheeseEntities;
+            int i = 0;
+            TableRow trImages = new TableRow(this);
+            TableRow trLabels = new TableRow(this);
+            for (CheeseEntity cheeseEntity :
+                    cheeseEntities) {
+                // Pour chaque item, on ajout un élément dans le TableRow Image et le TableRow label
+                    if (i < 3) {
+                        // Textview avec le nom du fromage
+                        TextView tv = new TextView(this);
+                        tv.setText(cheeseEntity.getName());
+                        tv.setTypeface(ResourcesCompat.getFont(this, R.font.dk_lemon_yellow_sun));
+                        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                        tv.setOnClickListener(v -> showCheese(cheeseEntity.getId()));
+                        // Imageview pour le logo
+                        ImageView iv = new ImageView(this);
+                        iv.setImageResource(R.drawable.placeholder_cheese);
+                        if(!TextUtils.isEmpty(cheeseEntity.getImagePath())) {
+                            if(!cheeseEntity.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                                Bitmap bitmap = BitmapFactory.decodeFile(cheeseEntity.getImagePath());
+                                iv.setImageBitmap(bitmap);
+                            }
+                        }
+                        iv.setPadding(8, 8, 8, 8);
+                        float factor = getApplicationContext().getResources().getDisplayMetrics().density;
 
-            if(cheeseEntities.size()>0) {
-                tvMainFavorites1.setText(cheeseEntities.get(0).getName());
-                tvMainFavorites2.setText(cheeseEntities.get(1).getName());
-                tvMainFavorites3.setText(cheeseEntities.get(2).getName());
+                        TableRow.LayoutParams lp = new TableRow.LayoutParams((int)(100*factor), (int)(100*factor));
+                        iv.setLayoutParams(lp);
+                        iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                tvMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(0).getId()));
-                ivMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(0).getId()));
-                tvMainFavorites2.setOnClickListener(v -> showCheese(cheeseEntities.get(1).getId()));
-                ivMainFavorites2.setOnClickListener(v -> showCheese(cheeseEntities.get(1).getId()));
-                tvMainFavorites1.setOnClickListener(v -> showCheese(cheeseEntities.get(2).getId()));
-                ivMainFavorites3.setOnClickListener(v -> showCheese(cheeseEntities.get(2).getId()));
+                        iv.setOnClickListener(v -> showCheese(cheeseEntity.getId()));
+                        // on les ajoute dans le TableRow respective
+                        trImages.addView(iv);
+                        trLabels.addView(tv);
+                        // incrément du compteur
+                        i++;
+                    }
+            }
+            // si on a qqch à afficher, on ajouter les rows à la TableLayout
+            if (i > 0) {
+                tl.addView(trImages);
+                tl.addView(trLabels);
+            } else { // Sinon affiche d'un message
+                Log.d(TAG, "No cheeses");
+                TextView tv = new TextView(this);
+                tv.setText(getString(R.string.no_cheese));
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                tv.setTypeface(ResourcesCompat.getFont(this, R.font.dk_lemon_yellow_sun));
+                tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                tl.addView(tv);
             }
         });
 
@@ -101,10 +144,16 @@ public class MainActivity extends BaseActivity {
         shielingRepository.getAllShielings(getApplication()).observe(MainActivity.this, shielingEntities -> {
             //shielings = shielingEntities;
 
-            if(shielingEntities.size()>0) {
+            if (shielingEntities.size() > 0) {
                 tvMainShielingName.setText(shielingEntities.get(0).getName());
                 tvMainShielingName.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
                 ivMainShieling.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
+                ivMainShieling.setVisibility(View.VISIBLE);
+            } else {
+                tvMainShielingName.setText(getString(R.string.no_shieling));
+                tvMainShielingName.setOnClickListener(null);
+                ivMainShieling.setVisibility(View.GONE);
+                ivMainShieling.setOnClickListener(null);
             }
         });
     }
@@ -113,9 +162,9 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         setTitle(getString(R.string.app_name));
         navigationView.setCheckedItem(R.id.nav_none);
-        Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)+ ", has changed="+settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
+        Log.d(TAG, "Current locale : " + settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT) + ", has changed=" + settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
         Log.d(TAG, settings.toString());
-        if(settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
+        if (settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
             //Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
             editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
             editor.apply();
@@ -125,10 +174,9 @@ public class MainActivity extends BaseActivity {
             //getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
         }
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
-        Log.d("TAG", isAdmin+"");
-        if(isAdmin) {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.mainlayout), R.string.admin_mode_active, Snackbar.LENGTH_LONG);
-            snackbar.show();
+        Log.d("TAG", isAdmin + "");
+        if (isAdmin) {
+            Toast.makeText(this, getString(R.string.admin_mode_active), Toast.LENGTH_SHORT).show();
         }
         super.onResume();
     }
@@ -150,25 +198,27 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initiateView() {
-        tvMainFavorites1 = findViewById(R.id.tvMainFavorites1);
-        tvMainFavorites2 = findViewById(R.id.tvMainFavorites2);
-        tvMainFavorites3 = findViewById(R.id.tvMainFavorites3);
-        ivMainFavorites1 = findViewById(R.id.ivMainFavorites1);
-        ivMainFavorites2 = findViewById(R.id.ivMainFavorites2);
-        ivMainFavorites3 = findViewById(R.id.ivMainFavorites3);
         tvMainShielingName = findViewById(R.id.tvMainShielingName);
         ivMainShieling = findViewById(R.id.ivMainShieling);
 
+        tvMainFavorites = new TextView[3];
+        tvMainFavorites[0] = findViewById(R.id.tvMainFavorites1);
+        tvMainFavorites[1] = findViewById(R.id.tvMainFavorites2);
+        tvMainFavorites[2] = findViewById(R.id.tvMainFavorites3);
+        ivMainFavorites = new ImageView[3];
+        ivMainFavorites[0] = findViewById(R.id.ivMainFavorites1);
+        ivMainFavorites[1] = findViewById(R.id.ivMainFavorites2);
+        ivMainFavorites[2] = findViewById(R.id.ivMainFavorites3);
     }
 
-    private void updateContent() {
+    /*private void updateContent() {
         if (cheeses != null && cheeses.size() > 0) {
             tvMainFavorites1.setText(cheeses.get(0).getName());
             tvMainFavorites2.setText(cheeses.get(1).getName());
             tvMainFavorites3.setText(cheeses.get(2).getName());
             //tv_main_shieling_name.setText(shielings.get(0).getName());
         }
-    }
+    }*/
 
     public void showCheese(Long cheeseId) {
         Intent intent = new Intent(MainActivity.this, CheeseDetailActivity.class);
@@ -191,17 +241,17 @@ public class MainActivity extends BaseActivity {
     }
 
     public void changeLocale(String code) {
-        Log.d(TAG, "code=" + code + " // currentLocale="+currentLocale);
+        Log.d(TAG, "code=" + code + " // currentLocale=" + currentLocale);
         //if(!currentLocale.equals(code)) {
-            currentLocale = code;
-            Log.d(TAG, "changeLocale(" + code + ")");
-            Locale locale = new Locale(code);
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            Resources resources = getResources();
-            resources.updateConfiguration(config, resources.getDisplayMetrics());
-            recreate();
+        currentLocale = code;
+        Log.d(TAG, "changeLocale(" + code + ")");
+        Locale locale = new Locale(code);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        Resources resources = getResources();
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        recreate();
         //}
     }
 }

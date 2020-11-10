@@ -7,6 +7,8 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import ch.hevs.students.raclettedb.ui.BaseActivity;
+
 @Entity(tableName = "cheeses",
         foreignKeys =
         @ForeignKey(
@@ -44,6 +46,9 @@ public class CheeseEntity {
     @ColumnInfo(name = "ean")
     private int ean;
 
+    @ColumnInfo(name = "imagePath")
+    private String imagePath;
+
     public CheeseEntity() {
     }
 
@@ -74,6 +79,10 @@ public class CheeseEntity {
         return description;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
     public void setName(String name){
         this.name=name;
     }
@@ -96,6 +105,10 @@ public class CheeseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override

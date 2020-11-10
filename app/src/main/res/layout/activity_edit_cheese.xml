@@ -29,73 +29,59 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilCheeseName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvEditCheeseTitle">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etCheeseName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/dk_lemon_yellow_sun"
-            android:hint="@string/cheese_common_hint_cheese_name" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilCheeseShieling"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/ivEditCheesePhoto"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tilCheeseName">
+                app:layout_constraintTop_toBottomOf="@+id/tvEditCheeseTitle"
+                app:srcCompat="@drawable/placeholder_cheese" />
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilCheeseName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivEditCheesePhoto">
 
-                <Spinner
-                    android:id="@+id/spinCheeseShieling"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCheeseName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/dk_lemon_yellow_sun"
-                    android:hint="@string/cheese_common_hint_cheese_shieling"/>
-
+                    android:hint="@string/cheese_common_hint_cheese_name" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilCheeseDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilCheeseShieling">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilCheeseDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinCheeseShieling">
 
 
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etCheeseDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/dk_lemon_yellow_sun"
-            android:hint="@string/cheese_common_hint_cheese_description"
-            android:inputType="textMultiLine"
-            android:lineSpacingExtra="10sp"
-            android:singleLine="false" />
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCheeseDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/dk_lemon_yellow_sun"
+                    android:hint="@string/cheese_common_hint_cheese_description"
+                    android:inputType="textMultiLine"
+                    android:lineSpacingExtra="10sp"
+                    android:singleLine="false" />
+            </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilCheeseType"
@@ -129,6 +115,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tilCheeseType" />
+
+            <Spinner
+                android:id="@+id/spinCheeseShieling"
+                style="@style/font_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/dk_lemon_yellow_sun"
+                android:hint="@string/cheese_common_hint_cheese_shieling"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/dk_lemon_yellow_sun"
+                android:text="@string/cheese_detail_shieling_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tilCheeseName" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

@@ -3,5 +3,9 @@
     android:id="@+id/tvShielingView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:fontFamily="@font/dk_lemon_yellow_sun"
+    android:paddingTop="8dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="8dp"
     android:text="TextView"
-    android:textSize="20sp"/>
+    android:textSize="20sp" />

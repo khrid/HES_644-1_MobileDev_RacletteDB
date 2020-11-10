@@ -42,6 +42,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     public static final String PREFS_APP_LANGUAGE = "AppLanguage";
     public static final String PREFS_APP_LANGUAGE_DEFAULT = "system";
     public static final String PREFS_APP_LANGUAGE_CHANGED = "AppLanguageChanged";
+    public static final String IMAGE_CHEESE_DEFAULT = "placeholder";
 
     private static final String TAG = "TAG-"+BaseApp.APP_NAME+"-"+BaseActivity.class.getSimpleName();
     /**
@@ -101,6 +102,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
     }
+
 
     @Override
     protected void onResume() {

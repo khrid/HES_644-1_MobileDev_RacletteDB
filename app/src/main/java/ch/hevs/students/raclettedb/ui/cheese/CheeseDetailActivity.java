@@ -2,10 +2,14 @@ package ch.hevs.students.raclettedb.ui.cheese;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -29,6 +33,7 @@ public class CheeseDetailActivity extends BaseActivity {
     private TextView tvCheeseShieling;
     private TextView tvCheeseType;
     private TextView tvCheeseDescription;
+    private ImageView ivCheesePhoto;
 
 
     private CheeseViewModel cheeseViewModel;
@@ -114,6 +119,7 @@ public class CheeseDetailActivity extends BaseActivity {
         tvCheeseShieling = findViewById(R.id.tvCheeseShieling);
         tvCheeseType = findViewById(R.id.tvCheeseType);
         tvCheeseDescription = findViewById(R.id.tvCheeseDescription);
+        ivCheesePhoto = findViewById(R.id.ivCheesePhoto);
     }
 
     private void updateContent() {
@@ -123,6 +129,14 @@ public class CheeseDetailActivity extends BaseActivity {
             //tvCheeseShieling.setText(cheese.getShieling().toString());
             tvCheeseType.setText(cheese.getType());
             tvCheeseDescription.setText(cheese.getDescription());
+
+            ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
+            if(!TextUtils.isEmpty(cheese.getImagePath())) {
+                if(!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
+                    ivCheesePhoto.setImageBitmap(bitmap);
+                }
+            }
 
             // TODO A faire comme ça ?
             ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
