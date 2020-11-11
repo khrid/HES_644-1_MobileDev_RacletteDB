@@ -46,7 +46,7 @@ public class EditCheeseActivity extends BaseActivity {
     private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-EditCheeseActivity";
 
     private Long cheeseId;
-    private CheeseEntity cheese;
+    private CheeseEntity cheese = new CheeseEntity();
     private boolean isEditMode;
     private Toast toast;
     private EditText etCheeseName;
@@ -87,7 +87,7 @@ public class EditCheeseActivity extends BaseActivity {
 
         btSaveCheese = findViewById(R.id.btSaveCheese);
         btSaveCheese.setOnClickListener(view -> {
-            saveChanges(etCheeseName.getText().toString(),etCheeseDescription.getText().toString(), etCheeseType.getText().toString(),((ShielingEntity)spinCheeseShieling.getSelectedItem()).getId(), ivCheese.getTag().toString());
+            saveChanges(etCheeseName.getText().toString(),etCheeseDescription.getText().toString(), etCheeseType.getText().toString(),((ShielingEntity)spinCheeseShieling.getSelectedItem()).getId(), cheese.getImagePath());
 
             onBackPressed();
             toast.show();
@@ -121,6 +121,7 @@ public class EditCheeseActivity extends BaseActivity {
     private boolean removePicture() {
         currentPhotoPath = "";
         ivCheese.setImageResource(R.drawable.placeholder_cheese);
+        cheese.setImagePath(BaseActivity.IMAGE_CHEESE_DEFAULT);
         Toast.makeText(this, getString(R.string.cheese_picture_removed), Toast.LENGTH_LONG).show();
         return true;
     }
@@ -158,6 +159,7 @@ public class EditCheeseActivity extends BaseActivity {
             File imageFile = getImageFile();
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             currentPhotoPath = imageFile.getAbsolutePath();
+            cheese.setImagePath(imageFile.getAbsolutePath());
             ivCheese.setTag(currentPhotoPath);
             ivCheese.setImageBitmap(bitmap);
         }
@@ -260,7 +262,7 @@ public class EditCheeseActivity extends BaseActivity {
             newCheese.setDescription(description);
             newCheese.setType(cheeseType);
             newCheese.setShieling(Shieling);
-            //newCheese.setImagePath(imagePath);
+            newCheese.setImagePath(imagePath);
             cheeseViewModel.createCheese(newCheese, new OnAsyncEventListener() {
                 @Override
                 public void onSuccess() {

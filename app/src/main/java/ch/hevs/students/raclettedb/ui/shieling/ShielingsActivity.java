@@ -108,10 +108,10 @@ public class ShielingsActivity extends BaseActivity {
         if(isAdmin) {
             fab.setOnClickListener(view -> {
                         Intent intent = new Intent(ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity.this, EditShielingActivity.class);
-                        intent.setFlags(
+                        /*intent.setFlags(
                                 Intent.FLAG_ACTIVITY_NO_ANIMATION |
                                         Intent.FLAG_ACTIVITY_NO_HISTORY
-                        );
+                        );*/
                         startActivity(intent);
                     }
             );

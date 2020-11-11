@@ -17,7 +17,7 @@ import ch.hevs.students.raclettedb.database.dao.ShielingDao;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 
-@Database(entities = {ShielingEntity.class,CheeseEntity.class}, version = 10)
+@Database(entities = {ShielingEntity.class,CheeseEntity.class}, version = 11)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";

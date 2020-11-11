@@ -149,6 +149,15 @@ public class MainActivity extends BaseActivity {
                 tvMainShielingName.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
                 ivMainShieling.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
                 ivMainShieling.setVisibility(View.VISIBLE);
+
+                ivMainShieling.setImageResource(R.drawable.placeholder_shieling);
+                if(!TextUtils.isEmpty(shielingEntities.get(0).getImagePath())) {
+                    if(!shielingEntities.get(0).getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagePath());
+                        ivMainShieling.setImageBitmap(bitmap);
+                    }
+                }
+
             } else {
                 tvMainShielingName.setText(getString(R.string.no_shieling));
                 tvMainShielingName.setOnClickListener(null);

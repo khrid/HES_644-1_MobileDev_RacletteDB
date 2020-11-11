@@ -2,10 +2,14 @@ package ch.hevs.students.raclettedb.ui.shieling;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -24,6 +28,7 @@ public class ShielingDetailActivity extends BaseActivity {
     private ShielingEntity shieling;
     private TextView tvShielingName;
     private TextView tvShielingDescription;
+    private ImageView ivShielingPhoto;
 
     private ShielingViewModel viewModel;
 
@@ -31,6 +36,9 @@ public class ShielingDetailActivity extends BaseActivity {
 
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
+
+    public ShielingDetailActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +100,7 @@ public class ShielingDetailActivity extends BaseActivity {
     private void initiateView() {
         tvShielingName = findViewById(R.id.tvShielingName);
         tvShielingDescription = findViewById(R.id.tvShielingDescription);
+        ivShielingPhoto = findViewById(R.id.ivShielingPhoto);
     }
 
     private void updateContent() {
@@ -99,6 +108,15 @@ public class ShielingDetailActivity extends BaseActivity {
             setTitle(R.string.empty);
             tvShielingName.setText(shieling.getName());
             tvShielingDescription.setText(shieling.getDescription());
+
+            ivShielingPhoto.setImageResource(R.drawable.placeholder_shieling);
+            if(!TextUtils.isEmpty(shieling.getImagePath())) {
+                if(!shieling.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
+                    ivShielingPhoto.setImageBitmap(bitmap);
+                }
+            }
+
             Log.i(TAG, "Activity populated.");
         }
     }

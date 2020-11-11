@@ -20,6 +20,9 @@ public class ShielingEntity {
     @ColumnInfo(name = "description")
     private String description;
 
+    @ColumnInfo(name = "imagePath")
+    private String imagePath;
+
     public ShielingEntity() {
     }
 
@@ -39,6 +42,10 @@ public class ShielingEntity {
         return description;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
     public void setId(@NonNull Long id) {
         this.id = id;
     }
@@ -49,6 +56,10 @@ public class ShielingEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override
