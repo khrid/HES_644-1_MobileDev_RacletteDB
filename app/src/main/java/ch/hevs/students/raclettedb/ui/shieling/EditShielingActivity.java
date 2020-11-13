@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -28,6 +29,7 @@ import java.util.Date;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
+import ch.hevs.students.raclettedb.util.MediaUtils;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
@@ -48,6 +50,7 @@ public class EditShielingActivity extends BaseActivity {
 
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
+    private MediaUtils mediaUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class EditShielingActivity extends BaseActivity {
         editor = settings.edit();
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_edit_shieling, frameLayout);
+        mediaUtils = new MediaUtils(this);
 
         navigationView.setCheckedItem(position);
 
@@ -84,7 +88,7 @@ public class EditShielingActivity extends BaseActivity {
         }
 
         ivShieling = findViewById(R.id.ivEditShielingPhoto);
-        ivShieling.setOnClickListener(v -> takePicture());
+        ivShieling.setOnClickListener(v ->  mediaUtils.selectImage());
 
         ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
                 getApplication(), shielingId);
@@ -116,43 +120,40 @@ public class EditShielingActivity extends BaseActivity {
         return true;
     }
 
-    private void takePicture() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-                //...
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "ch.hevs.students.raclettedb.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, 1);
-            }
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
+        Bitmap bitmap;
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if(resultCode == RESULT_OK) {
             //Bitmap thumbnail = (Bitmap) data.getExtras().get(MediaStore.EXTRA_OUTPUT);
             //ivCheese.setImageBitmap(thumbnail);
+            if(requestCode == 1) {
 
-            File imageFile = getImageFile();
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            currentPhotoPath = imageFile.getAbsolutePath();
-            shieling.setImagePath(imageFile.getAbsolutePath());
-            ivShieling.setTag(currentPhotoPath);
-            ivShieling.setImageBitmap(bitmap);
+                File imageFile = mediaUtils.getImageFile();
+                bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                currentPhotoPath = imageFile.getAbsolutePath();
+                shieling.setImagePath(imageFile.getAbsolutePath());
+                ivShieling.setTag(currentPhotoPath);
+                ivShieling.setImageBitmap(bitmap);
+            } else if (requestCode == 2) {
+                Uri selectedImage = data.getData();
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                    Log.e(TAG, "Pick from Gallery::>>> ");
+
+                    File f = mediaUtils.copyToLocalStorage(bitmap);
+
+                    /*imgPath = getRealPathFromURI(selectedImage);
+                    destination = new File(imgPath.toString());*/
+                    shieling.setImagePath(f.getAbsolutePath());
+                    ivShieling.setImageBitmap(bitmap);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -199,40 +200,5 @@ public class EditShielingActivity extends BaseActivity {
                 }
             });
         }
-    }
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    private File getImageFile() {
-        String Path = Environment.getExternalStorageDirectory() + "/MyApp";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File f = new File(Path);
-        File imageFiles[] = storageDir.listFiles();
-
-        if (imageFiles == null || imageFiles.length == 0) {
-            return null;
-        }
-
-        File lastModifiedFile = imageFiles[0];
-        for (int i = 1; i < imageFiles.length; i++) {
-            if (lastModifiedFile.lastModified() < imageFiles[i].lastModified()) {
-                lastModifiedFile = imageFiles[i];
-            }
-        }
-        return lastModifiedFile;
     }
 }

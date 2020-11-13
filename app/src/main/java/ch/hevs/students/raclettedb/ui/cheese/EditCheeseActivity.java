@@ -1,8 +1,13 @@
 package ch.hevs.students.raclettedb.ui.cheese;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -23,8 +28,11 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +44,7 @@ import ch.hevs.students.raclettedb.adapter.ListAdapter;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
+import ch.hevs.students.raclettedb.util.MediaUtils;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel;
 import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingListViewModel;
@@ -56,6 +65,9 @@ public class EditCheeseActivity extends BaseActivity {
     private Spinner spinCheeseShieling;
     private Button btSaveCheese;
     private ImageView ivCheese;
+    private File destination = null;
+    private InputStream inputStreamImg;
+    private String imgPath = null;
 
     private String currentPhotoPath = BaseActivity.IMAGE_CHEESE_DEFAULT;
 
@@ -68,11 +80,13 @@ public class EditCheeseActivity extends BaseActivity {
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
 
+    MediaUtils mediaUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_edit_cheese, frameLayout);
+        mediaUtils = new MediaUtils(this);
 
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
@@ -110,7 +124,7 @@ public class EditCheeseActivity extends BaseActivity {
         }
 
         ivCheese = findViewById(R.id.ivEditCheesePhoto);
-        ivCheese.setOnClickListener(v -> takePicture());
+        ivCheese.setOnClickListener(v -> mediaUtils.selectImage());
 
         ivCheese.setImageResource(R.drawable.placeholder_cheese);
 
@@ -126,42 +140,39 @@ public class EditCheeseActivity extends BaseActivity {
         return true;
     }
 
-    private void takePicture() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            //...
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "ch.hevs.students.raclettedb.fileprovider",
-                        photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, 1);
-            }
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Bitmap bitmap;
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK) {
             //Bitmap thumbnail = (Bitmap) data.getExtras().get(MediaStore.EXTRA_OUTPUT);
             //ivCheese.setImageBitmap(thumbnail);
+            if(requestCode == 1) {
+                File imageFile = mediaUtils.getImageFile();
+                bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                currentPhotoPath = imageFile.getAbsolutePath();
+                cheese.setImagePath(imageFile.getAbsolutePath());
+                ivCheese.setTag(currentPhotoPath);
+                ivCheese.setImageBitmap(bitmap);
+            } else if (requestCode == 2) {
+                Uri selectedImage = data.getData();
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
+                    Log.e(TAG, "Pick from Gallery::>>> ");
 
-            File imageFile = getImageFile();
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-            currentPhotoPath = imageFile.getAbsolutePath();
-            cheese.setImagePath(imageFile.getAbsolutePath());
-            ivCheese.setTag(currentPhotoPath);
-            ivCheese.setImageBitmap(bitmap);
+                    File f = mediaUtils.copyToLocalStorage(bitmap);
+
+                    /*imgPath = getRealPathFromURI(selectedImage);
+                    destination = new File(imgPath.toString());*/
+                    cheese.setImagePath(f.getAbsolutePath());
+                    ivCheese.setImageBitmap(bitmap);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -277,38 +288,4 @@ public class EditCheeseActivity extends BaseActivity {
         }
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    private File getImageFile() {
-        String Path = Environment.getExternalStorageDirectory() + "/MyApp";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File f = new File(Path);
-        File imageFiles[] = storageDir.listFiles();
-
-        if (imageFiles == null || imageFiles.length == 0) {
-            return null;
-        }
-
-        File lastModifiedFile = imageFiles[0];
-        for (int i = 1; i < imageFiles.length; i++) {
-            if (lastModifiedFile.lastModified() < imageFiles[i].lastModified()) {
-                lastModifiedFile = imageFiles[i];
-            }
-        }
-        return lastModifiedFile;
-    }
 }

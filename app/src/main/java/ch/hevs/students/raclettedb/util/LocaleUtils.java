@@ -15,10 +15,16 @@ import java.util.Locale;
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 
-public class Utils {
+public class LocaleUtils {
     private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-Utils";
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
+
+    /**
+     * Pour changer la locale du système
+     * @param code le code de la langue (FR, DE, EN)
+     * @param activity l'activity qui appelle
+     */
     public static void changeLocale(String code, Activity activity) {
 
         // les paramètres partagés
@@ -44,6 +50,10 @@ public class Utils {
         Log.d(TAG, "language in prefs after apply : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)+", has changed : " + settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
     }
 
+    /**
+     * Pour remettre à zéro la locale selon la locale système
+     * @param activity l'activity qui appelle
+     */
     public static void resetToSystemLocale(Activity activity) {
         settings = activity.getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();

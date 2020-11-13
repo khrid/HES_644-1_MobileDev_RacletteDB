@@ -18,7 +18,7 @@ import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
-import ch.hevs.students.raclettedb.util.Utils;
+import ch.hevs.students.raclettedb.util.LocaleUtils;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel;
 import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
@@ -76,7 +76,7 @@ public class CheeseDetailActivity extends BaseActivity {
         Log.d(TAG, "Current locale : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));
         Log.d(TAG, settings.toString());
         if(settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
-            Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
+            LocaleUtils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
             editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
             editor.apply();
         }

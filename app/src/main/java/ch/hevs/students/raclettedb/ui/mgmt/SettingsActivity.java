@@ -32,7 +32,7 @@ import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.AppDatabase;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
-import ch.hevs.students.raclettedb.util.Utils;
+import ch.hevs.students.raclettedb.util.LocaleUtils;
 
 import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
 
@@ -257,7 +257,7 @@ public class SettingsActivity extends PreferenceActivity {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(BaseActivity.PREFS_APP_LANGUAGE)) {
-                Utils.changeLocale(sharedPreferences.getString(key, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), getActivity());
+                LocaleUtils.changeLocale(sharedPreferences.getString(key, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), getActivity());
             }
         }
     }
@@ -309,7 +309,7 @@ public class SettingsActivity extends PreferenceActivity {
                 } else if (target == 1) {
                     settings.edit().clear().apply();
                     Log.d(TAG, settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));
-                    Utils.resetToSystemLocale(getActivity());
+                    LocaleUtils.resetToSystemLocale(getActivity());
                 }
                 toast.show();
             });

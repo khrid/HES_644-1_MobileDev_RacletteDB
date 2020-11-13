@@ -12,18 +12,14 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +32,7 @@ import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
 import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity;
-import ch.hevs.students.raclettedb.util.Utils;
+import ch.hevs.students.raclettedb.util.LocaleUtils;
 
 public class MainActivity extends BaseActivity {
 
@@ -67,7 +63,7 @@ public class MainActivity extends BaseActivity {
 
         if (settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT).equals(BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)) {
             //Log.d(TAG, "system default locale 3 "+Resources.getSystem().getConfiguration().locale.getLanguage());
-            Utils.resetToSystemLocale(this);
+            LocaleUtils.resetToSystemLocale(this);
         }
 
         Log.d(TAG, "Current locale : " + settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));

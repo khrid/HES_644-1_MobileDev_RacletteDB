@@ -31,7 +31,6 @@ import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.util.RecyclerViewItemClickListener;
-import ch.hevs.students.raclettedb.util.Utils;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseListViewModel;
 
 public class CheesesActivity extends BaseActivity {
