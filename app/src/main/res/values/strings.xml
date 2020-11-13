@@ -107,7 +107,15 @@
 
     <!-- A trier -->
     <string name="pref_header_about">About</string>
-    <string name="pref_about_text">This application was developed to provide a possibility to demonstrate how the newly released Android Architecture Components could be implemented in an application.</string>
+    <string name="pref_about_authors"><![CDATA[David Crittin & Sylvain Meyer]]></string>
+    <string name="pref_about_github" translatable="false">https://github.com/Khrid/HES_644-1_MobileDev_RacletteDB</string>
+    <string name="pref_about_text"><![CDATA[This application has been developped during our Android & Cloud development course. It was made possible with the great help of our teachers : Prof Dr Michael Ignaz Schumacher, and his asssistant Stefan Eggenschwiler.]]></string>
     <string name="cheese_picture_removed">The picture will be removed</string>
+    <string name="take_picture" >Take picture</string>
+    <string name="choose_from_gallery" >Choose from gallery</string>
+    <string name="camera_permission_error" >Camera permission error</string>
+    <string name="selection_option">Selection option</string>
+    <string name="pref_header_authors">Authors</string>
+    <string name="pref_header_github" translatable="false">GitHub</string>
 
 </resources>

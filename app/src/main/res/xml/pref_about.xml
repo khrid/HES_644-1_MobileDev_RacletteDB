@@ -6,5 +6,15 @@
         android:enabled="true"
         android:title="@string/pref_header_about"
         android:summary="@string/pref_about_text" />
+    <Preference
+        android:selectable="false"
+        android:enabled="true"
+        android:title="@string/pref_header_authors"
+        android:summary="@string/pref_about_authors" />
+    <Preference
+        android:selectable="false"
+        android:enabled="true"
+        android:title="@string/pref_header_github"
+        android:summary="@string/pref_about_github" />
 
 </PreferenceScreen>

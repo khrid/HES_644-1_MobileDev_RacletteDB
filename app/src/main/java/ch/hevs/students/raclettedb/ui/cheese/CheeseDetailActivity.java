@@ -19,6 +19,7 @@ import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.LocaleUtils;
+import ch.hevs.students.raclettedb.util.MediaUtils;
 import ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel;
 import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
@@ -43,6 +44,7 @@ public class CheeseDetailActivity extends BaseActivity {
 
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
+    private MediaUtils mediaUtils = new MediaUtils(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +136,7 @@ public class CheeseDetailActivity extends BaseActivity {
             if(!TextUtils.isEmpty(cheese.getImagePath())) {
                 if(!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                     Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
+                    bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                     ivCheesePhoto.setImageBitmap(bitmap);
                 }
             }

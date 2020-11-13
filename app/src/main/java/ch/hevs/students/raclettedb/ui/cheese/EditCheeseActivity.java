@@ -150,6 +150,7 @@ public class EditCheeseActivity extends BaseActivity {
             if(requestCode == 1) {
                 File imageFile = mediaUtils.getImageFile();
                 bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                 currentPhotoPath = imageFile.getAbsolutePath();
                 cheese.setImagePath(imageFile.getAbsolutePath());
                 ivCheese.setTag(currentPhotoPath);
@@ -202,6 +203,7 @@ public class EditCheeseActivity extends BaseActivity {
                     if(!TextUtils.isEmpty(cheese.getImagePath())) {
                         if(!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
+                            bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                             ivCheese.setImageBitmap(bitmap);
                             ivCheese.setTag(cheese.getImagePath());
                             ivCheese.setOnLongClickListener(v -> removePicture());

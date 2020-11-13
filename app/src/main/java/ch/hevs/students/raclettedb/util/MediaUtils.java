@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ch.hevs.students.raclettedb.BaseApp;
+import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.ui.cheese.EditCheeseActivity;
 
 public class MediaUtils {
@@ -36,26 +37,22 @@ public class MediaUtils {
 
     public void selectImage() {
         try {
-            PackageManager pm = activity.getPackageManager();
-            //int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getPackageName());
-            //if (hasPerm == PackageManager.PERMISSION_GRANTED) {
-            final CharSequence[] options = {"Take Photo", "Choose From Gallery","Cancel"};
+            final CharSequence[] options = {activity.getString(R.string.take_picture),
+                    activity.getString(R.string.choose_from_gallery),
+                    activity.getString(R.string.cancel)};
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder.setTitle("Select Option");
+            builder.setTitle(activity.getString(R.string.selection_option));
             builder.setItems(options, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int item) {
-                    if (options[item].equals("Take Photo")) {
+                    if (options[item].equals(activity.getString(R.string.take_picture))) {
                         dialog.dismiss();
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         takePicture();
-                    } else if (options[item].equals("Choose From Gallery")) {
+                    } else if (options[item].equals(activity.getString(R.string.choose_from_gallery))) {
                         dialog.dismiss();
-                        //requestPermissions(new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },1);
                         Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        Log.d(TAG, "Pick from gallery");
                         activity.startActivityForResult(pickPhoto, PICTURE_GALLERY);
-                    } else if (options[item].equals("Cancel")) {
+                    } else if (options[item].equals(activity.getString(R.string.cancel))) {
                         dialog.dismiss();
                     }
                 }
@@ -64,7 +61,7 @@ public class MediaUtils {
             //} else
             //    Toast.makeText(this, "Camera Permission error", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Toast.makeText(activity, "Camera Permission error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, activity.getString(R.string.camera_permission_error), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -109,9 +106,7 @@ public class MediaUtils {
     }
 
     public File getImageFile() {
-        String Path = Environment.getExternalStorageDirectory() + "/MyApp";
         File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File f = new File(Path);
         File imageFiles[] = storageDir.listFiles();
 
         if (imageFiles == null || imageFiles.length == 0) {
@@ -149,5 +144,20 @@ public class MediaUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 }

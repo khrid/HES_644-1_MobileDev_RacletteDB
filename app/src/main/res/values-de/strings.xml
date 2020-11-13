@@ -77,8 +77,14 @@
     <string name="shieling_new_created">Alpweide erstellt</string>
     <string name="shieling_common_hint_cheese_name">Name der Alpweide</string>
     <string name="shieling_common_hint_cheese_description">Beschreibung der Alpweide</string>
-    <string name="pref_about_text">bli bli</string>
+    <string name="pref_about_text"><![CDATA[Diese Applikation wurde während unseres Android & Cloud-Entwicklungskurses entwickelt. Möglich wurde dies durch die grosse Hilfe unserer Lehrer: Prof. Dr. Michael Ignaz Schumacher und sein Assistent Stefan Eggenschwiler.]]></string>
     <string name="cheese_common_hint_cheese_type">Käsesorte</string>
     <string name="language_de">Deutsch 🇩🇪</string>
     <string name="cheese_picture_removed">Das Bild wird entfernt</string>
+    <string name="choose_from_gallery">Wählen Sie aus der Galerie</string>
+    <string name="take_picture">Fotografieren</string>
+    <string name="camera_permission_error">Kameraberechtigungsfehler</string>
+    <string name="selection_option">Wählen Sie eine Option</string>
+    <string name="pref_about_authors"><![CDATA[David Crittin & Sylvain Meyer]]></string>
+    <string name="pref_header_authors">Die Autoren</string>
 </resources>

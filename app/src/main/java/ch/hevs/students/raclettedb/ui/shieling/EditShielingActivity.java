@@ -102,6 +102,7 @@ public class EditShielingActivity extends BaseActivity {
                     if(!TextUtils.isEmpty(shieling.getImagePath())) {
                         if(!shieling.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             Bitmap bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
+                            bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                             ivShieling.setImageBitmap(bitmap);
                             ivShieling.setTag(shieling.getImagePath());
                             ivShieling.setOnLongClickListener(v -> removePicture());
@@ -131,6 +132,7 @@ public class EditShielingActivity extends BaseActivity {
 
                 File imageFile = mediaUtils.getImageFile();
                 bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+                bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                 currentPhotoPath = imageFile.getAbsolutePath();
                 shieling.setImagePath(imageFile.getAbsolutePath());
                 ivShieling.setTag(currentPhotoPath);
@@ -141,7 +143,7 @@ public class EditShielingActivity extends BaseActivity {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                    Log.e(TAG, "Pick from Gallery::>>> ");
+                    Log.e(TAG, "Pick from Gallery");
 
                     File f = mediaUtils.copyToLocalStorage(bitmap);
 

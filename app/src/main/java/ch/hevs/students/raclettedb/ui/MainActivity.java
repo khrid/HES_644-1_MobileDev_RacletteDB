@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,6 +34,7 @@ import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity;
 import ch.hevs.students.raclettedb.util.LocaleUtils;
+import ch.hevs.students.raclettedb.util.MediaUtils;
 
 public class MainActivity extends BaseActivity {
 
@@ -51,6 +53,7 @@ public class MainActivity extends BaseActivity {
 
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
+    private MediaUtils mediaUtils = new MediaUtils(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +106,7 @@ public class MainActivity extends BaseActivity {
                         if(!TextUtils.isEmpty(cheeseEntity.getImagePath())) {
                             if(!cheeseEntity.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                                 Bitmap bitmap = BitmapFactory.decodeFile(cheeseEntity.getImagePath());
+                                bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                                 iv.setImageBitmap(bitmap);
                             }
                         }
@@ -150,6 +154,7 @@ public class MainActivity extends BaseActivity {
                 if(!TextUtils.isEmpty(shielingEntities.get(0).getImagePath())) {
                     if(!shielingEntities.get(0).getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                         Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagePath());
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
                         ivMainShieling.setImageBitmap(bitmap);
                     }
                 }
@@ -170,13 +175,11 @@ public class MainActivity extends BaseActivity {
         Log.d(TAG, "Current locale : " + settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT) + ", has changed=" + settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
         Log.d(TAG, settings.toString());
         if (settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
-            //Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
             editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
             editor.apply();
             // On force la recréation de l'activity pour prendre en compte la nouvelle locale
             Log.d(TAG, "Recreating activity");
             recreate();
-            //getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
         }
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
         Log.d("TAG", isAdmin + "");

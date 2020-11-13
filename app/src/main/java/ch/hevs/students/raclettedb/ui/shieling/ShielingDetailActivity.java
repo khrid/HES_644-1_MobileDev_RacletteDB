@@ -14,9 +14,12 @@ import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import java.io.ByteArrayOutputStream;
+
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
+import ch.hevs.students.raclettedb.util.MediaUtils;
 import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
 public class ShielingDetailActivity extends BaseActivity {
@@ -36,6 +39,7 @@ public class ShielingDetailActivity extends BaseActivity {
 
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
+    private MediaUtils mediaUtils = new MediaUtils(this);
 
     public ShielingDetailActivity() {
     }
@@ -113,6 +117,7 @@ public class ShielingDetailActivity extends BaseActivity {
             if(!TextUtils.isEmpty(shieling.getImagePath())) {
                 if(!shieling.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                     Bitmap bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
+                    bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                     ivShielingPhoto.setImageBitmap(bitmap);
                 }
             }
