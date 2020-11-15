@@ -20,12 +20,18 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
@@ -51,6 +57,7 @@ public class EditShielingActivity extends BaseActivity {
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
     private MediaUtils mediaUtils;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,10 +108,14 @@ public class EditShielingActivity extends BaseActivity {
                     etShielingDescription.setText(shieling.getDescription());
                     if(!TextUtils.isEmpty(shieling.getImagePath())) {
                         if(!shieling.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                            Bitmap bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
-                            bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
-                            ivShieling.setImageBitmap(bitmap);
-                            ivShieling.setTag(shieling.getImagePath());
+                            if(BaseApp.CLOUD_ACTIVE) {
+                                mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shieling.getImagePath(), getApplicationContext(), ivShieling);
+                            } else {
+                                bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
+                                bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
+                                ivShieling.setImageBitmap(bitmap);
+                                ivShieling.setTag(shieling.getImagePath());
+                            }
                             ivShieling.setOnLongClickListener(v -> removePicture());
                         }
                     }
@@ -172,7 +183,15 @@ public class EditShielingActivity extends BaseActivity {
             if (!"".equals(shielingName)) {
                 shieling.setName(shielingName);
                 shieling.setDescription(description);
-                shieling.setImagePath(imagePath);
+                if(BaseApp.CLOUD_ACTIVE) {
+                    try {
+                        shieling.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    shieling.setImagePath(imagePath);
+                }
                 viewModel.updateShieling(shieling, new OnAsyncEventListener() {
                     @Override
                     public void onSuccess() {
@@ -189,7 +208,15 @@ public class EditShielingActivity extends BaseActivity {
             ShielingEntity newShieling = new ShielingEntity();
             newShieling.setName(shielingName);
             newShieling.setDescription(description);
-            newShieling.setImagePath(imagePath);
+            if(BaseApp.CLOUD_ACTIVE) {
+                try {
+                    newShieling.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                newShieling.setImagePath(imagePath);
+            }
             viewModel.createShieling(newShieling, new OnAsyncEventListener() {
                 @Override
                 public void onSuccess() {

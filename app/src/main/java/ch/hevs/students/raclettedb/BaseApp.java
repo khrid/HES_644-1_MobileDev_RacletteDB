@@ -15,6 +15,8 @@ public class BaseApp extends Application {
 
     public static final String ADMIN_PASSWORD = "castor";
 
+    public static final boolean CLOUD_ACTIVE = false;
+
     @Override
     public void onCreate() {
         super.onCreate();

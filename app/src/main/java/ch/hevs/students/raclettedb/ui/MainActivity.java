@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +21,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -57,6 +63,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         //getSharedPreferences(BaseActivity.PREFS_NAME, 0).edit().clear().apply();
         // Récupération du stockage commun
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
@@ -81,6 +88,28 @@ public class MainActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         initiateView();
+
+    }
+
+    @Override
+    protected void onResume() {
+        setTitle(getString(R.string.app_name));
+        navigationView.setCheckedItem(R.id.nav_none);
+        Log.d(TAG, "Current locale : " + settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT) + ", has changed=" + settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
+        Log.d(TAG, settings.toString());
+        if (settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
+            editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
+            editor.apply();
+            // On force la recréation de l'activity pour prendre en compte la nouvelle locale
+            Log.d(TAG, "Recreating activity");
+            recreate();
+        }
+        isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
+        Log.d("TAG", isAdmin + "");
+        if (isAdmin) {
+            Toast.makeText(this, getString(R.string.admin_mode_active), Toast.LENGTH_SHORT).show();
+        }
+
         // on vide le tablelayout
         TableLayout tl = findViewById(R.id.tableLayout);
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
@@ -93,37 +122,44 @@ public class MainActivity extends BaseActivity {
             for (CheeseEntity cheeseEntity :
                     cheeseEntities) {
                 // Pour chaque item, on ajout un élément dans le TableRow Image et le TableRow label
-                    if (i < 3) {
-                        // Textview avec le nom du fromage
-                        TextView tv = new TextView(this);
-                        tv.setText(cheeseEntity.getName());
-                        tv.setTypeface(ResourcesCompat.getFont(this, R.font.dk_lemon_yellow_sun));
-                        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                        tv.setOnClickListener(v -> showCheese(cheeseEntity.getId()));
-                        // Imageview pour le logo
-                        ImageView iv = new ImageView(this);
-                        iv.setImageResource(R.drawable.placeholder_cheese);
-                        if(!TextUtils.isEmpty(cheeseEntity.getImagePath())) {
-                            if(!cheeseEntity.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                if (i < 3) {
+                    // Textview avec le nom du fromage
+                    TextView tv = new TextView(this);
+                    tv.setText(cheeseEntity.getName());
+                    tv.setTypeface(ResourcesCompat.getFont(this, R.font.dk_lemon_yellow_sun));
+                    tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    tv.setOnClickListener(v -> showCheese(cheeseEntity.getId()));
+                    // Imageview pour le logo
+                    ImageView iv = new ImageView(this);
+                    if(!TextUtils.isEmpty(cheeseEntity.getImagePath())) {
+                        if(!cheeseEntity.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                            if(BaseApp.CLOUD_ACTIVE) {
+                                mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheeseEntity.getImagePath(), getApplicationContext(), iv);
+                            } else {
                                 Bitmap bitmap = BitmapFactory.decodeFile(cheeseEntity.getImagePath());
-                                bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
                                 iv.setImageBitmap(bitmap);
                             }
+                        } else {
+                            iv.setImageResource(R.drawable.placeholder_cheese);
                         }
-                        iv.setPadding(8, 8, 8, 8);
-                        float factor = getApplicationContext().getResources().getDisplayMetrics().density;
-
-                        TableRow.LayoutParams lp = new TableRow.LayoutParams((int)(100*factor), (int)(100*factor));
-                        iv.setLayoutParams(lp);
-                        iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-                        iv.setOnClickListener(v -> showCheese(cheeseEntity.getId()));
-                        // on les ajoute dans le TableRow respective
-                        trImages.addView(iv);
-                        trLabels.addView(tv);
-                        // incrément du compteur
-                        i++;
+                    } else {
+                        iv.setImageResource(R.drawable.placeholder_cheese);
                     }
+                    iv.setPadding(8, 8, 8, 8);
+                    float factor = getApplicationContext().getResources().getDisplayMetrics().density;
+
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams((int)(100*factor), (int)(100*factor));
+                    iv.setLayoutParams(lp);
+                    iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                    iv.setOnClickListener(v -> showCheese(cheeseEntity.getId()));
+                    // on les ajoute dans le TableRow respective
+                    trImages.addView(iv);
+                    trLabels.addView(tv);
+                    // incrément du compteur
+                    i++;
+                }
             }
             // si on a qqch à afficher, on ajouter les rows à la TableLayout
             if (i > 0) {
@@ -153,9 +189,13 @@ public class MainActivity extends BaseActivity {
                 ivMainShieling.setImageResource(R.drawable.placeholder_shieling);
                 if(!TextUtils.isEmpty(shielingEntities.get(0).getImagePath())) {
                     if(!shielingEntities.get(0).getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagePath());
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
-                        ivMainShieling.setImageBitmap(bitmap);
+                        if(BaseApp.CLOUD_ACTIVE) {
+                            mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, shielingEntities.get(0).getImagePath(), getApplicationContext(), ivMainShieling);
+                        } else {
+                            Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagePath());
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
+                            ivMainShieling.setImageBitmap(bitmap);
+                        }
                     }
                 }
 
@@ -166,26 +206,7 @@ public class MainActivity extends BaseActivity {
                 ivMainShieling.setOnClickListener(null);
             }
         });
-    }
 
-    @Override
-    protected void onResume() {
-        setTitle(getString(R.string.app_name));
-        navigationView.setCheckedItem(R.id.nav_none);
-        Log.d(TAG, "Current locale : " + settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT) + ", has changed=" + settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
-        Log.d(TAG, settings.toString());
-        if (settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
-            editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
-            editor.apply();
-            // On force la recréation de l'activity pour prendre en compte la nouvelle locale
-            Log.d(TAG, "Recreating activity");
-            recreate();
-        }
-        isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
-        Log.d("TAG", isAdmin + "");
-        if (isAdmin) {
-            Toast.makeText(this, getString(R.string.admin_mode_active), Toast.LENGTH_SHORT).show();
-        }
         super.onResume();
     }
 
@@ -208,6 +229,8 @@ public class MainActivity extends BaseActivity {
     private void initiateView() {
         tvMainShielingName = findViewById(R.id.tvMainShielingName);
         ivMainShieling = findViewById(R.id.ivMainShieling);
+
+        
 
         tvMainFavorites = new TextView[3];
         tvMainFavorites[0] = findViewById(R.id.tvMainFavorites1);

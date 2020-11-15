@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,8 +15,14 @@ import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.ByteArrayOutputStream;
 
+import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
@@ -116,9 +123,13 @@ public class ShielingDetailActivity extends BaseActivity {
             ivShielingPhoto.setImageResource(R.drawable.placeholder_shieling);
             if(!TextUtils.isEmpty(shieling.getImagePath())) {
                 if(!shieling.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
-                    bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
-                    ivShielingPhoto.setImageBitmap(bitmap);
+                    if(BaseApp.CLOUD_ACTIVE) {
+                        mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shieling.getImagePath(), getApplicationContext(), ivShielingPhoto);
+                    } else {
+                        Bitmap bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
+                        bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
+                        ivShielingPhoto.setImageBitmap(bitmap);
+                    }
                 }
             }
 

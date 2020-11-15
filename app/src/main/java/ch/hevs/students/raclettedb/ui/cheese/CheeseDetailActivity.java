@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProviders;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
@@ -132,13 +138,21 @@ public class CheeseDetailActivity extends BaseActivity {
             tvCheeseType.setText(cheese.getType());
             tvCheeseDescription.setText(cheese.getDescription());
 
-            ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
             if(!TextUtils.isEmpty(cheese.getImagePath())) {
                 if(!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
-                    bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
-                    ivCheesePhoto.setImageBitmap(bitmap);
+                    if(BaseApp.CLOUD_ACTIVE) {
+
+                        mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagePath(), getApplicationContext(), ivCheesePhoto);
+                    } else {
+                        Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
+                        bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
+                        ivCheesePhoto.setImageBitmap(bitmap);
+                    }
+                } else {
+                    ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
                 }
+            } else {
+                ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
             }
 
             // TODO A faire comme ça ?
