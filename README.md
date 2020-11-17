@@ -10,7 +10,7 @@ This application has been developped during our Android & Cloud development cour
     BestCheeses
 
 ### Remove a cheese / shieling
-When displaying the cheeses / shielings list, long press on the desired item. Be aware when removing a shieling, all of its related cheeses will be delete.
+When displaying the cheeses / shielings list, long press on the desired item. Be aware when removing a shieling, all of its related cheeses will be deleted.
 
 ### Remove a cheese / shieling picture
 Long press on the picture while in edit mode
