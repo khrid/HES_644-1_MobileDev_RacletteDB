@@ -66,7 +66,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     }
                 })
                 // A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
-                //.fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigration()
                 .build();
     }
 

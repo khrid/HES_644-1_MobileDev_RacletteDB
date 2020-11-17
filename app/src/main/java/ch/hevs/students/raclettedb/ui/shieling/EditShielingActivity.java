@@ -128,13 +128,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                             }
                         }
                     }
-                    CustomSupportMapFragment mapFragment = (CustomSupportMapFragment) getSupportFragmentManager()
-                            .findFragmentById(R.id.fcvEditShielingMap);
-                    NestedScrollView nsvEditShieling = findViewById(R.id.nsvEditShieling);
-                    mapFragment.setListener(() -> nsvEditShieling.requestDisallowInterceptTouchEvent(true));
 
-                    mapFragment.getMapAsync(this);
-                    navigationView.setCheckedItem(position);
 
 
                     /*FragmentContainerView fcvMap = findViewById(R.id.fcvEditShielingMap);
@@ -153,6 +147,15 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 }
             });
         }
+
+        CustomSupportMapFragment mapFragment = (CustomSupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fcvEditShielingMap);
+        NestedScrollView nsvEditShieling = findViewById(R.id.nsvEditShieling);
+        mapFragment.setListener(() -> nsvEditShieling.requestDisallowInterceptTouchEvent(true));
+
+        mapFragment.getMapAsync(this);
+        navigationView.setCheckedItem(position);
+
     }
 
     private boolean removePicture() {
