@@ -61,6 +61,9 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
     private MediaUtils mediaUtils;
     private Bitmap bitmap;
 
+    private float latitude = 0.0f;
+    private float longitude  = 0.0f;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Récupération du stockage commun
@@ -79,7 +82,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         Button btSaveShieling = findViewById(R.id.btSaveShieling);
         btSaveShieling.setOnClickListener(view -> {
             if(!etShielingName.getText().toString().isEmpty()) {
-                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagePath(), shieling.getLatitude(), shieling.getLongitude());
+                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagePath(), latitude, longitude);
                 onBackPressed();
                 toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
             }else{
@@ -268,15 +271,25 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 }
             });
         }
+        CustomSupportMapFragment mapFragment = (CustomSupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fcvEditShielingMap);
+        NestedScrollView nsvEditShieling = findViewById(R.id.nsvEditShieling);
+        mapFragment.setListener(() -> nsvEditShieling.requestDisallowInterceptTouchEvent(true));
+
+        mapFragment.getMapAsync(this);
+        navigationView.setCheckedItem(position);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         viewModel.getShieling().observe(this, shielingEntity -> {
+            LatLng loc = BaseApp.NO_LOCATION;
+            String title = getString(R.string.shieling_new_title);
             if (shielingEntity != null) {
                 LatLng loc = BaseApp.NO_LOCATION;
                 if (shielingEntity.getLatitude() != 0.0f && shielingEntity.getLongitude() != 0.0f) {
                     loc = new LatLng(shielingEntity.getLatitude(), shielingEntity.getLongitude());
+                    title = shielingEntity.getName();
                 }
                 Marker marker = googleMap.addMarker(new MarkerOptions().position(loc).title(shielingEntity.getName()).draggable(true));
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
@@ -298,6 +311,24 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     }
                 });
             }
+            Marker marker = googleMap.addMarker(new MarkerOptions().position(loc).title(title).draggable(true));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
+            googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+                @Override
+                public void onMarkerDragStart(Marker marker) {
+                }
+                @Override
+                public void onMarkerDrag(Marker marker) {
+
+                }
+
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+                    Log.d(TAG, "Marker dropped at "+marker.getPosition().latitude+"/"+marker.getPosition().longitude);
+                    latitude = (float) marker.getPosition().latitude;
+                    longitude = (float) marker.getPosition().longitude;
+                }
+            });
         });
     }
 }
