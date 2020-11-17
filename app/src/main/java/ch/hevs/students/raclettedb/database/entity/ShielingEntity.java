@@ -23,6 +23,12 @@ public class ShielingEntity {
     @ColumnInfo(name = "imagePath")
     private String imagePath;
 
+    @ColumnInfo(name = "latitude")
+    private float latitude;
+
+    @ColumnInfo(name = "longitude")
+    private float longitude;
+
     public ShielingEntity() {
     }
 
@@ -46,6 +52,14 @@ public class ShielingEntity {
         return imagePath;
     }
 
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
     public void setId(@NonNull Long id) {
         this.id = id;
     }
@@ -60,6 +74,14 @@ public class ShielingEntity {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
     }
 
     @Override

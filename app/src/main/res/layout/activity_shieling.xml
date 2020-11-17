@@ -7,6 +7,7 @@
     tools:context="ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity" >
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsvShielingDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -66,6 +67,34 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tvShielingLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/dk_lemon_yellow_sun"
+                android:text="@string/title_shieling_loc"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvShielingDescription" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcvShielingMap"
+                android:name="ch.hevs.students.raclettedb.util.CustomSupportMapFragment"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:paddingBottom="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvShielingLocation" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

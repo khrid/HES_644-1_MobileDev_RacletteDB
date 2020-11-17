@@ -16,7 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,13 +35,14 @@ import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
+import ch.hevs.students.raclettedb.util.CustomSupportMapFragment;
 import ch.hevs.students.raclettedb.util.MediaUtils;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
-public class EditShielingActivity extends BaseActivity {
+public class EditShielingActivity extends BaseActivity implements OnMapReadyCallback {
 
-    private static final String TAG = "EditShielingActivity";
+    private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-"+"EditShielingActivity";
 
     private ShielingEntity shieling = new ShielingEntity();
     private boolean isEditMode;
@@ -69,7 +79,7 @@ public class EditShielingActivity extends BaseActivity {
         Button btSaveShieling = findViewById(R.id.btSaveShieling);
         btSaveShieling.setOnClickListener(view -> {
             if(!etShielingName.getText().toString().isEmpty()) {
-                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagePath());
+                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagePath(), shieling.getLatitude(), shieling.getLongitude());
                 onBackPressed();
                 toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
             }else{
@@ -118,6 +128,28 @@ public class EditShielingActivity extends BaseActivity {
                             ivShieling.setOnLongClickListener(v -> removePicture());
                         }
                     }
+                    CustomSupportMapFragment mapFragment = (CustomSupportMapFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.fcvEditShielingMap);
+                    NestedScrollView nsvEditShieling = findViewById(R.id.nsvEditShieling);
+                    mapFragment.setListener(() -> nsvEditShieling.requestDisallowInterceptTouchEvent(true));
+
+                    mapFragment.getMapAsync(this);
+                    navigationView.setCheckedItem(position);
+
+
+                    /*FragmentContainerView fcvMap = findViewById(R.id.fcvEditShielingMap);
+                    TextView tvShielingLocation = findViewById(R.id.tvShielingLocation);
+                    if (shieling.getLatitude() != 0.0f && shieling.getLongitude() != 0.0f) {
+                        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                                .findFragmentById(R.id.fcvShielingMap);
+                        mapFragment.getMapAsync(this);
+                        navigationView.setCheckedItem(position);
+                        fcvMap.setVisibility(View.VISIBLE);
+                        tvShielingLocation.setVisibility(View.VISIBLE);
+                    } else {
+                        fcvMap.setVisibility(View.GONE);
+                        tvShielingLocation.setVisibility(View.GONE);
+                    }*/
                 }
             });
         }
@@ -173,11 +205,18 @@ public class EditShielingActivity extends BaseActivity {
         super.onResume();
     }
 
-    private void saveChanges(String shielingName, String description, String imagePath) {
+    private void saveChanges(String shielingName, String description, String imagePath, float latitude, float longitude) {
+        // si on a pas bougé le marqueur, on va considérer qu'il n'y a pas de localisation => on set à 0 / 0
+        if (latitude == BaseApp.NO_LOCATION.latitude && longitude == BaseApp.NO_LOCATION.longitude) {
+            latitude = 0.0f;
+            longitude = 0.0f;
+        }
         if (isEditMode) {
             if (!"".equals(shielingName)) {
                 shieling.setName(shielingName);
                 shieling.setDescription(description);
+                shieling.setLatitude(latitude);
+                shieling.setLongitude(longitude);
                 if(BaseApp.CLOUD_ACTIVE) {
                     try {
                         shieling.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
@@ -203,6 +242,8 @@ public class EditShielingActivity extends BaseActivity {
             ShielingEntity newShieling = new ShielingEntity();
             newShieling.setName(shielingName);
             newShieling.setDescription(description);
+            newShieling.setLatitude(latitude);
+            newShieling.setLongitude(longitude);
             if(BaseApp.CLOUD_ACTIVE) {
                 try {
                     newShieling.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
@@ -224,5 +265,36 @@ public class EditShielingActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        viewModel.getShieling().observe(this, shielingEntity -> {
+            if (shielingEntity != null) {
+                LatLng loc = BaseApp.NO_LOCATION;
+                if (shielingEntity.getLatitude() != 0.0f && shielingEntity.getLongitude() != 0.0f) {
+                    loc = new LatLng(shielingEntity.getLatitude(), shielingEntity.getLongitude());
+                }
+                Marker marker = googleMap.addMarker(new MarkerOptions().position(loc).title(shielingEntity.getName()).draggable(true));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
+                googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+                    @Override
+                    public void onMarkerDragStart(Marker marker) {
+                    }
+
+                    @Override
+                    public void onMarkerDrag(Marker marker) {
+
+                    }
+
+                    @Override
+                    public void onMarkerDragEnd(Marker marker) {
+                        Log.d(TAG, "Marker dropped at "+marker.getPosition().latitude+"/"+marker.getPosition().longitude);
+                        shielingEntity.setLongitude((float) marker.getPosition().longitude);
+                        shielingEntity.setLatitude((float) marker.getPosition().latitude);
+                    }
+                });
+            }
+        });
     }
 }

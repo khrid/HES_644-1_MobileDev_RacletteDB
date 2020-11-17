@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.lifecycle.ViewModelProviders;
@@ -106,7 +107,6 @@ public class CheeseDetailActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == EDIT_CHEESE) {
-
             Intent intent = new Intent(this, EditCheeseActivity.class);
             intent.putExtra("cheeseId", cheese.getId());
             startActivity(intent);
@@ -129,21 +129,20 @@ public class CheeseDetailActivity extends BaseActivity {
             tvCheeseType.setText(cheese.getType());
             tvCheeseDescription.setText(cheese.getDescription());
 
+            ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
             if(!TextUtils.isEmpty(cheese.getImagePath())) {
+                ivCheesePhoto.setVisibility(View.VISIBLE);
                 if(!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                     if(BaseApp.CLOUD_ACTIVE) {
-
                         mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagePath(), getApplicationContext(), ivCheesePhoto);
                     } else {
                         Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
                         bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                         ivCheesePhoto.setImageBitmap(bitmap);
                     }
-                } else {
-                    ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
                 }
             } else {
-                ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
+                ivCheesePhoto.setVisibility(View.GONE);
             }
 
             ShielingViewModel.Factory factory = new ShielingViewModel.Factory(

@@ -100,7 +100,7 @@
 
     <!-- Common / Misc -->
     <string name="close_application">Do you really want to close the application?</string>
-    <string name="empty"></string>
+    <string name="empty" translatable="false"></string>
     <string name="update">Update</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
@@ -111,7 +111,7 @@
     <string name="pref_header_about">About</string>
     <string name="pref_about_authors"><![CDATA[David Crittin & Sylvain Meyer]]></string>
     <string name="pref_about_github" translatable="false">https://github.com/Khrid/HES_644-1_MobileDev_RacletteDB</string>
-    <string name="pref_about_text"><![CDATA[This application has been developped during our Android & Cloud development course. It was made possible with the great help of our teachers : Prof Dr Michael Ignaz Schumacher, and his asssistant Stefan Eggenschwiler.]]></string>
+    <string name="pref_about_text"><![CDATA[This application has been developped during our Android & Cloud development course. Its goal is to take in hand the Android development through a practical project. It was made possible with the great help of our teachers : Prof Dr Michael Ignaz Schumacher, and his asssistant Stefan Eggenschwiler.]]></string>
     <string name="cheese_picture_removed">The picture will be removed</string>
     <string name="take_picture" >Take picture</string>
     <string name="choose_from_gallery" >Choose from gallery</string>
@@ -119,5 +119,6 @@
     <string name="selection_option">Selection option</string>
     <string name="pref_header_authors">Authors</string>
     <string name="pref_header_github" translatable="false">GitHub</string>
+    <string name="title_shieling_loc">Location</string>
 
 </resources>

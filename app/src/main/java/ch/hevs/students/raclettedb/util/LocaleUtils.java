@@ -12,7 +12,7 @@ import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 
 public class LocaleUtils {
-    private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-Utils";
+    private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-LocaleUtils";
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
 

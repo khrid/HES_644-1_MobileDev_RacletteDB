@@ -12,15 +12,16 @@ import android.util.Log;
 
 import java.util.concurrent.Executors;
 
+import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.database.dao.CheeseDao;
 import ch.hevs.students.raclettedb.database.dao.ShielingDao;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
 import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 
-@Database(entities = {ShielingEntity.class,CheeseEntity.class}, version = 11)
+@Database(entities = {ShielingEntity.class,CheeseEntity.class}, version = 12)
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static final String TAG = "AppDatabase";
+    private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-"+"AppDatabase";
 
     private static AppDatabase instance;
 

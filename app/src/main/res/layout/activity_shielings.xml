@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
-        android:id="@+id/tvCheeses"
+        android:id="@+id/tvShielings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -43,5 +43,17 @@
         app:layout_constraintTop_toBottomOf="@+id/tvCheeses">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/tvShielingsNothing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/no_shieling"
+        android:fontFamily="@font/dk_lemon_yellow_sun"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShielings"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

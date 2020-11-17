@@ -1,0 +1,119 @@
+<resources>
+    <string name="app_name">RacletteDB</string>
+
+    <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
+    <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
+
+    <string name="action_settings">Paramètres</string>
+
+    <string name="title_activity_cheeses">Fromages</string>
+    <string name="title_activity_shielings">Alpages</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="title_activity_edit_cheese">Editer fromage</string>
+    <string name="title_activity_edit_shieling">Editer alpage</string>
+
+    <!-- Home screen -->
+    <string name="title_favorites">Coups de coeur</string>
+    <string name="title_favorites_cheesename">Nom du fromage</string>
+    <string name="title_shieling">Alpage de la semaine</string>
+    <string name="title_shieling_name">Nom de l\'alpage</string>
+
+    <!-- Drawer -->
+    <string name="drawer_cheeses">Fromages</string>
+    <string name="drawer_shielings">Alpages</string>
+    <string name="drawer_admin_enter">Administration</string>
+    <string name="drawer_admin_exit">Quitter le mode admin</string>
+
+    <!-- Cheeses list -->
+    <string name="cheeses_list_title">Fromages</string>
+    <string name="cheeses_list_delete_title">Supprimer le fromage</string>
+    <string name="cheeses_list_delete_text">Voulez-vous supprimer le fromage %1$s</string>
+    <string name="cheeses_list_deleted">Fromage supprimé</string>
+    <!-- Cheese detail - read -->
+    <string name="cheese_detail_placeholder_title">Nom du fromage</string>
+    <string name="cheese_detail_description_title">Description</string>
+    <string name="cheese_detail_type_title">Type</string>
+    <!-- Cheese detail - edit -->
+    <string name="cheese_edit_action">Modifier fromage</string>
+    <string name="cheese_edit_title">Modifier fromage</string>
+    <string name="cheese_edit_edited">Fromage modifié</string>
+    <!-- Cheese detail - new -->
+    <string name="cheese_new_title">Nouveau fromage</string>
+    <string name="cheese_new_created">Fromage créé</string>
+    <!-- Cheese - common -->
+    <string name="cheese_common_hint_cheese_name">Nom du fromage</string>
+    <string name="cheese_common_hint_cheese_description">Description du fromage</string>
+    <string name="cheese_common_hint_cheese_type">Type de fromage</string>
+
+    <!-- Shieling list -->
+    <string name="shielings_list_title">Alpages</string>
+    <string name="shielings_list_delete_title">Supprimer alpage</string>
+    <string name="shielings_list_delete_text">Voulez-vous supprimer l\'alpage %1$s</string>
+    <string name="shielings_list_deleted">Alpage supprimé</string>
+    <!-- Shieling detail - read -->
+    <string name="shieling_detail_placeholder_title">Nom de l\'alpage</string>
+    <string name="shieling_detail_description_title">Description</string>
+    <!-- Shieling detail - edit -->
+    <string name="shieling_edit_action">Modifier alpage</string>
+    <string name="shieling_edit_title">Modifier alpage</string>
+    <string name="shieling_edit_edited">Alpage modifié</string>
+    <!-- Shieling detail - new -->
+    <string name="shieling_new_title">Nouvel alpage</string>
+    <string name="shieling_new_created">Alpage créé</string>
+    <!-- Shieling - common -->
+    <string name="shieling_common_hint_cheese_name">Nom de l\'alpage</string>
+    <string name="shieling_common_hint_cheese_description">Description de l\'alpage</string>
+
+    <!-- Admin -->
+    <string name="admin_title">Mode administrateur</string>
+    <string name="admin_enable">Activer</string>
+    <string name="admin_incorrect_password">Mauvais mot de passe</string>
+    <string name="admin_mode_active">Mode admin activé</string>
+
+    <!-- Settings -->
+    <string name="settings_action">Paramètres</string>
+
+    <!-- Common / Misc -->
+    <string name="close_application">Voulez-vous vraiment fermer l\'application ?</string>
+    <string name="update">Mettre à jour</string>
+    <string name="save">Sauvegarder</string>
+    <string name="cancel">Annuler</string>
+    <string name="execute">Exécuter</string>
+    <string name="close">Fermer</string>
+
+    <!-- A trier -->
+    <string name="pref_header_about">A propos</string>
+    <string name="pref_about_text"><![CDATA[Cette application a été développée pendant notre cours de développement Android & Cloud. Son but est de prendre en main le développement Android à travers un projet pratique. Elle a été rendue possible grâce à l\'aide de nos professeurs : le professeur Dr Michael Ignaz Schumacher, et son assistant Stefan Eggenschwiler.]]></string>
+    <string name="settings_about">A propos</string>
+    <string name="settings_language">Langue</string>
+    <string name="language_en">Anglais 🇬🇧</string>
+    <string name="language_fr">Français 🇫🇷</string>
+    <string name="settings_language_title">Langue de l\'application</string>
+    <string name="settings_language_choose">Choisissez une langue</string>
+    <string name="settings_data">Données</string>
+    <string name="settings_data_room_reset">Reset base de données Room</string>
+    <string name="settings_data_room_reset_dialog_title">Reset base de données Room</string>
+    <string name="settings_data_room_reset_dialog_text">Voulez-vous restaurer les données initiales de la base de données Room ?</string>
+    <string name="settings_data_room_reset_successful">Restauration effectuée avec succès</string>
+    <string name="settings_data_prefs_reset">Reset préférences partagées</string>
+    <string name="settings_data_prefs_reset_dialog_title">Remise à zéro des préférences partagées</string>
+    <string name="settings_data_prefs_reset_dialog_text">Voulez-vous réinitialiser les préférences partagées ?</string>
+    <string name="settings_data_prefs_reset_successful">Préférences partagées remises à zéro</string>
+    <string name="no_cheese">Pas de fromage à afficher 😢</string>
+    <string name="no_shieling">Pas d\'alpage à afficher 😢</string>
+    <string name="cheese_detail_shieling_title">Alpage</string>
+    <string name="cheese_common_hint_cheese_shieling">Alpage</string>
+    <string name="shielings_list_delete_warning_text">Voulez-vous supprimer l\'alpage %1$s. Les fromages associés seront supprimés</string>
+    <string name="language_de">Allemand 🇩🇪</string>
+    <string name="cheese_picture_removed">La photo va être supprimée</string>
+    <string name="take_picture">Prendre une photo</string>
+    <string name="choose_from_gallery">Sélectionner depuis la galerie</string>
+    <string name="camera_permission_error">Problème avec l\'accès à la caméra</string>
+    <string name="selection_option">Sélectionner une option</string>
+    <string name="pref_about_authors"><![CDATA[David Crittin & Sylvain Meyer]]></string>
+    <string name="pref_header_authors">Auteurs</string>
+    <string name="title_shieling_loc">Emplacement</string>
+    <string name="shieling_edit_name_empty">Le nom de l\'alpage ne peut pas être vide</string>
+    <string name="cheese_edit_name_empty">Le nom du fromage ne peut pas être vide</string>
+</resources>

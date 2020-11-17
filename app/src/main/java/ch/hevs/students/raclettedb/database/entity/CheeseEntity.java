@@ -41,8 +41,8 @@ public class CheeseEntity {
     @ColumnInfo(name = "description")
     private String description;
 
-    @ColumnInfo(name = "ean")
-    private int ean;
+    /*@ColumnInfo(name = "ean")
+    private int ean;*/
 
     @ColumnInfo(name = "imagePath")
     private String imagePath;
@@ -69,9 +69,9 @@ public class CheeseEntity {
         return type;
     }
 
-    public int getEan(){
+    /*public int getEan(){
         return ean;
-    }
+    }*/
 
     public String getDescription() {
         return description;
@@ -97,9 +97,9 @@ public class CheeseEntity {
         this.shieling = shieling;
     }
 
-    public void setEan(int ean) {
+    /*public void setEan(int ean) {
         this.ean = ean;
-    }
+    }*/
 
     public void setDescription(String description) {
         this.description = description;

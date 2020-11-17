@@ -105,13 +105,19 @@ public class CheesesActivity extends BaseActivity {
             fab.setVisibility(View.INVISIBLE);
         }
 
+        TextView tvCheesesNothing = findViewById(R.id.tvCheesesNothing);
         CheeseListViewModel.Factory factory = new CheeseListViewModel.Factory(
                 getApplication());
         viewModel = ViewModelProviders.of(this, factory).get(CheeseListViewModel.class);
         viewModel.getCheeses().observe(this, cheeseEntities -> {
             if (cheeseEntities != null) {
-                cheeses = cheeseEntities;
-                adapter.setData(cheeses);
+                if(cheeseEntities.size() > 0) {
+                    cheeses = cheeseEntities;
+                    adapter.setData(cheeses);
+                    tvCheesesNothing.setVisibility(View.GONE);
+                } else {
+                    tvCheesesNothing.setVisibility(View.VISIBLE);
+                }
             }
         });
 
