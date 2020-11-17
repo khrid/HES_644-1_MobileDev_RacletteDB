@@ -140,6 +140,8 @@ public class CheeseDetailActivity extends BaseActivity {
                         bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                         ivCheesePhoto.setImageBitmap(bitmap);
                     }
+                } else {
+                    ivCheesePhoto.setVisibility(View.GONE);
                 }
             } else {
                 ivCheesePhoto.setVisibility(View.GONE);

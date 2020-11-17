@@ -136,6 +136,8 @@ public class ShielingDetailActivity extends BaseActivity implements OnMapReadyCa
                         bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                         ivShielingPhoto.setImageBitmap(bitmap);
                     }
+                } else {
+                    ivShielingPhoto.setVisibility(View.GONE);
                 }
             } else {
                 ivShielingPhoto.setVisibility(View.GONE);

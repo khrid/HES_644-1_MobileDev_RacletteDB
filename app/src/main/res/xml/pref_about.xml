@@ -15,6 +15,6 @@
         android:selectable="false"
         android:enabled="true"
         android:title="@string/pref_header_github"
-        android:summary="@string/pref_about_github" />
+        android:summary="@string/pref_about_github"/>
 
 </PreferenceScreen>

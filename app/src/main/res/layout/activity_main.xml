@@ -11,7 +11,7 @@
         android:id="@+id/tvMainShielingName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/dk_lemon_yellow_sun"
         android:text="@string/title_shieling_name"
         android:textAlignment="center"

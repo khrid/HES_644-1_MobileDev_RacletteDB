@@ -13,6 +13,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,6 +77,18 @@ public class SettingsActivity extends PreferenceActivity {
     protected void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        Preference myPref = (Preference) findPreference("github");
+        myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                Log.d(TAG, "clicked github link");
+                return true;
+            }
+        });
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 
     private static boolean isXLargeTablet(Context context) {
