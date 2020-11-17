@@ -294,29 +294,29 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     title = shielingEntity.getName();
                 }
             }
-            if(!pinAdded) {
+            if (!pinAdded) {
                 pinAdded = true;
                 Marker marker = googleMap.addMarker(new MarkerOptions().position(loc).title(title).draggable(true));
                 Log.d(TAG, "pose marqueur");
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
-                googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
-                    @Override
-                    public void onMarkerDragStart(Marker marker) {
-                    }
-
-                    @Override
-                    public void onMarkerDrag(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDragEnd(Marker marker) {
-                        Log.d(TAG, "Marker dropped at " + marker.getPosition().latitude + "/" + marker.getPosition().longitude);
-                        latitude = (float) marker.getPosition().latitude;
-                        longitude = (float) marker.getPosition().longitude;
-                    }
-                });
             }
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
+            googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+                @Override
+                public void onMarkerDragStart(Marker marker) {
+                }
+
+                @Override
+                public void onMarkerDrag(Marker marker) {
+
+                }
+
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+                    Log.d(TAG, "Marker dropped at " + marker.getPosition().latitude + "/" + marker.getPosition().longitude);
+                    latitude = (float) marker.getPosition().latitude;
+                    longitude = (float) marker.getPosition().longitude;
+                }
+            });
         });
     }
 }
