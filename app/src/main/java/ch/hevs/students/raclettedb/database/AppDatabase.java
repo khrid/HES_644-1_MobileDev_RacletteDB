@@ -61,8 +61,11 @@ public abstract class AppDatabase extends RoomDatabase {
                             // notify that the database was created and it's ready to be used
                             database.setDatabaseCreated();
                         });
+
                     }
-                })//.fallbackToDestructiveMigration() // TODO A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
+                })
+                // A faire quand on met à jour la structure de la DB (avec incrémentation du numéro de version de la DB)
+                //.fallbackToDestructiveMigration()
                 .build();
     }
 

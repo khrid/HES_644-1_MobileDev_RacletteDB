@@ -37,6 +37,7 @@ public class DatabaseInitializer {
         long turtmann = addShieling(db,"Turtmanntal");
 
 
+        // To be sure that the previous data are in the database
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

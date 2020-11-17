@@ -20,7 +20,6 @@ public class ShielingViewModel  extends AndroidViewModel {
 
     private ShielingRepository repository;
 
-    // MediatorLiveData can observe other LiveData objects and react on their emissions.
     private final MediatorLiveData<ShielingEntity> observableShieling;
 
     public ShielingViewModel(@NonNull Application application,
@@ -32,18 +31,14 @@ public class ShielingViewModel  extends AndroidViewModel {
         repository = shielingRepository;
 
         observableShieling = new MediatorLiveData<>();
-        // set by default null, until we get data from the database.
         observableShieling.setValue(null);
 
         LiveData<ShielingEntity> shieling = repository.getShieling(shielingId, application);
 
-        // observe the changes of the account entity from the database and forward them
         observableShieling.addSource(shieling, observableShieling::setValue);
     }
 
-    /**
-     * A creator is used to inject the account id into the ViewModel
-     */
+
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
 
         @NonNull
@@ -61,14 +56,10 @@ public class ShielingViewModel  extends AndroidViewModel {
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            //noinspection unchecked
             return (T) new ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel(application, shielingId, repository);
         }
     }
 
-    /**
-     * Expose the LiveData AccountEntity query so the UI can observe it.
-     */
     public LiveData<ShielingEntity> getShieling() {
         return observableShieling;
     }

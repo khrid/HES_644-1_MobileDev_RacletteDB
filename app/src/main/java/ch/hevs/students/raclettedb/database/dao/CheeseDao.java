@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -26,9 +25,6 @@ public interface CheeseDao {
 
     @Insert()
     long insert(CheeseEntity cheese) throws SQLiteConstraintException;
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<CheeseEntity> cheeses);
 
     @Update
     void update(CheeseEntity cheese);

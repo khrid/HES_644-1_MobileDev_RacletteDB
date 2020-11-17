@@ -7,8 +7,6 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import ch.hevs.students.raclettedb.ui.BaseActivity;
-
 @Entity(tableName = "cheeses",
         foreignKeys =
         @ForeignKey(

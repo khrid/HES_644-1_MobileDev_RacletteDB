@@ -23,7 +23,6 @@ import androidx.lifecycle.ViewModelProviders;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +46,7 @@ public class EditCheeseActivity extends BaseActivity {
     private CheeseEntity cheese = new CheeseEntity();
     private boolean isEditMode;
     private Toast toast;
+    private String toastString;
     private EditText etCheeseName;
     private EditText etCheeseDescription;
     private EditText etCheeseType;
@@ -55,7 +55,6 @@ public class EditCheeseActivity extends BaseActivity {
     private Button btSaveCheese;
     private ImageView ivCheese;
     private File destination = null;
-    private InputStream inputStreamImg;
     private String imgPath = null;
 
     private String currentPhotoPath = BaseActivity.IMAGE_CHEESE_DEFAULT;
@@ -91,9 +90,15 @@ public class EditCheeseActivity extends BaseActivity {
 
         btSaveCheese = findViewById(R.id.btSaveCheese);
         btSaveCheese.setOnClickListener(view -> {
-            saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), cheese.getImagePath());
+            if(!etCheeseName.getText().toString().isEmpty()) {
+                saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), cheese.getImagePath());
+                onBackPressed();
+                toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
+            }else{
+                toast = Toast.makeText(this, getString(R.string.cheese_edit_name_empty), Toast.LENGTH_LONG);
+                etCheeseName.requestFocus();
+            }
 
-            onBackPressed();
             toast.show();
         });
 
@@ -103,12 +108,12 @@ public class EditCheeseActivity extends BaseActivity {
             setTitle(R.string.empty);
             tvEditCheeseTitle.setText(R.string.cheese_new_title);
             btSaveCheese.setText(R.string.save);
-            toast = Toast.makeText(this, getString(R.string.cheese_new_created), Toast.LENGTH_LONG);
+            toastString = getString(R.string.cheese_new_created);
             isEditMode = false;
         } else {
             setTitle(R.string.empty);
             btSaveCheese.setText(R.string.update);
-            toast = Toast.makeText(this, getString(R.string.cheese_edit_edited), Toast.LENGTH_LONG);
+            toastString = getString(R.string.cheese_edit_edited);
             isEditMode = true;
         }
 
@@ -133,8 +138,6 @@ public class EditCheeseActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            //Bitmap thumbnail = (Bitmap) data.getExtras().get(MediaStore.EXTRA_OUTPUT);
-            //ivCheese.setImageBitmap(thumbnail);
             if (requestCode == 1) {
                 File imageFile = mediaUtils.getImageFile();
                 bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
@@ -153,8 +156,6 @@ public class EditCheeseActivity extends BaseActivity {
 
                     File f = mediaUtils.copyToLocalStorage(bitmap);
 
-                    /*imgPath = getRealPathFromURI(selectedImage);
-                    destination = new File(imgPath.toString());*/
                     cheese.setImagePath(f.getAbsolutePath());
                     ivCheese.setImageBitmap(bitmap);
 
@@ -201,7 +202,7 @@ public class EditCheeseActivity extends BaseActivity {
                             ivCheese.setOnLongClickListener(v -> removePicture());
                         }
                     }
-                    // TODO A faire comme ça ?
+
                     ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
                             getApplication(), cheese.getShieling());
                     shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
@@ -275,7 +276,6 @@ public class EditCheeseActivity extends BaseActivity {
             newCheese.setDescription(description);
             newCheese.setType(cheeseType);
             newCheese.setShieling(Shieling);
-            //newCheese.setImagePath(imagePath);
             if(BaseApp.CLOUD_ACTIVE) {
                 try {
                     newCheese.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));

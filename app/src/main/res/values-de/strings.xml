@@ -31,6 +31,7 @@
     <string name="cheese_edit_action">Käse bearbeiten</string>
     <string name="cheese_edit_title">Käse bearbeiten</string>
     <string name="cheese_edit_edited">Käse bearbeitet</string>
+    <string name="cheese_edit_name_empty">Der Name des Käses darf nicht leer sein</string>
     <string name="cheese_new_title">Neuer Käse</string>
     <string name="cheese_new_created">Käse erstellt</string>
     <string name="cheese_common_hint_cheese_name">Name des Käses</string>
@@ -73,6 +74,7 @@
     <string name="shieling_edit_action">Alpweide wechseln</string>
     <string name="shieling_edit_title">Alpweide wechseln</string>
     <string name="shieling_edit_edited">Alpweide verändert</string>
+    <string name="shieling_edit_name_empty">Der Name des Alpweide darf nicht leer sein</string>
     <string name="shieling_new_title">Neue Alpweide</string>
     <string name="shieling_new_created">Alpweide erstellt</string>
     <string name="shieling_common_hint_cheese_name">Name der Alpweide</string>

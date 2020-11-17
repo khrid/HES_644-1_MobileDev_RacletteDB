@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,14 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.lifecycle.ViewModelProviders;
-
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
@@ -134,7 +126,6 @@ public class CheeseDetailActivity extends BaseActivity {
         if (cheese != null) {
             setTitle(R.string.empty);
             tvCheeseName.setText(cheese.getName());
-            //tvCheeseShieling.setText(cheese.getShieling().toString());
             tvCheeseType.setText(cheese.getType());
             tvCheeseDescription.setText(cheese.getDescription());
 
@@ -155,7 +146,6 @@ public class CheeseDetailActivity extends BaseActivity {
                 ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
             }
 
-            // TODO A faire comme ça ?
             ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
                     getApplication(), cheese.getShieling());
             shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);

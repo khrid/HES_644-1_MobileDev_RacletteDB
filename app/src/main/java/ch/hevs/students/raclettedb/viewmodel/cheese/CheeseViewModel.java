@@ -20,7 +20,6 @@ public class CheeseViewModel  extends AndroidViewModel {
 
     private CheeseRepository repository;
 
-    // MediatorLiveData can observe other LiveData objects and react on their emissions.
     private final MediatorLiveData<CheeseEntity> observableCheese;
 
     public CheeseViewModel(@NonNull Application application,
@@ -32,18 +31,13 @@ public class CheeseViewModel  extends AndroidViewModel {
         repository = cheeseRepository;
 
         observableCheese = new MediatorLiveData<>();
-        // set by default null, until we get data from the database.
         observableCheese.setValue(null);
 
         LiveData<CheeseEntity> cheese = repository.getCheese(cheeseId, application);
 
-        // observe the changes of the account entity from the database and forward them
         observableCheese.addSource(cheese, observableCheese::setValue);
     }
 
-    /**
-     * A creator is used to inject the account id into the ViewModel
-     */
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
 
         @NonNull
@@ -61,14 +55,10 @@ public class CheeseViewModel  extends AndroidViewModel {
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            //noinspection unchecked
             return (T) new ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel(application, cheeseId, repository);
         }
     }
 
-    /**
-     * Expose the LiveData AccountEntity query so the UI can observe it.
-     */
     public LiveData<CheeseEntity> getCheese() {
         return observableCheese;
     }

@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,20 +60,8 @@ public class ShielingsActivity extends BaseActivity {
 
         RecyclerView recyclerView = findViewById(R.id.shielingsRecyclerView);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        //mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                LinearLayoutManager.VERTICAL);
-        //recyclerView.addItemDecoration(dividerItemDecoration);
-
-        SharedPreferences settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
-        String user = settings.getString(BaseActivity.PREFS_USER, null);
 
         shielings = new ArrayList<>();
         adapter = new RecyclerAdapter<>(new RecyclerViewItemClickListener() {
@@ -108,10 +95,6 @@ public class ShielingsActivity extends BaseActivity {
         if(isAdmin) {
             fab.setOnClickListener(view -> {
                         Intent intent = new Intent(ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity.this, EditShielingActivity.class);
-                        /*intent.setFlags(
-                                Intent.FLAG_ACTIVITY_NO_ANIMATION |
-                                        Intent.FLAG_ACTIVITY_NO_HISTORY
-                        );*/
                         startActivity(intent);
                     }
             );

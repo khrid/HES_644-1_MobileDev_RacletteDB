@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,19 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProviders;
-
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
@@ -46,6 +37,7 @@ public class EditShielingActivity extends BaseActivity {
     private ShielingEntity shieling = new ShielingEntity();
     private boolean isEditMode;
     private Toast toast;
+    private String toastString;
     private EditText etShielingName;
     private EditText etShielingDescription;
     private TextView tvEditShielingTitle;
@@ -76,8 +68,15 @@ public class EditShielingActivity extends BaseActivity {
         etShielingDescription = findViewById(R.id.etShielingDescription);
         Button btSaveShieling = findViewById(R.id.btSaveShieling);
         btSaveShieling.setOnClickListener(view -> {
-            saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagePath());
-            onBackPressed();
+            if(!etShielingName.getText().toString().isEmpty()) {
+                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagePath());
+                onBackPressed();
+                toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
+            }else{
+                toast = Toast.makeText(this, getString(R.string.shieling_edit_name_empty), Toast.LENGTH_LONG);
+                etShielingName.requestFocus();
+            }
+
             toast.show();
         });
 
@@ -85,12 +84,12 @@ public class EditShielingActivity extends BaseActivity {
         if (shielingId == 0L) {
             setTitle(getString(R.string.empty));
             tvEditShielingTitle.setText(R.string.shieling_new_title);
-            toast = Toast.makeText(this, getString(R.string.shieling_new_created), Toast.LENGTH_LONG);
+            toastString = getString(R.string.shieling_new_created);
             isEditMode = false;
         } else {
             setTitle(getString(R.string.title_activity_edit_shieling));
             btSaveShieling.setText(R.string.update);
-            toast = Toast.makeText(this, getString(R.string.shieling_edit_edited), Toast.LENGTH_LONG);
+            toastString = getString(R.string.shieling_edit_edited);
             isEditMode = true;
         }
 
@@ -137,8 +136,6 @@ public class EditShielingActivity extends BaseActivity {
         Bitmap bitmap;
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK) {
-            //Bitmap thumbnail = (Bitmap) data.getExtras().get(MediaStore.EXTRA_OUTPUT);
-            //ivCheese.setImageBitmap(thumbnail);
             if(requestCode == 1) {
 
                 File imageFile = mediaUtils.getImageFile();
@@ -158,8 +155,6 @@ public class EditShielingActivity extends BaseActivity {
 
                     File f = mediaUtils.copyToLocalStorage(bitmap);
 
-                    /*imgPath = getRealPathFromURI(selectedImage);
-                    destination = new File(imgPath.toString());*/
                     shieling.setImagePath(f.getAbsolutePath());
                     ivShieling.setImageBitmap(bitmap);
 

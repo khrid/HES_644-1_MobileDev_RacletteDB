@@ -13,7 +13,7 @@ public class BaseApp extends Application {
 
     public static final String APP_NAME = "RacletteDB";
 
-    public static final String ADMIN_PASSWORD = "castor";
+    public static final String ADMIN_PASSWORD = "BestCheeses";
 
     public static final boolean CLOUD_ACTIVE = false;
 

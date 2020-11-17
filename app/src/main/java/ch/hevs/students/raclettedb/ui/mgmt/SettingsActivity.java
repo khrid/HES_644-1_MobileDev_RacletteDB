@@ -13,7 +13,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,28 +53,20 @@ public class SettingsActivity extends PreferenceActivity {
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
 
-    /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
+
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = (preference, value) -> {
         String stringValue = value.toString();
 
         if (preference instanceof ListPreference) {
-            // For list preferences, look up the correct display value in
-            // the preference's 'entries' list.
             ListPreference listPreference = (ListPreference) preference;
             int index = listPreference.findIndexOfValue(stringValue);
 
-            // Set the summary to reflect the new value.
             preference.setSummary(
                     index >= 0
                             ? listPreference.getEntries()[index]
                             : null);
 
         } else {
-            // For all other preferences, set the summary to the value's
-            // simple string representation.
             preference.setSummary(stringValue);
         }
         return true;
@@ -84,72 +75,28 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");
-        // Récupération du stockage commun
-        /*settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
-        editor = settings.edit();
-        if(settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
-            Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
-            editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
-            editor.apply();
-        }*/
         super.onResume();
     }
 
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
     private static boolean isXLargeTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
     }
 
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
-        if (settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
-            //Utils.changeLocale(settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT), this);
-            //editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
-            //editor.apply();
-            // On force la recréation de l'activity pour prendre en compte la nouvelle locale
-            //Log.d(TAG, "Recreating activity");
-            //recreate();
-            //getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
-        }
         setupActionBar();
         setActionBarTitle(getString(R.string.title_activity_settings));
     }
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
+
     private void setupActionBar() {
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
-            // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -170,27 +117,20 @@ public class SettingsActivity extends PreferenceActivity {
         return super.onMenuItemSelected(featureId, item);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public boolean onIsMultiPane() {
         return isXLargeTablet(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<PreferenceActivity.Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
-    /**
-     * This method stops fragment injection in malicious applications.
-     * Make sure to deny any unknown fragments here.
-     */
+
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || AboutPreferenceFragment.class.getName().equals(fragmentName)
@@ -198,10 +138,7 @@ public class SettingsActivity extends PreferenceActivity {
                 || ResetDatabaseFragment.class.getName().equals(fragmentName);
     }
 
-    /**
-     * This fragment shows general preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class AboutPreferenceFragment extends PreferenceFragment {
         @Override

@@ -41,6 +41,7 @@
     <string name="cheese_edit_action">Edit cheese</string>
     <string name="cheese_edit_title">Edit cheese</string>
     <string name="cheese_edit_edited">Cheese edited</string>
+    <string name="cheese_edit_name_empty">The name of the cheese cannot be empty</string>
     <!-- Cheese detail - new -->
     <string name="cheese_new_title">New cheese</string>
     <string name="cheese_new_created">Cheese created</string>
@@ -63,6 +64,7 @@
     <string name="shieling_edit_action">Edit shieling</string>
     <string name="shieling_edit_title">Edit shieling</string>
     <string name="shieling_edit_edited">Shieling edited</string>
+    <string name="shieling_edit_name_empty">The name of the shieling cannot be empty</string>
     <!-- Shieling detail - new -->
     <string name="shieling_new_title">New shieling</string>
     <string name="shieling_new_created">Shieling created</string>

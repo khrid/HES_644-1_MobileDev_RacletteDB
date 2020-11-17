@@ -2,11 +2,8 @@ package ch.hevs.students.raclettedb.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,19 +19,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 
-import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
-import java.util.Locale;
+
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
-import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
 import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
@@ -48,9 +39,7 @@ public class MainActivity extends BaseActivity {
 
     private boolean isAdmin = false;
     private String currentLocale = "";
-    private List<CheeseEntity> cheeses;
     private CheeseRepository cheeseRepository;
-    private List<ShielingEntity> shielings;
     private ShielingRepository shielingRepository;
     private TextView[] tvMainFavorites;
     private ImageView[] ivMainFavorites;
@@ -64,7 +53,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
-        //getSharedPreferences(BaseActivity.PREFS_NAME, 0).edit().clear().apply();
         // Récupération du stockage commun
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
@@ -72,7 +60,6 @@ public class MainActivity extends BaseActivity {
         isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
 
         if (settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT).equals(BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)) {
-            //Log.d(TAG, "system default locale 3 "+Resources.getSystem().getConfiguration().locale.getLanguage());
             LocaleUtils.resetToSystemLocale(this);
         }
 
@@ -115,7 +102,6 @@ public class MainActivity extends BaseActivity {
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
         cheeseRepository.getAllCheeses(getApplication()).observe(MainActivity.this, cheeseEntities -> {
             tl.removeAllViews();
-            //cheeses = cheeseEntities;
             int i = 0;
             TableRow trImages = new TableRow(this);
             TableRow trLabels = new TableRow(this);
@@ -178,7 +164,6 @@ public class MainActivity extends BaseActivity {
 
         shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
         shielingRepository.getAllShielings(getApplication()).observe(MainActivity.this, shielingEntities -> {
-            //shielings = shielingEntities;
 
             if (shielingEntities.size() > 0) {
                 tvMainShielingName.setText(shielingEntities.get(0).getName());
@@ -242,15 +227,6 @@ public class MainActivity extends BaseActivity {
         ivMainFavorites[2] = findViewById(R.id.ivMainFavorites3);
     }
 
-    /*private void updateContent() {
-        if (cheeses != null && cheeses.size() > 0) {
-            tvMainFavorites1.setText(cheeses.get(0).getName());
-            tvMainFavorites2.setText(cheeses.get(1).getName());
-            tvMainFavorites3.setText(cheeses.get(2).getName());
-            //tv_main_shieling_name.setText(shielings.get(0).getName());
-        }
-    }*/
-
     public void showCheese(Long cheeseId) {
         Intent intent = new Intent(MainActivity.this, CheeseDetailActivity.class);
         intent.setFlags(
@@ -271,18 +247,4 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void changeLocale(String code) {
-        Log.d(TAG, "code=" + code + " // currentLocale=" + currentLocale);
-        //if(!currentLocale.equals(code)) {
-        currentLocale = code;
-        Log.d(TAG, "changeLocale(" + code + ")");
-        Locale locale = new Locale(code);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        Resources resources = getResources();
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-        recreate();
-        //}
-    }
 }

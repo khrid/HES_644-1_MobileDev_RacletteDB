@@ -3,14 +3,11 @@ package ch.hevs.students.raclettedb.adapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.graphics.Typeface;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.List;
-import java.util.Objects;
 
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
@@ -22,17 +19,12 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
     private List<T> mData;
     private RecyclerViewItemClickListener mListener;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
+
     static class ViewHolder extends RecyclerView.ViewHolder {
-        Context mContext;
-        // each data item is just a string in this case
         TextView mTextView;
-        ViewHolder(/*Context context, */ TextView textView) {
+        ViewHolder(TextView textView) {
             super(textView);
             mTextView = textView;
-            //mContext = context;
         }
     }
 
@@ -42,7 +34,6 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
 
     @Override
     public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
         TextView v = (TextView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_view, parent, false);
         final ViewHolder viewHolder = new ViewHolder(v);
