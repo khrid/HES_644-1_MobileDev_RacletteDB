@@ -286,30 +286,10 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
             LatLng loc = BaseApp.NO_LOCATION;
             String title = getString(R.string.shieling_new_title);
             if (shielingEntity != null) {
-                LatLng loc = BaseApp.NO_LOCATION;
                 if (shielingEntity.getLatitude() != 0.0f && shielingEntity.getLongitude() != 0.0f) {
                     loc = new LatLng(shielingEntity.getLatitude(), shielingEntity.getLongitude());
                     title = shielingEntity.getName();
                 }
-                Marker marker = googleMap.addMarker(new MarkerOptions().position(loc).title(shielingEntity.getName()).draggable(true));
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
-                googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
-                    @Override
-                    public void onMarkerDragStart(Marker marker) {
-                    }
-
-                    @Override
-                    public void onMarkerDrag(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDragEnd(Marker marker) {
-                        Log.d(TAG, "Marker dropped at "+marker.getPosition().latitude+"/"+marker.getPosition().longitude);
-                        shielingEntity.setLongitude((float) marker.getPosition().longitude);
-                        shielingEntity.setLatitude((float) marker.getPosition().latitude);
-                    }
-                });
             }
             Marker marker = googleMap.addMarker(new MarkerOptions().position(loc).title(title).draggable(true));
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
