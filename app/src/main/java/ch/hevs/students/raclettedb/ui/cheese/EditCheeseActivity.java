@@ -189,6 +189,7 @@ public class EditCheeseActivity extends BaseActivity {
                     etCheeseDescription.setText(cheese.getDescription());
                     etCheeseType.setText(cheese.getType());
 
+                    ivCheese.setOnLongClickListener(v -> removePicture());
                     if (!TextUtils.isEmpty(cheese.getImagePath())) {
                         if (!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             if(BaseApp.CLOUD_ACTIVE) {
@@ -199,7 +200,6 @@ public class EditCheeseActivity extends BaseActivity {
                                 ivCheese.setImageBitmap(bitmap);
                                 ivCheese.setTag(cheese.getImagePath());
                             }
-                            ivCheese.setOnLongClickListener(v -> removePicture());
                         }
                     }
 

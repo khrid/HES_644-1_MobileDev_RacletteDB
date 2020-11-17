@@ -15,6 +15,9 @@ When displaying the cheeses / shielings list, long press on the desired item. Be
 ### Remove a cheese / shieling picture
 Long press on the picture while in edit mode
 
+### Edit a shieling location
+Long press on the marker, then move at wanted location
+
 # Project goals
 ## Initial scope
  - [x] User interface allowing to

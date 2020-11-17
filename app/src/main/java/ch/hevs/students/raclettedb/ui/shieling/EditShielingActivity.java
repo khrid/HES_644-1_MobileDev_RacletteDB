@@ -115,6 +115,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     shieling = shielingEntity;
                     etShielingName.setText(shieling.getName());
                     etShielingDescription.setText(shieling.getDescription());
+                    ivShieling.setOnLongClickListener(v -> removePicture());
                     if(!TextUtils.isEmpty(shieling.getImagePath())) {
                         if(!shieling.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             if(BaseApp.CLOUD_ACTIVE) {
@@ -125,7 +126,6 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                                 ivShieling.setImageBitmap(bitmap);
                                 ivShieling.setTag(shieling.getImagePath());
                             }
-                            ivShieling.setOnLongClickListener(v -> removePicture());
                         }
                     }
                     CustomSupportMapFragment mapFragment = (CustomSupportMapFragment) getSupportFragmentManager()
