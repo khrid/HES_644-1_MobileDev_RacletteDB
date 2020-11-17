@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "762591610046",
+    "firebase_url": "https://raclettedb.firebaseio.com",
+    "project_id": "raclettedb",
+    "storage_bucket": "raclettedb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762591610046:android:61e9a09a716c1c67914aef",
+        "android_client_info": {
+          "package_name": "ch.hevs.students.raclettedb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "762591610046-cepdrebsrq45bs7s2n4ommcavef42u5p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUc-6FvRgZXED8HHYtZLKbhVli7w1zQAc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "762591610046-cepdrebsrq45bs7s2n4ommcavef42u5p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
