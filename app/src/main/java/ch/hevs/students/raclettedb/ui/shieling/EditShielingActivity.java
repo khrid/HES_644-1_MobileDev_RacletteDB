@@ -277,6 +277,8 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     if (shielingEntity.getLatitude() != 0.0f && shielingEntity.getLongitude() != 0.0f) {
                         loc = new LatLng(shielingEntity.getLatitude(), shielingEntity.getLongitude());
                         title = shielingEntity.getName();
+                        latitude = (float) loc.latitude;
+                        longitude = (float) loc.longitude;
                     }
                 }
                 Log.d(TAG, "loc " + loc.latitude + " // " + loc.longitude);
