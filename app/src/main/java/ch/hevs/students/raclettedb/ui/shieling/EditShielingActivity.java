@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -66,6 +68,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         // Récupération du stockage commun
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
@@ -131,22 +134,6 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                             }
                         }
                     }
-
-
-
-                    /*FragmentContainerView fcvMap = findViewById(R.id.fcvEditShielingMap);
-                    TextView tvShielingLocation = findViewById(R.id.tvShielingLocation);
-                    if (shieling.getLatitude() != 0.0f && shieling.getLongitude() != 0.0f) {
-                        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                                .findFragmentById(R.id.fcvShielingMap);
-                        mapFragment.getMapAsync(this);
-                        navigationView.setCheckedItem(position);
-                        fcvMap.setVisibility(View.VISIBLE);
-                        tvShielingLocation.setVisibility(View.VISIBLE);
-                    } else {
-                        fcvMap.setVisibility(View.GONE);
-                        tvShielingLocation.setVisibility(View.GONE);
-                    }*/
                 }
             });
         }
@@ -157,7 +144,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         mapFragment.setListener(() -> nsvEditShieling.requestDisallowInterceptTouchEvent(true));
 
         mapFragment.getMapAsync(this);
-        navigationView.setCheckedItem(position);
+        //navigationView.setCheckedItem(position);
 
     }
 
@@ -271,44 +258,48 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 }
             });
         }
-        CustomSupportMapFragment mapFragment = (CustomSupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fcvEditShielingMap);
-        NestedScrollView nsvEditShieling = findViewById(R.id.nsvEditShieling);
-        mapFragment.setListener(() -> nsvEditShieling.requestDisallowInterceptTouchEvent(true));
+    }
 
-        mapFragment.getMapAsync(this);
-        navigationView.setCheckedItem(position);
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_settings);
+        item.setVisible(false);
+        super.onPrepareOptionsMenu(menu);
+        return true;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        viewModel.getShieling().observe(this, shielingEntity -> {
-            LatLng loc = BaseApp.NO_LOCATION;
-            String title = getString(R.string.shieling_new_title);
-            if (shielingEntity != null) {
-                if (shielingEntity.getLatitude() != 0.0f && shielingEntity.getLongitude() != 0.0f) {
-                    loc = new LatLng(shielingEntity.getLatitude(), shielingEntity.getLongitude());
-                    title = shielingEntity.getName();
+            viewModel.getShieling().observe(this, shielingEntity -> {
+                LatLng loc = BaseApp.NO_LOCATION;
+                String title = getString(R.string.shieling_new_title);
+                if (shielingEntity != null) {
+                    if (shielingEntity.getLatitude() != 0.0f && shielingEntity.getLongitude() != 0.0f) {
+                        loc = new LatLng(shielingEntity.getLatitude(), shielingEntity.getLongitude());
+                        title = shielingEntity.getName();
+                    }
                 }
-            }
-            Marker marker = googleMap.addMarker(new MarkerOptions().position(loc).title(title).draggable(true));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
-            googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
-                @Override
-                public void onMarkerDragStart(Marker marker) {
-                }
-                @Override
-                public void onMarkerDrag(Marker marker) {
+                Log.d(TAG, "loc " + loc.latitude + " // " + loc.longitude);
+                googleMap.clear();
+                googleMap.addMarker(new MarkerOptions().position(loc).title(title).draggable(true));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
+                googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+                    @Override
+                    public void onMarkerDragStart(Marker marker) {
+                    }
 
-                }
+                    @Override
+                    public void onMarkerDrag(Marker marker) {
 
-                @Override
-                public void onMarkerDragEnd(Marker marker) {
-                    Log.d(TAG, "Marker dropped at "+marker.getPosition().latitude+"/"+marker.getPosition().longitude);
-                    latitude = (float) marker.getPosition().latitude;
-                    longitude = (float) marker.getPosition().longitude;
-                }
+                    }
+
+                    @Override
+                    public void onMarkerDragEnd(Marker marker) {
+                        Log.d(TAG, "Marker dropped at " + marker.getPosition().latitude + "/" + marker.getPosition().longitude);
+                        latitude = (float) marker.getPosition().latitude;
+                        longitude = (float) marker.getPosition().longitude;
+                    }
+                });
             });
-        });
     }
 }

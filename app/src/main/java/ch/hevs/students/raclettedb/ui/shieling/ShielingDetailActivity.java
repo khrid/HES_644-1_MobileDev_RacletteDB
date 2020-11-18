@@ -151,7 +151,7 @@ public class ShielingDetailActivity extends BaseActivity implements OnMapReadyCa
                 NestedScrollView nsvEditShieling = findViewById(R.id.nsvShielingDetail);
                 mapFragment.setListener(() -> nsvEditShieling.requestDisallowInterceptTouchEvent(true));
                 mapFragment.getMapAsync(this);
-                navigationView.setCheckedItem(position);
+                //navigationView.setCheckedItem(position);
                 fcvMap.setVisibility(View.VISIBLE);
                 tvShielingLocation.setVisibility(View.VISIBLE);
             } else {
