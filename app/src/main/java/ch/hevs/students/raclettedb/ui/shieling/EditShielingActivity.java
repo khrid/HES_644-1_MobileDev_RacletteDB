@@ -96,8 +96,8 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
             toast.show();
         });
 
-        Long shielingId = getIntent().getLongExtra("shielingId", 0L);
-        if (shielingId == 0L) {
+        String shielingId = getIntent().getStringExtra("shielingId");
+        if (shielingId.isEmpty()) {
             setTitle(getString(R.string.empty));
             tvEditShielingTitle.setText(R.string.shieling_new_title);
             toastString = getString(R.string.shieling_new_created);

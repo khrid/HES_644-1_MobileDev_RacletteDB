@@ -19,9 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 
-
 import java.io.ByteArrayOutputStream;
-
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
@@ -100,7 +98,7 @@ public class MainActivity extends BaseActivity {
         // on vide le tablelayout
         TableLayout tl = findViewById(R.id.tableLayout);
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
-        cheeseRepository.getAllCheeses(getApplication()).observe(MainActivity.this, cheeseEntities -> {
+        cheeseRepository.getAllCheeses().observe(MainActivity.this, cheeseEntities -> {
             tl.removeAllViews();
             int i = 0;
             TableRow trImages = new TableRow(this);
@@ -163,7 +161,7 @@ public class MainActivity extends BaseActivity {
         });
 
         shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
-        shielingRepository.getAllShielings(getApplication()).observe(MainActivity.this, shielingEntities -> {
+        shielingRepository.getAllShielings().observe(MainActivity.this, shielingEntities -> {
 
             if (shielingEntities.size() > 0) {
                 tvMainShielingName.setText(shielingEntities.get(0).getName());
@@ -227,7 +225,7 @@ public class MainActivity extends BaseActivity {
         ivMainFavorites[2] = findViewById(R.id.ivMainFavorites3);
     }
 
-    public void showCheese(Long cheeseId) {
+    public void showCheese(String cheeseId) {
         Intent intent = new Intent(MainActivity.this, CheeseDetailActivity.class);
         intent.setFlags(
                 Intent.FLAG_ACTIVITY_NO_ANIMATION |
@@ -237,7 +235,7 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void showShieling(Long shielingId) {
+    public void showShieling(String shielingId) {
         Intent intent = new Intent(MainActivity.this, ShielingDetailActivity.class);
         intent.setFlags(
                 Intent.FLAG_ACTIVITY_NO_ANIMATION |

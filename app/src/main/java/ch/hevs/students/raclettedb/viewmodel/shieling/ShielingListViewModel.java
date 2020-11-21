@@ -28,16 +28,16 @@ public class ShielingListViewModel extends AndroidViewModel {
                                ShielingRepository shielingRepository) {
         super(application);
 
-        this.application = application;
-
         repository = shielingRepository;
 
         observableShielings = new MediatorLiveData<>();
+        // set by default null, until we get data from the database.
         observableShielings.setValue(null);
 
-        LiveData<List<ShielingEntity>> shielings = repository.getAllShielings(application);
+        LiveData<List<ShielingEntity>> ownAccounts = repository.getAllShielings();
 
-        observableShielings.addSource(shielings, observableShielings::setValue);
+        // observe the changes of the entities from the database and forward them
+        observableShielings.addSource(ownAccounts, observableShielings::setValue);
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
@@ -54,7 +54,7 @@ public class ShielingListViewModel extends AndroidViewModel {
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            return (T) new ch.hevs.students.raclettedb.viewmodel.shieling.ShielingListViewModel(application,shielingRepository);
+            return (T) new ShielingListViewModel(application,shielingRepository);
         }
     }
 
@@ -63,7 +63,8 @@ public class ShielingListViewModel extends AndroidViewModel {
     }
 
     public void deleteShieling(ShielingEntity shieling, OnAsyncEventListener callback) {
-        repository.delete(shieling, callback, application);
+        ((BaseApp) getApplication()).getShielingRepository()
+                .delete(shieling, callback);
     }
 
 }

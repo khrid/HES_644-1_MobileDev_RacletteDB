@@ -12,7 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.lifecycle.ViewModelProviders;
+
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
@@ -52,7 +54,7 @@ public class CheeseDetailActivity extends BaseActivity {
 
         navigationView.setCheckedItem(position);
 
-        Long cheeseId = getIntent().getLongExtra("cheeseId", 0L);
+        String cheeseId = getIntent().getStringExtra("cheeseId");
 
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
@@ -147,14 +149,14 @@ public class CheeseDetailActivity extends BaseActivity {
                 ivCheesePhoto.setVisibility(View.GONE);
             }
 
-            ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
+            /*ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
                     getApplication(), cheese.getShieling());
             shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
             shielingViewModel.getShieling().observe(this, shielingEntity -> {
                 if (shielingEntity != null) {
                     tvCheeseShieling.setText(shielingEntity.getName());
                 }
-            });
+            });*/
 
             Log.i(TAG, "Activity populated.");
         }

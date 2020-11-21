@@ -23,7 +23,7 @@ public class CheeseViewModel  extends AndroidViewModel {
     private final MediatorLiveData<CheeseEntity> observableCheese;
 
     public CheeseViewModel(@NonNull Application application,
-                            final Long cheeseId, CheeseRepository cheeseRepository) {
+                            final String cheeseId, CheeseRepository cheeseRepository) {
         super(application);
 
         this.application = application;
@@ -33,7 +33,7 @@ public class CheeseViewModel  extends AndroidViewModel {
         observableCheese = new MediatorLiveData<>();
         observableCheese.setValue(null);
 
-        LiveData<CheeseEntity> cheese = repository.getCheese(cheeseId, application);
+        LiveData<CheeseEntity> cheese = repository.getCheese(cheeseId);
 
         observableCheese.addSource(cheese, observableCheese::setValue);
     }
@@ -43,19 +43,20 @@ public class CheeseViewModel  extends AndroidViewModel {
         @NonNull
         private final Application application;
 
-        private final Long cheeseId;
+        private final String cheeseId;
 
         private final CheeseRepository repository;
 
-        public Factory(@NonNull Application application, Long cheeseId) {
+        public Factory(@NonNull Application application, String cheeseId) {
             this.application = application;
             this.cheeseId = cheeseId;
+            //repository = ((BaseApp) application).getRoomCheeseRepository();
             repository = ((BaseApp) application).getCheeseRepository();
         }
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            return (T) new ch.hevs.students.raclettedb.viewmodel.cheese.CheeseViewModel(application, cheeseId, repository);
+            return (T) new CheeseViewModel(application, cheeseId, repository);
         }
     }
 
@@ -64,10 +65,12 @@ public class CheeseViewModel  extends AndroidViewModel {
     }
 
     public void createCheese(CheeseEntity cheese, OnAsyncEventListener callback) {
-        repository.insert(cheese, callback, application);
+        ((BaseApp) getApplication()).getCheeseRepository()
+                .insert(cheese, callback);
     }
 
     public void updateCheese(CheeseEntity cheese, OnAsyncEventListener callback) {
-        repository.update(cheese, callback, application);
+        ((BaseApp) getApplication()).getCheeseRepository()
+                .update(cheese, callback);
     }
 }

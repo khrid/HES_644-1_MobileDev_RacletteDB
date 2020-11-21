@@ -23,7 +23,7 @@ public class ShielingViewModel  extends AndroidViewModel {
     private final MediatorLiveData<ShielingEntity> observableShieling;
 
     public ShielingViewModel(@NonNull Application application,
-                           final Long shielingId, ShielingRepository shielingRepository) {
+                           final String shielingId, ShielingRepository shielingRepository) {
         super(application);
 
         this.application = application;
@@ -33,7 +33,7 @@ public class ShielingViewModel  extends AndroidViewModel {
         observableShieling = new MediatorLiveData<>();
         observableShieling.setValue(null);
 
-        LiveData<ShielingEntity> shieling = repository.getShieling(shielingId, application);
+        LiveData<ShielingEntity> shieling = repository.getShieling(shielingId);
 
         observableShieling.addSource(shieling, observableShieling::setValue);
     }
@@ -44,19 +44,20 @@ public class ShielingViewModel  extends AndroidViewModel {
         @NonNull
         private final Application application;
 
-        private final Long shielingId;
+        private final String shielingId;
 
         private final ShielingRepository repository;
 
-        public Factory(@NonNull Application application, Long shielingId) {
+        public Factory(@NonNull Application application, String shielingId) {
             this.application = application;
             this.shielingId = shielingId;
+            //repository = ((BaseApp) application).getRoomShielingRepository();
             repository = ((BaseApp) application).getShielingRepository();
         }
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            return (T) new ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel(application, shielingId, repository);
+            return (T) new ShielingViewModel(application, shielingId, repository);
         }
     }
 
@@ -65,10 +66,12 @@ public class ShielingViewModel  extends AndroidViewModel {
     }
 
     public void createShieling(ShielingEntity shieling, OnAsyncEventListener callback) {
-        repository.insert(shieling, callback, application);
+        ((BaseApp) getApplication()).getShielingRepository()
+                .insert(shieling, callback);
     }
 
     public void updateShieling(ShielingEntity shieling, OnAsyncEventListener callback) {
-        repository.update(shieling, callback, application);
+        ((BaseApp) getApplication()).getShielingRepository()
+                .update(shieling, callback);
     }
 }

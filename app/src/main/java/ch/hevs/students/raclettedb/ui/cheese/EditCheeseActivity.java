@@ -42,7 +42,7 @@ public class EditCheeseActivity extends BaseActivity {
 
     private static final String TAG = "TAG-" + BaseApp.APP_NAME + "-EditCheeseActivity";
 
-    private Long cheeseId;
+    private String cheeseId;
     private CheeseEntity cheese = new CheeseEntity();
     private boolean isEditMode;
     private Toast toast;
@@ -103,8 +103,8 @@ public class EditCheeseActivity extends BaseActivity {
         });
 
 
-        cheeseId = getIntent().getLongExtra("cheeseId", 0L);
-        if (cheeseId == 0L) {
+        cheeseId = getIntent().getStringExtra("cheeseId");
+        if (cheeseId.isEmpty()) {
             setTitle(R.string.empty);
             tvEditCheeseTitle.setText(R.string.cheese_new_title);
             btSaveCheese.setText(R.string.save);
@@ -203,14 +203,14 @@ public class EditCheeseActivity extends BaseActivity {
                         }
                     }
 
-                    ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
+                    /*ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
                             getApplication(), cheese.getShieling());
                     shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
                     shielingViewModel.getShieling().observe(this, shielingEntity -> {
                         if (shielingEntity != null) {
                             spinCheeseShieling.setSelection(adapterShieling.getPosition(shielingEntity));
                         }
-                    });
+                    });*/
                 }
             });
         }
@@ -242,13 +242,13 @@ public class EditCheeseActivity extends BaseActivity {
     }
 
 
-    private void saveChanges(String cheeseName, String description, String cheeseType, Long Shieling, String imagePath) {
+    private void saveChanges(String cheeseName, String description, String cheeseType, String Shieling, String imagePath) {
         if (isEditMode) {
             if (!"".equals(cheeseName)) {
                 cheese.setName(cheeseName);
                 cheese.setDescription(description);
                 cheese.setType(cheeseType);
-                cheese.setShieling(Shieling);
+                //cheese.setShieling(Shieling);
                 if(BaseApp.CLOUD_ACTIVE) {
                     try {
                         cheese.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
@@ -275,7 +275,7 @@ public class EditCheeseActivity extends BaseActivity {
             newCheese.setName(cheeseName);
             newCheese.setDescription(description);
             newCheese.setType(cheeseType);
-            newCheese.setShieling(Shieling);
+            //newCheese.setShieling(Shieling);
             if(BaseApp.CLOUD_ACTIVE) {
                 try {
                     newCheese.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));

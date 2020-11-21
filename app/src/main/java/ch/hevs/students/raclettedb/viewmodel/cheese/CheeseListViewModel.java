@@ -35,7 +35,7 @@ public class CheeseListViewModel extends AndroidViewModel {
         observableCheeses = new MediatorLiveData<>();
         observableCheeses.setValue(null);
 
-        LiveData<List<CheeseEntity>> cheeses = repository.getAllCheeses(application);
+        LiveData<List<CheeseEntity>> cheeses = repository.getAllCheeses();
 
         observableCheeses.addSource(cheeses, observableCheeses::setValue);
     }
@@ -54,7 +54,7 @@ public class CheeseListViewModel extends AndroidViewModel {
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            return (T) new ch.hevs.students.raclettedb.viewmodel.cheese.CheeseListViewModel(application,cheeseRepository);
+            return (T) new CheeseListViewModel(application,cheeseRepository);
         }
     }
 
@@ -64,7 +64,8 @@ public class CheeseListViewModel extends AndroidViewModel {
     }
 
     public void deleteCheese(CheeseEntity cheese, OnAsyncEventListener callback) {
-        repository.delete(cheese, callback, application);
+        ((BaseApp) getApplication()).getCheeseRepository()
+                .delete(cheese, callback);
     }
 
 }

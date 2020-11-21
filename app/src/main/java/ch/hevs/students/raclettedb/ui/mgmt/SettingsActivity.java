@@ -30,11 +30,8 @@ import java.util.List;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
-import ch.hevs.students.raclettedb.database.AppDatabase;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.util.LocaleUtils;
-
-import static ch.hevs.students.raclettedb.database.AppDatabase.initializeDemoData;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -255,7 +252,7 @@ public class SettingsActivity extends PreferenceActivity {
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.execute), (dialog, which) -> {
                 Toast toast = Toast.makeText(ctx, getString(R.string.settings_data_room_reset_successful), Toast.LENGTH_LONG);
                 if (target == 0) {
-                    initializeDemoData(AppDatabase.getInstance(ctx));
+                    //initializeDemoData(AppDatabase.getInstance(ctx));
                 } else if (target == 1) {
                     settings.edit().clear().apply();
                     Log.d(TAG, settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT));

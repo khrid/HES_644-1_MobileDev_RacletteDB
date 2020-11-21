@@ -43,7 +43,7 @@ public class ShielingDetailActivity extends BaseActivity implements OnMapReadyCa
     private ImageView ivShielingPhoto;
 
     private ShielingViewModel viewModel;
-    Long shielingId;
+    String shielingId;
 
     private boolean isAdmin = false;
 
@@ -63,7 +63,7 @@ public class ShielingDetailActivity extends BaseActivity implements OnMapReadyCa
 
 
         getLayoutInflater().inflate(R.layout.activity_shieling, frameLayout);
-        shielingId = getIntent().getLongExtra("shielingId", 0L);
+        shielingId = getIntent().getStringExtra("shielingId");
         ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
                 getApplication(), shielingId);
         viewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);

@@ -1,83 +1,81 @@
 package ch.hevs.students.raclettedb.database.entity;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
-@Entity(tableName = "shielings")
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 public class ShielingEntity {
+    private String id;
 
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    @ColumnInfo(name = "id")
-    private Long id;
+    private @NonNull String name;
 
-    @NonNull
-    @ColumnInfo(name = "name")
-    private String name;
-
-    @ColumnInfo(name = "description")
     private String description;
 
-    @ColumnInfo(name = "imagePath")
     private String imagePath;
 
-    @ColumnInfo(name = "latitude")
     private float latitude;
 
-    @ColumnInfo(name = "longitude")
     private float longitude;
 
     public ShielingEntity() {
+
     }
 
-    public ShielingEntity(@NonNull String name) {
-        this.name=name;
+    public ShielingEntity(@NonNull String name, String description, String imagePath, float latitude, float longitude) {
+        this.name = name;
+        this.description = description;
+        this.imagePath = imagePath;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public Long getId(){
+    public String getId() {
         return id;
     }
 
-    public String getName(){
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @NonNull
+    public String getName() {
         return name;
+    }
+
+    public void setName(@NonNull String name) {
+        this.name = name;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public float getLatitude() {
-        return latitude;
-    }
-
-    public float getLongitude() {
-        return longitude;
-    }
-
-    public void setId(@NonNull Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name){
-        this.name=name;
-    }
-
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
 
+    public float getLatitude() {
+        return latitude;
+    }
+
     public void setLatitude(float latitude) {
         this.latitude = latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
     }
 
     public void setLongitude(float longitude) {
@@ -85,17 +83,29 @@ public class ShielingEntity {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (!(obj instanceof ShielingEntity)) return false;
-        ShielingEntity o = (ShielingEntity) obj;
-        return o.getId().equals(this.getId());
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (o == this) return true;
+        if (!(o instanceof ShielingEntity)) return false;
+        ShielingEntity obj = (ShielingEntity) o;
+        return obj.getId().equals(this.getId());
     }
 
     @Override
-    public String toString() {
-        return name;
+    public int hashCode() {
+        return Objects.hash(id, name, description, imagePath, latitude, longitude);
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("name", name);
+        result.put("description", description);
+        result.put("imagepath", imagePath);
+        result.put("latitude", latitude);
+        result.put("longitude", longitude);
+
+        return result;
     }
 }
-

@@ -1,125 +1,110 @@
 package ch.hevs.students.raclettedb.database.entity;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
-@Entity(tableName = "cheeses",
-        foreignKeys =
-        @ForeignKey(
-                entity = ShielingEntity.class,
-                parentColumns = "id",
-                childColumns = "shieling",
-                onDelete = ForeignKey.CASCADE
-        ),
-        indices = {
-                @Index(
-                        value = {"shieling"}
-                )})
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class CheeseEntity {
+    private String id;
 
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    @ColumnInfo(name = "id")
-    private Long id;
-
-    @NonNull
-    @ColumnInfo(name = "shieling")
     private Long shieling;
 
-    @NonNull
-    @ColumnInfo(name = "name")
-    private String name;
+    private @NonNull
+    String name;
 
-    @ColumnInfo(name = "type")
     private String type;
 
-    @ColumnInfo(name = "description")
     private String description;
 
-    /*@ColumnInfo(name = "ean")
-    private int ean;*/
-
-    @ColumnInfo(name = "imagePath")
     private String imagePath;
 
     public CheeseEntity() {
+
     }
 
-    public CheeseEntity(@NonNull String name, @NonNull Long shieling) {
-        this.name=name;
-        this.shieling=shieling;
+    public CheeseEntity(@NonNull String name, String description, String type, String imagePath) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.imagePath = imagePath;
     }
 
-    public Long getId(){
+    public String getId() {
         return id;
     }
 
-    public Long getShieling() { return  shieling; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getType(){
-        return type;
+    public void setName(@NonNull String name) {
+        this.name = name;
     }
-
-    /*public int getEan(){
-        return ean;
-    }*/
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getImagePath() {
         return imagePath;
     }
 
-    public void setName(String name){
-        this.name=name;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
-    public void setType(String type){
-        this.type=type;
-    }
-
-    public void setId(@NonNull Long id) {
-        this.id = id;
+    public Long getShieling() {
+        return shieling;
     }
 
     public void setShieling(Long shieling) {
         this.shieling = shieling;
     }
 
-    /*public void setEan(int ean) {
-        this.ean = ean;
-    }*/
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (o == this) return true;
+        if (!(o instanceof CheeseEntity)) return false;
+        CheeseEntity obj = (CheeseEntity) o;
+        return obj.getId().equals(this.getId());
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (obj == this) return true;
-        if (!(obj instanceof CheeseEntity)) return false;
-        CheeseEntity o = (CheeseEntity) obj;
-        return o.getId().equals(this.getId());
+    public int hashCode() {
+        return Objects.hash(id, shieling, name, type, description, imagePath);
     }
 
-    @Override
-    public String toString() {
-        return name;
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("id", id);
+        result.put("name", name);
+        result.put("description", description);
+        result.put("type", type);
+        result.put("imagepath", imagePath);
+        result.put("shieling", shieling);
+
+        return result;
     }
 }
