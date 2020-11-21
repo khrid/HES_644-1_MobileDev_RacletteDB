@@ -11,7 +11,7 @@ import java.util.Objects;
 public class CheeseEntity {
     private String id;
 
-    private Long shieling;
+    private String shieling;
 
     private @NonNull
     String name;
@@ -20,7 +20,7 @@ public class CheeseEntity {
 
     private String description;
 
-    private String imagePath;
+    private String imagepath;
 
     public CheeseEntity() {
 
@@ -30,7 +30,7 @@ public class CheeseEntity {
         this.name = name;
         this.description = description;
         this.type = type;
-        this.imagePath = imagePath;
+        this.imagepath = imagePath;
     }
 
     public String getId() {
@@ -65,19 +65,19 @@ public class CheeseEntity {
         this.type = type;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getImagepath() {
+        return imagepath;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImagepath(String imagepath) {
+        this.imagepath = imagepath;
     }
 
-    public Long getShieling() {
+    public String getShieling() {
         return shieling;
     }
 
-    public void setShieling(Long shieling) {
+    public void setShieling(String shieling) {
         this.shieling = shieling;
     }
 
@@ -92,7 +92,7 @@ public class CheeseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, shieling, name, type, description, imagePath);
+        return Objects.hash(id, shieling, name, type, description, imagepath);
     }
 
     @Exclude
@@ -102,7 +102,7 @@ public class CheeseEntity {
         result.put("name", name);
         result.put("description", description);
         result.put("type", type);
-        result.put("imagepath", imagePath);
+        result.put("imagepath", imagepath);
         result.put("shieling", shieling);
 
         return result;

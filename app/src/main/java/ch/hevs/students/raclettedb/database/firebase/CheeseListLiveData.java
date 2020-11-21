@@ -51,11 +51,14 @@ public class CheeseListLiveData extends LiveData<List<CheeseEntity>> {
 
     private List<CheeseEntity> toCheeses(DataSnapshot dataSnapshot) {
         List<CheeseEntity> shielings = new ArrayList<>();
-        for (DataSnapshot childSnapshot :
+        for (DataSnapshot shielingSnapshot :
                 dataSnapshot.getChildren()) {
-            CheeseEntity shieling = childSnapshot.getValue(CheeseEntity.class);
-            shieling.setId(childSnapshot.getKey());
-            shielings.add(shieling);
+            for (DataSnapshot cheeseSnapshot : shielingSnapshot.getChildren()) {
+                CheeseEntity cheese = cheeseSnapshot.getValue(CheeseEntity.class);
+                cheese.setId(cheeseSnapshot.getKey());
+                cheese.setShieling(shielingSnapshot.getKey());
+                shielings.add(cheese);
+            }
         }
         return shielings;
     }

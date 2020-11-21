@@ -43,6 +43,7 @@ public class EditCheeseActivity extends BaseActivity {
     private static final String TAG = "TAG-" + BaseApp.APP_NAME + "-EditCheeseActivity";
 
     private String cheeseId;
+    private String shielingId;
     private CheeseEntity cheese = new CheeseEntity();
     private boolean isEditMode;
     private Toast toast;
@@ -91,7 +92,7 @@ public class EditCheeseActivity extends BaseActivity {
         btSaveCheese = findViewById(R.id.btSaveCheese);
         btSaveCheese.setOnClickListener(view -> {
             if(!etCheeseName.getText().toString().isEmpty()) {
-                saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), cheese.getImagePath());
+                saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), cheese.getImagepath());
                 onBackPressed();
                 toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
             }else{
@@ -104,6 +105,7 @@ public class EditCheeseActivity extends BaseActivity {
 
 
         cheeseId = getIntent().getStringExtra("cheeseId");
+        shielingId = getIntent().getStringExtra("shielingId");
         if (cheeseId.isEmpty()) {
             setTitle(R.string.empty);
             tvEditCheeseTitle.setText(R.string.cheese_new_title);
@@ -129,7 +131,7 @@ public class EditCheeseActivity extends BaseActivity {
     private boolean removePicture() {
         currentPhotoPath = "";
         ivCheese.setImageResource(R.drawable.placeholder_cheese);
-        cheese.setImagePath(BaseActivity.IMAGE_CHEESE_DEFAULT);
+        cheese.setImagepath(BaseActivity.IMAGE_CHEESE_DEFAULT);
         Toast.makeText(this, getString(R.string.cheese_picture_removed), Toast.LENGTH_LONG).show();
         return true;
     }
@@ -143,7 +145,7 @@ public class EditCheeseActivity extends BaseActivity {
                 bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                 currentPhotoPath = imageFile.getAbsolutePath();
-                cheese.setImagePath(imageFile.getAbsolutePath());
+                cheese.setImagepath(imageFile.getAbsolutePath());
                 ivCheese.setTag(currentPhotoPath);
                 ivCheese.setImageBitmap(bitmap);
             } else if (requestCode == 2) {
@@ -156,7 +158,7 @@ public class EditCheeseActivity extends BaseActivity {
 
                     File f = mediaUtils.copyToLocalStorage(bitmap);
 
-                    cheese.setImagePath(f.getAbsolutePath());
+                    cheese.setImagepath(f.getAbsolutePath());
                     ivCheese.setImageBitmap(bitmap);
 
                 } catch (Exception e) {
@@ -179,7 +181,7 @@ public class EditCheeseActivity extends BaseActivity {
         });
 
         CheeseViewModel.Factory cheeseFactory = new CheeseViewModel.Factory(
-                getApplication(), cheeseId);
+                getApplication(), cheeseId, shielingId);
         cheeseViewModel = ViewModelProviders.of(this, cheeseFactory).get(CheeseViewModel.class);
         if (isEditMode) {
             cheeseViewModel.getCheese().observe(this, cheeseEntity -> {
@@ -190,15 +192,15 @@ public class EditCheeseActivity extends BaseActivity {
                     etCheeseType.setText(cheese.getType());
 
                     ivCheese.setOnLongClickListener(v -> removePicture());
-                    if (!TextUtils.isEmpty(cheese.getImagePath())) {
-                        if (!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                    if (!TextUtils.isEmpty(cheese.getImagepath())) {
+                        if (!cheese.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             if(BaseApp.CLOUD_ACTIVE) {
-                                mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagePath(), getApplicationContext(), ivCheese);
+                                mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagepath(), getApplicationContext(), ivCheese);
                             } else {
-                                bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
+                                bitmap = BitmapFactory.decodeFile(cheese.getImagepath());
                                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                                 ivCheese.setImageBitmap(bitmap);
-                                ivCheese.setTag(cheese.getImagePath());
+                                ivCheese.setTag(cheese.getImagepath());
                             }
                         }
                     }
@@ -251,12 +253,12 @@ public class EditCheeseActivity extends BaseActivity {
                 //cheese.setShieling(Shieling);
                 if(BaseApp.CLOUD_ACTIVE) {
                     try {
-                        cheese.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                        cheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    cheese.setImagePath(imagePath);
+                    cheese.setImagepath(imagePath);
                 }
                 cheeseViewModel.updateCheese(cheese, new OnAsyncEventListener() {
                     @Override
@@ -278,12 +280,12 @@ public class EditCheeseActivity extends BaseActivity {
             //newCheese.setShieling(Shieling);
             if(BaseApp.CLOUD_ACTIVE) {
                 try {
-                    newCheese.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                    newCheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                newCheese.setImagePath(imagePath);
+                newCheese.setImagepath(imagePath);
             }
             cheeseViewModel.createCheese(newCheese, new OnAsyncEventListener() {
                 @Override

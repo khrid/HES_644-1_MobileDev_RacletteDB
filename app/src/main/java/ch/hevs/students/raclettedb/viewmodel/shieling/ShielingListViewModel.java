@@ -27,17 +27,12 @@ public class ShielingListViewModel extends AndroidViewModel {
     public ShielingListViewModel(@NonNull Application application,
                                ShielingRepository shielingRepository) {
         super(application);
-
+        this.application = application;
         repository = shielingRepository;
-
         observableShielings = new MediatorLiveData<>();
-        // set by default null, until we get data from the database.
         observableShielings.setValue(null);
-
-        LiveData<List<ShielingEntity>> ownAccounts = repository.getAllShielings();
-
-        // observe the changes of the entities from the database and forward them
-        observableShielings.addSource(ownAccounts, observableShielings::setValue);
+        LiveData<List<ShielingEntity>> shielings = repository.getAllShielings();
+        observableShielings.addSource(shielings, observableShielings::setValue);
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {

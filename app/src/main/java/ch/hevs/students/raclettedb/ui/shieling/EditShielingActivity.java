@@ -85,7 +85,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         Button btSaveShieling = findViewById(R.id.btSaveShieling);
         btSaveShieling.setOnClickListener(view -> {
             if(!etShielingName.getText().toString().isEmpty()) {
-                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagePath(), latitude, longitude);
+                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagepath(), latitude, longitude);
                 onBackPressed();
                 toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
             }else{
@@ -122,15 +122,15 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     etShielingName.setText(shieling.getName());
                     etShielingDescription.setText(shieling.getDescription());
                     ivShieling.setOnLongClickListener(v -> removePicture());
-                    if(!TextUtils.isEmpty(shieling.getImagePath())) {
-                        if(!shieling.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                    if(!TextUtils.isEmpty(shieling.getImagepath())) {
+                        if(!shieling.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             if(BaseApp.CLOUD_ACTIVE) {
-                                mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shieling.getImagePath(), getApplicationContext(), ivShieling);
+                                mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shieling.getImagepath(), getApplicationContext(), ivShieling);
                             } else {
-                                bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
+                                bitmap = BitmapFactory.decodeFile(shieling.getImagepath());
                                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                                 ivShieling.setImageBitmap(bitmap);
-                                ivShieling.setTag(shieling.getImagePath());
+                                ivShieling.setTag(shieling.getImagepath());
                             }
                         }
                     }
@@ -151,7 +151,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
     private boolean removePicture() {
         currentPhotoPath = "";
         ivShieling.setImageResource(R.drawable.placeholder_shieling);
-        shieling.setImagePath(BaseActivity.IMAGE_CHEESE_DEFAULT);
+        shieling.setImagepath(BaseActivity.IMAGE_CHEESE_DEFAULT);
         Toast.makeText(this, getString(R.string.cheese_picture_removed), Toast.LENGTH_LONG).show();
         return true;
     }
@@ -167,7 +167,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                 currentPhotoPath = imageFile.getAbsolutePath();
-                shieling.setImagePath(imageFile.getAbsolutePath());
+                shieling.setImagepath(imageFile.getAbsolutePath());
                 ivShieling.setTag(currentPhotoPath);
                 ivShieling.setImageBitmap(bitmap);
             } else if (requestCode == 2) {
@@ -180,7 +180,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
 
                     File f = mediaUtils.copyToLocalStorage(bitmap);
 
-                    shieling.setImagePath(f.getAbsolutePath());
+                    shieling.setImagepath(f.getAbsolutePath());
                     ivShieling.setImageBitmap(bitmap);
 
                 } catch (Exception e) {
@@ -212,12 +212,12 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 shieling.setLongitude(longitude);
                 if(BaseApp.CLOUD_ACTIVE) {
                     try {
-                        shieling.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                        shieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    shieling.setImagePath(imagePath);
+                    shieling.setImagepath(imagePath);
                 }
                 viewModel.updateShieling(shieling, new OnAsyncEventListener() {
                     @Override
@@ -239,12 +239,12 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
             newShieling.setLongitude(longitude);
             if(BaseApp.CLOUD_ACTIVE) {
                 try {
-                    newShieling.setImagePath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                    newShieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
-                newShieling.setImagePath(imagePath);
+                newShieling.setImagepath(imagePath);
             }
             viewModel.createShieling(newShieling, new OnAsyncEventListener() {
                 @Override

@@ -78,6 +78,7 @@ public class CheesesActivity extends BaseActivity {
                                 Intent.FLAG_ACTIVITY_NO_HISTORY
                 );
                 intent.putExtra("cheeseId", cheeses.get(position).getId());
+                intent.putExtra("shielingId", cheeses.get(position).getShieling());
                 startActivity(intent);
 
             }

@@ -41,10 +41,10 @@ public class ShielingRepository {
     public void insert(final ShielingEntity shieling, final OnAsyncEventListener callback) {
         DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference("shielings");
-        String key = reference.push().getKey();
+        //String key = reference.push().getKey();
         FirebaseDatabase.getInstance()
                 .getReference("shielings")
-                .child(key)
+                .child(shieling.getName())
                 .setValue(shieling, (databaseError, databaseReference) -> {
                     if (databaseError != null) {
                         callback.onFailure(databaseError.toException());

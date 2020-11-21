@@ -33,8 +33,10 @@ public class CheeseRepository {
         return instance;
     }
 
-    public LiveData<CheeseEntity> getCheese(final String cheeseId) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("cheeses").child(cheeseId);
+    public LiveData<CheeseEntity> getCheese(final String cheeseId, final String shielingId) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("cheeses")
+                .child(shielingId)
+                .child(cheeseId);
         return new CheeseLiveData(reference);
     }
 
@@ -82,7 +84,8 @@ public class CheeseRepository {
 
     public LiveData<List<CheeseEntity>> getAllCheeses() {
         DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference("shielings");
+                .getReference("cheeses");
         return new CheeseListLiveData(reference);
     }
+
 }

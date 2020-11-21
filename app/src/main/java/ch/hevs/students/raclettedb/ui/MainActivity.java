@@ -24,12 +24,14 @@ import java.io.ByteArrayOutputStream;
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
 import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity;
 import ch.hevs.students.raclettedb.util.LocaleUtils;
 import ch.hevs.students.raclettedb.util.MediaUtils;
+import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 
 public class MainActivity extends BaseActivity {
 
@@ -74,6 +76,19 @@ public class MainActivity extends BaseActivity {
 
         initiateView();
 
+        ShielingRepository shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
+        shielingRepository.insert(new ShielingEntity("ATest", "test", "", 0.0f, 0.0f), new OnAsyncEventListener() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "createUserWithEmail: success");
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.d(TAG, "createUserWithEmail: failure", e);
+            }
+        });
+
     }
 
     @Override
@@ -112,15 +127,15 @@ public class MainActivity extends BaseActivity {
                     tv.setText(cheeseEntity.getName());
                     tv.setTypeface(ResourcesCompat.getFont(this, R.font.dk_lemon_yellow_sun));
                     tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    tv.setOnClickListener(v -> showCheese(cheeseEntity.getId()));
+                    tv.setOnClickListener(v -> showCheese(cheeseEntity.getId(), cheeseEntity.getShieling()));
                     // Imageview pour le logo
                     ImageView iv = new ImageView(this);
-                    if(!TextUtils.isEmpty(cheeseEntity.getImagePath())) {
-                        if(!cheeseEntity.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                    if(!TextUtils.isEmpty(cheeseEntity.getImagepath())) {
+                        if(!cheeseEntity.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             if(BaseApp.CLOUD_ACTIVE) {
-                                mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheeseEntity.getImagePath(), getApplicationContext(), iv);
+                                mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheeseEntity.getImagepath(), getApplicationContext(), iv);
                             } else {
-                                Bitmap bitmap = BitmapFactory.decodeFile(cheeseEntity.getImagePath());
+                                Bitmap bitmap = BitmapFactory.decodeFile(cheeseEntity.getImagepath());
                                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
                                 iv.setImageBitmap(bitmap);
                             }
@@ -137,7 +152,7 @@ public class MainActivity extends BaseActivity {
                     iv.setLayoutParams(lp);
                     iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                    iv.setOnClickListener(v -> showCheese(cheeseEntity.getId()));
+                    iv.setOnClickListener(v -> showCheese(cheeseEntity.getId(), cheeseEntity.getShieling()));
                     // on les ajoute dans le TableRow respective
                     trImages.addView(iv);
                     trLabels.addView(tv);
@@ -164,18 +179,18 @@ public class MainActivity extends BaseActivity {
         shielingRepository.getAllShielings().observe(MainActivity.this, shielingEntities -> {
 
             if (shielingEntities.size() > 0) {
-                tvMainShielingName.setText(shielingEntities.get(0).getName());
+                tvMainShielingName.setText(shielingEntities.get(0).getId());
                 tvMainShielingName.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
                 ivMainShieling.setOnClickListener(v -> showShieling(shielingEntities.get(0).getId()));
                 ivMainShieling.setVisibility(View.VISIBLE);
 
                 ivMainShieling.setImageResource(R.drawable.placeholder_shieling);
-                if(!TextUtils.isEmpty(shielingEntities.get(0).getImagePath())) {
-                    if(!shielingEntities.get(0).getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                if(!TextUtils.isEmpty(shielingEntities.get(0).getImagepath())) {
+                    if(!shielingEntities.get(0).getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                         if(BaseApp.CLOUD_ACTIVE) {
-                            mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, shielingEntities.get(0).getImagePath(), getApplicationContext(), ivMainShieling);
+                            mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, shielingEntities.get(0).getImagepath(), getApplicationContext(), ivMainShieling);
                         } else {
-                            Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagePath());
+                            Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagepath());
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
                             ivMainShieling.setImageBitmap(bitmap);
                         }
@@ -225,13 +240,14 @@ public class MainActivity extends BaseActivity {
         ivMainFavorites[2] = findViewById(R.id.ivMainFavorites3);
     }
 
-    public void showCheese(String cheeseId) {
+    public void showCheese(String cheeseId, String shielingId) {
         Intent intent = new Intent(MainActivity.this, CheeseDetailActivity.class);
         intent.setFlags(
                 Intent.FLAG_ACTIVITY_NO_ANIMATION |
                         Intent.FLAG_ACTIVITY_NO_HISTORY
         );
         intent.putExtra("cheeseId", cheeseId);
+        intent.putExtra("shielingId", shielingId);
         startActivity(intent);
     }
 

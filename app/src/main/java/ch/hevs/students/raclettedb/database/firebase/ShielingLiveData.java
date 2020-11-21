@@ -40,6 +40,7 @@ public class ShielingLiveData extends LiveData<ShielingEntity> {
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             ShielingEntity entity = snapshot.getValue(ShielingEntity.class);
             entity.setId(snapshot.getKey());
+            entity.setName(entity.getId());
             setValue(entity);
         }
 

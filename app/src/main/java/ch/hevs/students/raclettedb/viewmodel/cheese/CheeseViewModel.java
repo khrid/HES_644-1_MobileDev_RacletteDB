@@ -1,6 +1,7 @@
 package ch.hevs.students.raclettedb.viewmodel.cheese;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -15,6 +16,7 @@ import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
 import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 
 public class CheeseViewModel  extends AndroidViewModel {
+    private static final String TAG = "TAG-" + BaseApp.APP_NAME + "-CheeseViewModel";
 
     private Application application;
 
@@ -23,8 +25,10 @@ public class CheeseViewModel  extends AndroidViewModel {
     private final MediatorLiveData<CheeseEntity> observableCheese;
 
     public CheeseViewModel(@NonNull Application application,
-                            final String cheeseId, CheeseRepository cheeseRepository) {
+                            final String cheeseId, final String shielingId, CheeseRepository cheeseRepository) {
         super(application);
+
+        Log.d(TAG, "Building ViewModel with cheese id " + cheeseId);
 
         this.application = application;
 
@@ -33,7 +37,7 @@ public class CheeseViewModel  extends AndroidViewModel {
         observableCheese = new MediatorLiveData<>();
         observableCheese.setValue(null);
 
-        LiveData<CheeseEntity> cheese = repository.getCheese(cheeseId);
+        LiveData<CheeseEntity> cheese = repository.getCheese(cheeseId, shielingId);
 
         observableCheese.addSource(cheese, observableCheese::setValue);
     }
@@ -45,18 +49,21 @@ public class CheeseViewModel  extends AndroidViewModel {
 
         private final String cheeseId;
 
+        private final String shielingId;
+
         private final CheeseRepository repository;
 
-        public Factory(@NonNull Application application, String cheeseId) {
+        public Factory(@NonNull Application application, String cheeseId, String shielingId) {
             this.application = application;
             this.cheeseId = cheeseId;
+            this.shielingId = shielingId;
             //repository = ((BaseApp) application).getRoomCheeseRepository();
             repository = ((BaseApp) application).getCheeseRepository();
         }
 
         @Override
         public <T extends ViewModel> T create(Class<T> modelClass) {
-            return (T) new CheeseViewModel(application, cheeseId, repository);
+            return (T) new CheeseViewModel(application, cheeseId, shielingId, repository);
         }
     }
 

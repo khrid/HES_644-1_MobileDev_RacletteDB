@@ -43,6 +43,9 @@ public class CheeseDetailActivity extends BaseActivity {
 
     private boolean isAdmin = false;
 
+    String cheeseId;
+    String shielingId;
+
     static SharedPreferences settings;
     static SharedPreferences.Editor editor;
     private MediaUtils mediaUtils = new MediaUtils(this);
@@ -54,7 +57,8 @@ public class CheeseDetailActivity extends BaseActivity {
 
         navigationView.setCheckedItem(position);
 
-        String cheeseId = getIntent().getStringExtra("cheeseId");
+        cheeseId = getIntent().getStringExtra("cheeseId");
+        shielingId = getIntent().getStringExtra("shielingId");
 
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
@@ -63,7 +67,7 @@ public class CheeseDetailActivity extends BaseActivity {
         initiateView();
 
         CheeseViewModel.Factory factory = new CheeseViewModel.Factory(
-                getApplication(), cheeseId);
+                getApplication(), cheeseId, shielingId);
         cheeseViewModel = ViewModelProviders.of(this, factory).get(CheeseViewModel.class);
         cheeseViewModel.getCheese().observe(this, cheeseEntity -> {
             if (cheeseEntity != null) {
@@ -132,13 +136,13 @@ public class CheeseDetailActivity extends BaseActivity {
             tvCheeseDescription.setText(cheese.getDescription());
 
             ivCheesePhoto.setImageResource(R.drawable.placeholder_cheese);
-            if(!TextUtils.isEmpty(cheese.getImagePath())) {
+            if(!TextUtils.isEmpty(cheese.getImagepath())) {
                 ivCheesePhoto.setVisibility(View.VISIBLE);
-                if(!cheese.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                if(!cheese.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                     if(BaseApp.CLOUD_ACTIVE) {
-                        mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagePath(), getApplicationContext(), ivCheesePhoto);
+                        mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagepath(), getApplicationContext(), ivCheesePhoto);
                     } else {
-                        Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagePath());
+                        Bitmap bitmap = BitmapFactory.decodeFile(cheese.getImagepath());
                         bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                         ivCheesePhoto.setImageBitmap(bitmap);
                     }
@@ -149,14 +153,15 @@ public class CheeseDetailActivity extends BaseActivity {
                 ivCheesePhoto.setVisibility(View.GONE);
             }
 
-            /*ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
-                    getApplication(), cheese.getShieling());
+            Log.d(TAG, "shieling "+cheese.getShieling());
+            ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
+                    getApplication(), shielingId);
             shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
             shielingViewModel.getShieling().observe(this, shielingEntity -> {
                 if (shielingEntity != null) {
                     tvCheeseShieling.setText(shielingEntity.getName());
                 }
-            });*/
+            });
 
             Log.i(TAG, "Activity populated.");
         }

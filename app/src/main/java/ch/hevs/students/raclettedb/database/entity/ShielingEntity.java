@@ -15,7 +15,7 @@ public class ShielingEntity {
 
     private String description;
 
-    private String imagePath;
+    private String imagepath;
 
     private float latitude;
 
@@ -25,10 +25,10 @@ public class ShielingEntity {
 
     }
 
-    public ShielingEntity(@NonNull String name, String description, String imagePath, float latitude, float longitude) {
+    public ShielingEntity(@NonNull String name, String description, String imagepath, float latitude, float longitude) {
         this.name = name;
         this.description = description;
-        this.imagePath = imagePath;
+        this.imagepath = imagepath;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -58,12 +58,12 @@ public class ShielingEntity {
         this.description = description;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getImagepath() {
+        return imagepath;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImagepath(String imagepath) {
+        this.imagepath = imagepath;
     }
 
     public float getLatitude() {
@@ -93,7 +93,7 @@ public class ShielingEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, imagePath, latitude, longitude);
+        return Objects.hash(id, name, description, imagepath, latitude, longitude);
     }
 
     @Exclude
@@ -102,7 +102,7 @@ public class ShielingEntity {
         result.put("id", id);
         result.put("name", name);
         result.put("description", description);
-        result.put("imagepath", imagePath);
+        result.put("imagepath", imagepath);
         result.put("latitude", latitude);
         result.put("longitude", longitude);
 

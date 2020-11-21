@@ -27,16 +27,11 @@ public class CheeseListViewModel extends AndroidViewModel {
     public CheeseListViewModel(@NonNull Application application,
                                 CheeseRepository cheeseRepository) {
         super(application);
-
         this.application = application;
-
         repository = cheeseRepository;
-
         observableCheeses = new MediatorLiveData<>();
         observableCheeses.setValue(null);
-
         LiveData<List<CheeseEntity>> cheeses = repository.getAllCheeses();
-
         observableCheeses.addSource(cheeses, observableCheeses::setValue);
     }
 

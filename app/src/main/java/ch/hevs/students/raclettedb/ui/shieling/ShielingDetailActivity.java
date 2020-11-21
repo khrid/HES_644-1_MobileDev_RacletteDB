@@ -126,13 +126,13 @@ public class ShielingDetailActivity extends BaseActivity implements OnMapReadyCa
             tvShielingDescription.setText(shieling.getDescription());
 
             ivShielingPhoto.setImageResource(R.drawable.placeholder_shieling);
-            if (!TextUtils.isEmpty(shieling.getImagePath())) {
+            if (!TextUtils.isEmpty(shieling.getImagepath())) {
                 ivShielingPhoto.setVisibility(View.VISIBLE);
-                if (!shieling.getImagePath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                if (!shieling.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                     if (BaseApp.CLOUD_ACTIVE) {
-                        mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shieling.getImagePath(), getApplicationContext(), ivShielingPhoto);
+                        mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shieling.getImagepath(), getApplicationContext(), ivShielingPhoto);
                     } else {
-                        Bitmap bitmap = BitmapFactory.decodeFile(shieling.getImagePath());
+                        Bitmap bitmap = BitmapFactory.decodeFile(shieling.getImagepath());
                         bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                         ivShielingPhoto.setImageBitmap(bitmap);
                     }
