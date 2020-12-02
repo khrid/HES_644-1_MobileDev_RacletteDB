@@ -18,7 +18,7 @@ public class BaseApp extends Application {
 
     public static final LatLng NO_LOCATION = new LatLng(46.2878787, 7.5330482);
 
-    public static final boolean CLOUD_ACTIVE = false;
+    public static final boolean CLOUD_ACTIVE = true;
 
     @Override
     public void onCreate() {

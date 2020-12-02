@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.io.ByteArrayOutputStream;
@@ -92,8 +93,11 @@ public class EditCheeseActivity extends BaseActivity {
         btSaveCheese = findViewById(R.id.btSaveCheese);
         btSaveCheese.setOnClickListener(view -> {
             if(!etCheeseName.getText().toString().isEmpty()) {
-                saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), cheese.getImagepath());
+                Log.d(TAG, "btnSaveCheese clicked");
+                saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), currentPhotoPath);
                 onBackPressed();
+                //startActivity(new Intent(this, CheesesActivity.class));
+
                 toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
             }else{
                 toast = Toast.makeText(this, getString(R.string.cheese_edit_name_empty), Toast.LENGTH_LONG);
@@ -106,7 +110,9 @@ public class EditCheeseActivity extends BaseActivity {
 
         cheeseId = getIntent().getStringExtra("cheeseId");
         shielingId = getIntent().getStringExtra("shielingId");
-        if (cheeseId.isEmpty()) {
+        Log.d(TAG, "cheese "+cheeseId+ " - shieling " + shielingId);
+
+        if (cheeseId == null) {
             setTitle(R.string.empty);
             tvEditCheeseTitle.setText(R.string.cheese_new_title);
             btSaveCheese.setText(R.string.save);
@@ -145,7 +151,7 @@ public class EditCheeseActivity extends BaseActivity {
                 bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                 currentPhotoPath = imageFile.getAbsolutePath();
-                cheese.setImagepath(imageFile.getAbsolutePath());
+                //cheese.setImagepath(imageFile.getAbsolutePath());
                 ivCheese.setTag(currentPhotoPath);
                 ivCheese.setImageBitmap(bitmap);
             } else if (requestCode == 2) {
@@ -157,8 +163,8 @@ public class EditCheeseActivity extends BaseActivity {
                     Log.e(TAG, "Pick from Gallery::>>> ");
 
                     File f = mediaUtils.copyToLocalStorage(bitmap);
-
-                    cheese.setImagepath(f.getAbsolutePath());
+                    currentPhotoPath = f.getAbsolutePath();
+                    //cheese.setImagepath(f.getAbsolutePath());
                     ivCheese.setImageBitmap(bitmap);
 
                 } catch (Exception e) {
@@ -166,6 +172,7 @@ public class EditCheeseActivity extends BaseActivity {
                 }
             }
         }
+        //Log.d(TAG, "cheese imagePath after onActivityResult ->" + cheese.getImagepath());
     }
 
     private void setupViewModels() {
@@ -182,7 +189,7 @@ public class EditCheeseActivity extends BaseActivity {
 
         CheeseViewModel.Factory cheeseFactory = new CheeseViewModel.Factory(
                 getApplication(), cheeseId, shielingId);
-        cheeseViewModel = ViewModelProviders.of(this, cheeseFactory).get(CheeseViewModel.class);
+        cheeseViewModel = new ViewModelProvider(this, cheeseFactory).get(CheeseViewModel.class);
         if (isEditMode) {
             cheeseViewModel.getCheese().observe(this, cheeseEntity -> {
                 if (cheeseEntity != null) {
@@ -190,7 +197,6 @@ public class EditCheeseActivity extends BaseActivity {
                     etCheeseName.setText(cheese.getName());
                     etCheeseDescription.setText(cheese.getDescription());
                     etCheeseType.setText(cheese.getType());
-
                     ivCheese.setOnLongClickListener(v -> removePicture());
                     if (!TextUtils.isEmpty(cheese.getImagepath())) {
                         if (!cheese.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
@@ -205,14 +211,14 @@ public class EditCheeseActivity extends BaseActivity {
                         }
                     }
 
-                    /*ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
-                            getApplication(), cheese.getShieling());
+                    ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
+                            getApplication(), shielingId);
                     shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
                     shielingViewModel.getShieling().observe(this, shielingEntity -> {
                         if (shielingEntity != null) {
                             spinCheeseShieling.setSelection(adapterShieling.getPosition(shielingEntity));
                         }
-                    });*/
+                    });
                 }
             });
         }
@@ -244,16 +250,32 @@ public class EditCheeseActivity extends BaseActivity {
     }
 
 
-    private void saveChanges(String cheeseName, String description, String cheeseType, String Shieling, String imagePath) {
+    private void saveChanges(String cheeseName, String description, String cheeseType, String shieling, String imagePath) {
+        Log.d(TAG, "inside saveChanges, imagePath given = " + imagePath);
+        Log.d(TAG, "currentPhotoPath = "+ currentPhotoPath);
         if (isEditMode) {
+            Log.d(TAG, "isEditMode true");
             if (!"".equals(cheeseName)) {
+                Log.d(TAG, "cheeseName not empty");
                 cheese.setName(cheeseName);
                 cheese.setDescription(description);
                 cheese.setType(cheeseType);
-                //cheese.setShieling(Shieling);
+                cheese.setOldShieling(cheese.getShieling());
+                cheese.setShieling(shieling);
+                Log.d(TAG, "cheese getImagepath -> "  +imagePath);
                 if(BaseApp.CLOUD_ACTIVE) {
                     try {
-                        cheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                        if (!TextUtils.isEmpty(imagePath)) {
+                            Log.d(TAG, "cheese getImagePath not empty");
+                            if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                                Log.d(TAG, "cheese getImagePath not equals to default, updating");
+                                cheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                            } else {
+                                Log.d(TAG, "cheese getImagePath equals to default");
+                            }
+                        } else {
+                            Log.d(TAG, "cheese getImagePath empty");
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -277,10 +299,20 @@ public class EditCheeseActivity extends BaseActivity {
             newCheese.setName(cheeseName);
             newCheese.setDescription(description);
             newCheese.setType(cheeseType);
-            //newCheese.setShieling(Shieling);
+            newCheese.setShieling(shieling);
             if(BaseApp.CLOUD_ACTIVE) {
                 try {
-                    newCheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                    if (!TextUtils.isEmpty(imagePath)) {
+                        Log.d(TAG, "cheese getImagePath not empty");
+                        if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                            Log.d(TAG, "cheese getImagePath not equals to default, updating");
+                            newCheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                        } else {
+                            Log.d(TAG, "cheese getImagePath equals to default");
+                        }
+                    } else {
+                        Log.d(TAG, "cheese getImagePath empty");
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

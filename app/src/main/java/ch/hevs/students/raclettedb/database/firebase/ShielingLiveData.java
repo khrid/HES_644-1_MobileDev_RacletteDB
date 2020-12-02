@@ -38,10 +38,12 @@ public class ShielingLiveData extends LiveData<ShielingEntity> {
     private class MyValueListener implements ValueEventListener {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
-            ShielingEntity entity = snapshot.getValue(ShielingEntity.class);
-            entity.setId(snapshot.getKey());
-            entity.setName(entity.getId());
-            setValue(entity);
+            if (snapshot.exists()) {
+                ShielingEntity entity = snapshot.getValue(ShielingEntity.class);
+                entity.setId(snapshot.getKey());
+                entity.setName(entity.getId());
+                setValue(entity);
+            }
         }
 
         @Override

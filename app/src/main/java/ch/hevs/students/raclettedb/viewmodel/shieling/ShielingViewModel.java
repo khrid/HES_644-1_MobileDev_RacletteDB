@@ -33,9 +33,10 @@ public class ShielingViewModel  extends AndroidViewModel {
         observableShieling = new MediatorLiveData<>();
         observableShieling.setValue(null);
 
-        LiveData<ShielingEntity> shieling = repository.getShieling(shielingId);
-
-        observableShieling.addSource(shieling, observableShieling::setValue);
+        if(shielingId != null) {
+            LiveData<ShielingEntity> shieling = repository.getShieling(shielingId);
+            observableShieling.addSource(shieling, observableShieling::setValue);
+        }
     }
 
 

@@ -13,6 +13,8 @@ public class ShielingEntity {
 
     private @NonNull String name;
 
+    private String oldName;
+
     private String description;
 
     private String imagepath;
@@ -48,6 +50,14 @@ public class ShielingEntity {
 
     public void setName(@NonNull String name) {
         this.name = name;
+    }
+
+    public String getOldName() {
+        return oldName;
+    }
+
+    public void setOldName(String oldName) {
+        this.oldName = oldName;
     }
 
     public String getDescription() {

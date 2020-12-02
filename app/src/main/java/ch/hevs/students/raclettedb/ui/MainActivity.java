@@ -76,7 +76,7 @@ public class MainActivity extends BaseActivity {
 
         initiateView();
 
-        ShielingRepository shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
+        /*ShielingRepository shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
         shielingRepository.insert(new ShielingEntity("ATest", "test", "", 0.0f, 0.0f), new OnAsyncEventListener() {
             @Override
             public void onSuccess() {
@@ -87,7 +87,7 @@ public class MainActivity extends BaseActivity {
             public void onFailure(Exception e) {
                 Log.d(TAG, "createUserWithEmail: failure", e);
             }
-        });
+        });*/
 
     }
 
@@ -186,15 +186,15 @@ public class MainActivity extends BaseActivity {
 
                 ivMainShieling.setImageResource(R.drawable.placeholder_shieling);
                 if(!TextUtils.isEmpty(shielingEntities.get(0).getImagepath())) {
-                    if(!shielingEntities.get(0).getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                    //if(!shielingEntities.get(0).getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                         if(BaseApp.CLOUD_ACTIVE) {
-                            mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, shielingEntities.get(0).getImagepath(), getApplicationContext(), ivMainShieling);
+                            mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shielingEntities.get(0).getImagepath(), getApplicationContext(), ivMainShieling);
                         } else {
                             Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagepath());
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
                             ivMainShieling.setImageBitmap(bitmap);
                         }
-                    }
+                    //}
                 }
 
             } else {

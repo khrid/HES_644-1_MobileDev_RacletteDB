@@ -38,9 +38,11 @@ public class CheeseLiveData extends LiveData<CheeseEntity> {
     private class MyValueListener implements ValueEventListener {
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
-            CheeseEntity entity = snapshot.getValue(CheeseEntity.class);
-            entity.setId(snapshot.getKey());
-            setValue(entity);
+            if (snapshot.exists()) {
+                CheeseEntity entity = snapshot.getValue(CheeseEntity.class);
+                entity.setId(snapshot.getKey());
+                setValue(entity);
+            }
         }
 
         @Override

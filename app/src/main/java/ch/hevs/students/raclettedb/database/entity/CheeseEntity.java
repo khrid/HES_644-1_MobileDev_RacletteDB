@@ -13,6 +13,8 @@ public class CheeseEntity {
 
     private String shieling;
 
+    private String oldShieling;
+
     private @NonNull
     String name;
 
@@ -33,6 +35,7 @@ public class CheeseEntity {
         this.imagepath = imagePath;
     }
 
+    @Exclude
     public String getId() {
         return id;
     }
@@ -81,6 +84,14 @@ public class CheeseEntity {
         this.shieling = shieling;
     }
 
+    public String getOldShieling() {
+        return oldShieling;
+    }
+
+    public void setOldShieling(String oldShieling) {
+        this.oldShieling = oldShieling;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -106,5 +117,17 @@ public class CheeseEntity {
         result.put("shieling", shieling);
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "CheeseEntity{" +
+                "id='" + id + '\'' +
+                ", shieling='" + shieling + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", imagepath='" + imagepath + '\'' +
+                '}';
     }
 }
