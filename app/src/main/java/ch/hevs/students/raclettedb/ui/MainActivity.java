@@ -94,7 +94,7 @@ public class MainActivity extends BaseActivity {
             }
         });*/
 
-        //Génération d'un token pour réception de notification Google Cloud Messaging
+        //Génération d'un token pour réception de notification Firebase Cloud Messaging
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
@@ -102,15 +102,6 @@ public class MainActivity extends BaseActivity {
                         Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                         return;
                     }
-
-                    // Get new FCM registration token
-                    String token = task.getResult();
-
-                    // Log and toast
-                    //String msg = getString(R.string.msg_token_fmt, token);
-                    //Log.d(TAG, msg);
-                    Log.d(TAG, "MyToken " + token);
-                    Toast.makeText(MainActivity.this, "Texte de la notif", Toast.LENGTH_SHORT).show();
                 });
     }
 
