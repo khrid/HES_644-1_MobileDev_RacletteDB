@@ -15,9 +15,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.ByteArrayOutputStream;
 
@@ -89,6 +94,24 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        //Génération d'un token pour réception de notification Google Cloud Messaging
+        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+
+                    // Get new FCM registration token
+                    String token = task.getResult();
+
+                    // Log and toast
+                    //String msg = getString(R.string.msg_token_fmt, token);
+                    //Log.d(TAG, msg);
+                    Log.d(TAG, "MyToken " + token);
+                    Toast.makeText(MainActivity.this, "Texte de la notif", Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override

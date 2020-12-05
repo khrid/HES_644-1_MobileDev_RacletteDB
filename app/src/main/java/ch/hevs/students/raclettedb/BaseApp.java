@@ -32,6 +32,4 @@ public class BaseApp extends Application {
     public ShielingRepository getShielingRepository() {
         return ShielingRepository.getInstance();
     }
-
-    // TEST SYLVAIN
 }
