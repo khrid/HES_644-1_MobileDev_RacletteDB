@@ -114,7 +114,9 @@ public class CheeseDetailActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == EDIT_CHEESE) {
             Intent intent = new Intent(this, EditCheeseActivity.class);
-            intent.putExtra("cheeseId", cheese.getId());
+            intent.putExtra("cheeseId", cheeseId);
+            intent.putExtra("shielingId", shielingId);
+            Log.d(TAG, "cheese "+cheeseId+ " - shieling " + shielingId);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -153,7 +155,7 @@ public class CheeseDetailActivity extends BaseActivity {
                 ivCheesePhoto.setVisibility(View.GONE);
             }
 
-            Log.d(TAG, "shieling "+cheese.getShieling());
+            Log.d(TAG, "shieling "+shielingId);
             ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
                     getApplication(), shielingId);
             shielingViewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import java.util.List;
 
 import ch.hevs.students.raclettedb.R;
+import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 
 public class ListAdapter<T> extends ArrayAdapter<T> {
 
@@ -57,7 +58,7 @@ public class ListAdapter<T> extends ArrayAdapter<T> {
         }
         T item = getItem(position);
         if (item != null) {
-            viewHolder.itemView.setText(item.toString());
+            viewHolder.itemView.setText(((ShielingEntity)item).getName());
         }
         return convertView;
     }

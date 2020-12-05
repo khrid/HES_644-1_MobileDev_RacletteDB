@@ -37,9 +37,11 @@ public class CheeseViewModel  extends AndroidViewModel {
         observableCheese = new MediatorLiveData<>();
         observableCheese.setValue(null);
 
-        LiveData<CheeseEntity> cheese = repository.getCheese(cheeseId, shielingId);
+        if (cheeseId != null) {
+            LiveData<CheeseEntity> cheese = repository.getCheese(cheeseId, shielingId);
 
-        observableCheese.addSource(cheese, observableCheese::setValue);
+            observableCheese.addSource(cheese, observableCheese::setValue);
+        }
     }
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {

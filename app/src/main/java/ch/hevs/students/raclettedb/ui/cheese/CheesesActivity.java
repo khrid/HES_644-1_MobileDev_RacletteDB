@@ -65,7 +65,7 @@ public class CheesesActivity extends BaseActivity {
 
         recyclerView.setNestedScrollingEnabled(false);
 
-        cheeses = new ArrayList<>();
+        //cheeses = new ArrayList<>();
         adapter = new RecyclerAdapter<>(new RecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {

@@ -66,6 +66,8 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
     private float latitude = 0.0f;
     private float longitude  = 0.0f;
 
+    String shielingId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
@@ -85,7 +87,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         Button btSaveShieling = findViewById(R.id.btSaveShieling);
         btSaveShieling.setOnClickListener(view -> {
             if(!etShielingName.getText().toString().isEmpty()) {
-                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), shieling.getImagepath(), latitude, longitude);
+                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), currentPhotoPath, latitude, longitude);
                 onBackPressed();
                 toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
             }else{
@@ -96,8 +98,9 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
             toast.show();
         });
 
-        String shielingId = getIntent().getStringExtra("shielingId");
-        if (shielingId.isEmpty()) {
+        shielingId = getIntent().getStringExtra("shielingId");
+        Log.d(TAG, "shieling " + shielingId);
+        if (shielingId == null || shielingId.isEmpty()) {
             setTitle(getString(R.string.empty));
             tvEditShielingTitle.setText(R.string.shieling_new_title);
             toastString = getString(R.string.shieling_new_created);
@@ -112,9 +115,9 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         ivShieling = findViewById(R.id.ivEditShielingPhoto);
         ivShieling.setOnClickListener(v ->  mediaUtils.selectImage());
 
-        ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
-                getApplication(), shielingId);
-        viewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
+            ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
+                    getApplication(), shielingId);
+            viewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
         if (isEditMode) {
             viewModel.getShieling().observe(this, shielingEntity -> {
                 if (shielingEntity != null) {
@@ -158,7 +161,6 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        Bitmap bitmap;
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK) {
             if(requestCode == 1) {
@@ -167,7 +169,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
                 currentPhotoPath = imageFile.getAbsolutePath();
-                shieling.setImagepath(imageFile.getAbsolutePath());
+                //shieling.setImagepath(imageFile.getAbsolutePath());
                 ivShieling.setTag(currentPhotoPath);
                 ivShieling.setImageBitmap(bitmap);
             } else if (requestCode == 2) {
@@ -179,14 +181,16 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     Log.e(TAG, "Pick from Gallery");
 
                     File f = mediaUtils.copyToLocalStorage(bitmap);
+                    currentPhotoPath = f.getAbsolutePath();
 
-                    shieling.setImagepath(f.getAbsolutePath());
+                    //shieling.setImagepath(f.getAbsolutePath());
                     ivShieling.setImageBitmap(bitmap);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+            Log.d(TAG, "imagepath : " + shieling.getImagepath());
         }
     }
 
@@ -206,13 +210,25 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         }
         if (isEditMode) {
             if (!"".equals(shielingName)) {
+                shieling.setOldName(shieling.getName());
                 shieling.setName(shielingName);
+                shieling.setId(shieling.getName());
                 shieling.setDescription(description);
                 shieling.setLatitude(latitude);
                 shieling.setLongitude(longitude);
                 if(BaseApp.CLOUD_ACTIVE) {
                     try {
-                        shieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                        if (!TextUtils.isEmpty(imagePath)) {
+                            Log.d(TAG, "shieling getImagePath not empty");
+                            if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                                Log.d(TAG, "shieling getImagePath not equals to default, updating");
+                                shieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                            } else {
+                                Log.d(TAG, "shieling getImagePath equals to default");
+                            }
+                        } else {
+                            Log.d(TAG, "shieling getImagePath empty");
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -239,7 +255,17 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
             newShieling.setLongitude(longitude);
             if(BaseApp.CLOUD_ACTIVE) {
                 try {
-                    newShieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                    if (!TextUtils.isEmpty(imagePath)) {
+                        Log.d(TAG, "shieling getImagePath not empty");
+                        if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                            Log.d(TAG, "shieling getImagePath not equals to default, updating");
+                            newShieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                        } else {
+                            Log.d(TAG, "shieling getImagePath equals to default");
+                        }
+                    } else {
+                        Log.d(TAG, "shieling getImagePath empty");
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
