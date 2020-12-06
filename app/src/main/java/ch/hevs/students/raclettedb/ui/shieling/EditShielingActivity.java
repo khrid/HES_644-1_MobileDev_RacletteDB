@@ -32,8 +32,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +48,7 @@ import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
 
 public class EditShielingActivity extends BaseActivity implements OnMapReadyCallback {
 
-    private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-"+"EditShielingActivity";
+    private static final String TAG = "TAG-" + BaseApp.APP_NAME + "-" + "EditShielingActivity";
 
     private ShielingEntity shieling = new ShielingEntity();
     private boolean isEditMode;
@@ -70,7 +68,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
     private Bitmap bitmap;
 
     private float latitude = 0.0f;
-    private float longitude  = 0.0f;
+    private float longitude = 0.0f;
 
     String shielingId;
 
@@ -93,17 +91,17 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         etShielingDescription = findViewById(R.id.etShielingDescription);
         Button btSaveShieling = findViewById(R.id.btSaveShieling);
         btSaveShieling.setOnClickListener(view -> {
-            if(etShielingName.getText().toString().isEmpty()) {
+            if (etShielingName.getText().toString().isEmpty()) {
                 toast = Toast.makeText(this, getString(R.string.shieling_edit_name_empty), Toast.LENGTH_LONG);
                 etShielingName.requestFocus();
-            }else if(etShielingName.getText().toString().equals("UNIQUE")){
+            } else if (etShielingName.getText().toString().equals("UNIQUE")) {
                 toast = Toast.makeText(this, getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG);
                 etShielingName.requestFocus();
 
                 // TODO Implémenter unicité ici
 
 
-            } else{
+            } else {
                 saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), currentPhotoPath, latitude, longitude);
                 try {
                     Thread.sleep(1500);
@@ -132,11 +130,11 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         }
 
         ivShieling = findViewById(R.id.ivEditShielingPhoto);
-        ivShieling.setOnClickListener(v ->  mediaUtils.selectImage());
+        ivShieling.setOnClickListener(v -> mediaUtils.selectImage());
 
-            ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
-                    getApplication(), shielingId);
-            viewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
+        ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
+                getApplication(), shielingId);
+        viewModel = ViewModelProviders.of(this, factory).get(ShielingViewModel.class);
         if (isEditMode) {
             viewModel.getShieling().observe(this, shielingEntity -> {
                 if (shielingEntity != null) {
@@ -144,13 +142,15 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     etShielingName.setText(shieling.getName());
                     etShielingDescription.setText(shieling.getDescription());
                     ivShieling.setOnLongClickListener(v -> removePicture());
-                    if(!TextUtils.isEmpty(shieling.getImagepath())) {
-                        if(!shieling.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                            if(BaseApp.CLOUD_ACTIVE) {
-                                if(bitmap == null)
+                    if (!TextUtils.isEmpty(shieling.getImagepath())) {
+                        if (!shieling.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                            if (BaseApp.CLOUD_ACTIVE) {
+                                if (bitmap == null) {
                                     mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shieling.getImagepath(), getApplicationContext(), ivShieling);
-                                else
+                                    currentPhotoPath = shieling.getImagepath();
+                                } else {
                                     ivShieling.setImageBitmap(bitmap);
+                                }
                             } else {
                                 bitmap = BitmapFactory.decodeFile(shieling.getImagepath());
                                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
@@ -187,8 +187,8 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK) {
-            if(requestCode == 1) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
 
                 File imageFile = mediaUtils.getImageFile();
                 bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
@@ -246,13 +246,17 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 shieling.setDescription(description);
                 shieling.setLatitude(latitude);
                 shieling.setLongitude(longitude);
-                if(BaseApp.CLOUD_ACTIVE) {
+                if (BaseApp.CLOUD_ACTIVE) {
                     try {
                         if (!TextUtils.isEmpty(imagePath)) {
                             Log.d(TAG, "shieling getImagePath not empty");
                             if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                                Log.d(TAG, "shieling getImagePath not equals to default, updating");
-                                shieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                                if (bitmap != null) {
+                                    Log.d(TAG, "shieling getImagePath not equals to default, updating");
+                                    shieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                                } else {
+                                    Log.d(TAG, "shieling getImagePath not equals to default, but has not changed.");
+                                }
                             } else {
                                 shieling.setImagepath(null);
                                 Log.d(TAG, "shieling getImagePath equals to default");
@@ -285,13 +289,17 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
             newShieling.setDescription(description);
             newShieling.setLatitude(latitude);
             newShieling.setLongitude(longitude);
-            if(BaseApp.CLOUD_ACTIVE) {
+            if (BaseApp.CLOUD_ACTIVE) {
                 try {
                     if (!TextUtils.isEmpty(imagePath)) {
                         Log.d(TAG, "shieling getImagePath not empty");
                         if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                            Log.d(TAG, "shieling getImagePath not equals to default, updating");
-                            newShieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                            if (bitmap != null) {
+                                Log.d(TAG, "shieling getImagePath not equals to default, updating");
+                                newShieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                            } else {
+                                Log.d(TAG, "shieling getImagePath not equals to default, but has not changed.");
+                            }
                         } else {
                             Log.d(TAG, "shieling getImagePath equals to default");
                         }
@@ -328,38 +336,38 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-            viewModel.getShieling().observe(this, shielingEntity -> {
-                LatLng loc = BaseApp.NO_LOCATION;
-                String title = getString(R.string.shieling_new_title);
-                if (shielingEntity != null) {
-                    if (shielingEntity.getLatitude() != 0.0f && shielingEntity.getLongitude() != 0.0f) {
-                        loc = new LatLng(shielingEntity.getLatitude(), shielingEntity.getLongitude());
-                        title = shielingEntity.getName();
-                        latitude = (float) loc.latitude;
-                        longitude = (float) loc.longitude;
-                    }
+        viewModel.getShieling().observe(this, shielingEntity -> {
+            LatLng loc = BaseApp.NO_LOCATION;
+            String title = getString(R.string.shieling_new_title);
+            if (shielingEntity != null) {
+                if (shielingEntity.getLatitude() != 0.0f && shielingEntity.getLongitude() != 0.0f) {
+                    loc = new LatLng(shielingEntity.getLatitude(), shielingEntity.getLongitude());
+                    title = shielingEntity.getName();
+                    latitude = (float) loc.latitude;
+                    longitude = (float) loc.longitude;
                 }
-                Log.d(TAG, "loc " + loc.latitude + " // " + loc.longitude);
-                googleMap.clear();
-                googleMap.addMarker(new MarkerOptions().position(loc).title(title).draggable(true));
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
-                googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
-                    @Override
-                    public void onMarkerDragStart(Marker marker) {
-                    }
+            }
+            Log.d(TAG, "loc " + loc.latitude + " // " + loc.longitude);
+            googleMap.clear();
+            googleMap.addMarker(new MarkerOptions().position(loc).title(title).draggable(true));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 9.0f));
+            googleMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+                @Override
+                public void onMarkerDragStart(Marker marker) {
+                }
 
-                    @Override
-                    public void onMarkerDrag(Marker marker) {
+                @Override
+                public void onMarkerDrag(Marker marker) {
 
-                    }
+                }
 
-                    @Override
-                    public void onMarkerDragEnd(Marker marker) {
-                        Log.d(TAG, "Marker dropped at " + marker.getPosition().latitude + "/" + marker.getPosition().longitude);
-                        latitude = (float) marker.getPosition().latitude;
-                        longitude = (float) marker.getPosition().longitude;
-                    }
-                });
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+                    Log.d(TAG, "Marker dropped at " + marker.getPosition().latitude + "/" + marker.getPosition().longitude);
+                    latitude = (float) marker.getPosition().latitude;
+                    longitude = (float) marker.getPosition().longitude;
+                }
             });
+        });
     }
 }

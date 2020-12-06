@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -166,7 +167,7 @@ public class EditCheeseActivity extends BaseActivity {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bytes);
-                    Log.e(TAG, "Pick from Gallery::>>> ");
+                    Log.d(TAG, "Pick from Gallery::>>> ");
 
                     File f = mediaUtils.copyToLocalStorage(bitmap);
                     currentPhotoPath = f.getAbsolutePath();
@@ -207,10 +208,13 @@ public class EditCheeseActivity extends BaseActivity {
                     if (!TextUtils.isEmpty(cheese.getImagepath())) {
                         if (!cheese.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             if(BaseApp.CLOUD_ACTIVE) {
-                                if(bitmap == null)
+                                if(bitmap == null) {
                                     mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagepath(), getApplicationContext(), ivCheese);
-                                else
+                                    currentPhotoPath = cheese.getImagepath();
+                                }
+                                else {
                                     ivCheese.setImageBitmap(bitmap);
+                                }
                             } else {
                                 bitmap = BitmapFactory.decodeFile(cheese.getImagepath());
                                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
@@ -279,8 +283,12 @@ public class EditCheeseActivity extends BaseActivity {
                         if (!TextUtils.isEmpty(imagePath)) {
                             Log.d(TAG, "cheese getImagePath not empty");
                             if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                                Log.d(TAG, "cheese getImagePath not equals to default, updating");
-                                cheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                                if(bitmap != null) {
+                                    Log.d(TAG, "cheese getImagePath not equals to default, updating");
+                                    cheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                                } else {
+                                    Log.d(TAG, "cheese getImagePath not equals to default, but has not changed.");
+                                }
                             } else {
                                 cheese.setImagepath(null);
                                 Log.d(TAG, "cheese getImagePath equals to default");
@@ -318,8 +326,12 @@ public class EditCheeseActivity extends BaseActivity {
                     if (!TextUtils.isEmpty(imagePath)) {
                         Log.d(TAG, "cheese getImagePath not empty");
                         if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                            Log.d(TAG, "cheese getImagePath not equals to default, updating");
-                            newCheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                            if(bitmap != null) {
+                                Log.d(TAG, "cheese getImagePath not equals to default, updating");
+                                newCheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                            } else {
+                                Log.d(TAG, "cheese getImagePath not equals to default, but has not changed.");
+                            }
                         } else {
                             Log.d(TAG, "cheese getImagePath equals to default");
                         }
