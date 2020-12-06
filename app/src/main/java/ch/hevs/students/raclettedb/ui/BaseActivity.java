@@ -29,6 +29,7 @@ import ch.hevs.students.raclettedb.ui.mgmt.LoginActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity;
 import ch.hevs.students.raclettedb.ui.notification.SendNotificationActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity;
+import ch.hevs.students.raclettedb.util.FirebaseRemoteConfigUtils;
 
 
 public class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -89,6 +90,9 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        FirebaseRemoteConfigUtils frcu = new FirebaseRemoteConfigUtils(this);
+        frcu.setup();
 
     }
 
