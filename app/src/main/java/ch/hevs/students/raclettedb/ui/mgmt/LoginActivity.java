@@ -3,6 +3,7 @@ package ch.hevs.students.raclettedb.ui.mgmt;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -12,9 +13,11 @@ import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 import ch.hevs.students.raclettedb.ui.MainActivity;
+import ch.hevs.students.raclettedb.util.FirebaseRemoteConfigUtils;
 
 
 public class LoginActivity extends AppCompatActivity {
+    private static final String TAG = "TAG-" + BaseApp.APP_NAME + "-LoginActivity";
 
     private EditText et_login_password;
     private Button bt_login;
@@ -42,13 +45,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-
         et_login_password.setError(null);
 
         String password = et_login_password.getText().toString();
 
         if(!password.isEmpty()) {
-            if(password.equals(BaseApp.ADMIN_PASSWORD)) {
+            FirebaseRemoteConfigUtils frcu = new FirebaseRemoteConfigUtils(this);
+            String psw = frcu.getParam("admin_password");
+            Log.d(TAG, psw);
+            Log.d(TAG, password);
+            if(password.equals(psw)) {
                 SharedPreferences.Editor editor = getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putBoolean(BaseActivity.PREFS_IS_ADMIN, true);
                 editor.apply();

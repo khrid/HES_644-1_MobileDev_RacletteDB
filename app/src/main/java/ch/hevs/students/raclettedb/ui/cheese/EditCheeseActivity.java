@@ -95,6 +95,12 @@ public class EditCheeseActivity extends BaseActivity {
             if(!etCheeseName.getText().toString().isEmpty()) {
                 Log.d(TAG, "btnSaveCheese clicked");
                 saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), currentPhotoPath);
+
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 onBackPressed();
                 //startActivity(new Intent(this, CheesesActivity.class));
 
@@ -201,7 +207,10 @@ public class EditCheeseActivity extends BaseActivity {
                     if (!TextUtils.isEmpty(cheese.getImagepath())) {
                         if (!cheese.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
                             if(BaseApp.CLOUD_ACTIVE) {
-                                mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagepath(), getApplicationContext(), ivCheese);
+                                if(bitmap == null)
+                                    mediaUtils.getFromFirebase(MediaUtils.TARGET_CHEESES, cheese.getImagepath(), getApplicationContext(), ivCheese);
+                                else
+                                    ivCheese.setImageBitmap(bitmap);
                             } else {
                                 bitmap = BitmapFactory.decodeFile(cheese.getImagepath());
                                 bitmap = mediaUtils.getResizedBitmap(bitmap, 500);
@@ -209,6 +218,8 @@ public class EditCheeseActivity extends BaseActivity {
                                 ivCheese.setTag(cheese.getImagepath());
                             }
                         }
+                    } else if (bitmap != null) {
+                        ivCheese.setImageBitmap(bitmap);
                     }
 
                     ShielingViewModel.Factory factory = new ShielingViewModel.Factory(
@@ -271,9 +282,11 @@ public class EditCheeseActivity extends BaseActivity {
                                 Log.d(TAG, "cheese getImagePath not equals to default, updating");
                                 cheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
                             } else {
+                                cheese.setImagepath(null);
                                 Log.d(TAG, "cheese getImagePath equals to default");
                             }
                         } else {
+                            cheese.setImagepath(null);
                             Log.d(TAG, "cheese getImagePath empty");
                         }
                     } catch (IOException e) {
