@@ -83,7 +83,6 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                     navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_enter);
                     navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
                     navigationView.getMenu().findItem(R.id.nav_notification).setVisible(false);
-                    // TODO à faire ici
                 }
             }
         };
@@ -144,7 +143,6 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
             Log.d(TAG, "onNavigationItemSelected / " + isAdmin);
             if (isAdmin) {
-                // TODO A changer ici aussi
                 intent = null;
                 navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_enter);
                 navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);

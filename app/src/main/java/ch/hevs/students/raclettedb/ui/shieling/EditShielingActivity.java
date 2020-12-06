@@ -100,7 +100,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 toast = Toast.makeText(this, getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG);
                 etShielingName.requestFocus();
 
-                // TODO Tester ici
+                // TODO Implémenter unicité ici
 
 
             } else{
