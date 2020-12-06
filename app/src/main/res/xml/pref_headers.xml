@@ -6,10 +6,10 @@
         android:fragment="ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity$LanguageChangePreferenceFragment"
         android:icon="@drawable/ic_translate_24px"
         android:title="@string/settings_language" />
-    <header
+    <!--<header
         android:fragment="ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity$ResetDatabaseFragment"
         android:icon="@drawable/ic_database"
-        android:title="@string/settings_data" />
+        android:title="@string/settings_data" />--> // Unavailable in Firebase Cloud App
     <header
         android:fragment="ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity$AboutPreferenceFragment"
         android:icon="@drawable/ic_info_black_24dp"

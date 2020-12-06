@@ -27,6 +27,7 @@ import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.ui.cheese.CheesesActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.LoginActivity;
 import ch.hevs.students.raclettedb.ui.mgmt.SettingsActivity;
+import ch.hevs.students.raclettedb.ui.notification.SendNotificationActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingsActivity;
 
 
@@ -77,9 +78,12 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
                 if (isAdmin) {
                     navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_exit);
                     navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_exit_to_app_black_24dp);
+
                 } else {
                     navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_enter);
                     navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
+                    navigationView.getMenu().findItem(R.id.nav_notification).setVisible(false);
+                    // TODO à faire ici
                 }
             }
         };
@@ -140,23 +144,29 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             isAdmin = settings.getBoolean(BaseActivity.PREFS_IS_ADMIN, false);
             Log.d(TAG, "onNavigationItemSelected / " + isAdmin);
             if (isAdmin) {
+                // TODO A changer ici aussi
                 intent = null;
                 navigationView.getMenu().findItem(R.id.nav_admin).setTitle(R.string.drawer_admin_enter);
                 navigationView.getMenu().findItem(R.id.nav_admin).setIcon(R.drawable.ic_admin_panel_settings_black_24dp);
                 navigationView.getMenu().findItem(R.id.nav_admin).setChecked(false);
+                navigationView.getMenu().findItem(R.id.nav_notification).setVisible(true);
                 SharedPreferences.Editor editor = getSharedPreferences(BaseActivity.PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putBoolean(BaseActivity.PREFS_IS_ADMIN, false);
                 editor.apply();
                 recreate();
                 navigationView.setCheckedItem(id);
             } else {
+                navigationView.getMenu().findItem(R.id.nav_notification).setVisible(false);
                 intent = new Intent(this, LoginActivity.class);
             }
         } else if (id == R.id.nav_cheeses) {
             intent = new Intent(this, CheesesActivity.class);
         } else if (id == R.id.nav_shielings) {
             intent = new Intent(this, ShielingsActivity.class);
+        } else if (id == R.id.nav_notification) {
+            intent = new Intent(this, SendNotificationActivity.class);
         }
+
 
         if (intent != null) {
             intent.setFlags(

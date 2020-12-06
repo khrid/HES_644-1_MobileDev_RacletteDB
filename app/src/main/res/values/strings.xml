@@ -65,12 +65,21 @@
     <string name="shieling_edit_title">Edit shieling</string>
     <string name="shieling_edit_edited">Shieling edited</string>
     <string name="shieling_edit_name_empty">The name of the shieling cannot be empty</string>
+    <string name="shieling_edit_name_duplicate">A shieling with this name already exists</string>
     <!-- Shieling detail - new -->
     <string name="shieling_new_title">New shieling</string>
     <string name="shieling_new_created">Shieling created</string>
     <!-- Shieling - common -->
     <string name="shieling_common_hint_cheese_name">Shieling name</string>
     <string name="shieling_common_hint_cheese_description">Shieling description</string>
+
+    <!-- Send Notification -->
+    <string name="send_notification_title">Send notification</string>
+    <string name="send_notification_header">Notification header</string>
+    <string name="send_notification_text">Notification text</string>
+    <string name="send_notification_header_empty">The header of the notification cannot be empty</string>
+    <string name="send_notification_success">Notification successfully sent</string>
+    <string name="send_notification_send">Send</string>
 
     <!-- Admin -->
     <string name="admin_title">Administrator mode</string>

@@ -11,6 +11,10 @@
             android:icon="@drawable/ic_terrain_24px"
             android:title="@string/drawer_shielings" />
         <item
+            android:id="@+id/nav_notification"
+            android:icon="@drawable/ic_baseline_notifications_active_24"
+            android:title="@string/send_notification_title" />
+        <item
             android:id="@+id/nav_admin"
             android:icon="@drawable/ic_admin_panel_settings_black_24dp"
             android:title="@string/drawer_admin_enter" />

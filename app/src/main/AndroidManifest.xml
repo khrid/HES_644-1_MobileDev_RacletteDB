@@ -77,6 +77,15 @@
                 android:value="ch.hevs.students.raclettedb.ui.MainActivity" />
         </activity>
         <activity
+            android:name=".ui.notification.SendNotificationActivity"
+            android:label="@string/send_notification_title"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ch.hevs.students.raclettedb.ui.MainActivity" />
+        </activity>
+        <activity
             android:name=".ui.cheese.EditCheeseActivity"
             android:label="@string/title_activity_edit_cheese"
             android:parentActivityName=".ui.cheese.CheesesActivity"

@@ -96,6 +96,7 @@ public class MainActivity extends BaseActivity {
 
         //Génération d'un token pour réception de notification Firebase Cloud Messaging
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
+        FirebaseMessaging.getInstance().subscribeToTopic("racletteDB"); // pour envoi à ce sujet depuis l'application
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {

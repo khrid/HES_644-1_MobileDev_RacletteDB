@@ -90,4 +90,11 @@
     <string name="pref_about_authors"><![CDATA[David Crittin & Sylvain Meyer]]></string>
     <string name="pref_header_authors">Die Autoren</string>
     <string name="title_shieling_loc">Standort</string>
+    <string name="shieling_edit_name_duplicate">Eine Alpweide mit diesem Namen existiert bereits</string>
+    <string name="send_notification_title">Benachrichtigung senden</string>
+    <string name="send_notification_header">Benachrichtigungsheader</string>
+    <string name="send_notification_text">Benachrichtigungstext</string>
+    <string name="send_notification_header_empty">Der Header der Benachrichtigung darf nicht leer sein</string>
+    <string name="send_notification_success">Benachrichtigung erfolgreich gesendet</string>
+    <string name="send_notification_send">Senden</string>
 </resources>

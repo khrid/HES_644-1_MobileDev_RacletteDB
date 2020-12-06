@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -21,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
 
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
@@ -29,9 +31,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+
+
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
@@ -68,6 +74,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
 
     String shielingId;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
@@ -86,13 +93,20 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         etShielingDescription = findViewById(R.id.etShielingDescription);
         Button btSaveShieling = findViewById(R.id.btSaveShieling);
         btSaveShieling.setOnClickListener(view -> {
-            if(!etShielingName.getText().toString().isEmpty()) {
+            if(etShielingName.getText().toString().isEmpty()) {
+                toast = Toast.makeText(this, getString(R.string.shieling_edit_name_empty), Toast.LENGTH_LONG);
+                etShielingName.requestFocus();
+            }else if(etShielingName.getText().toString().equals("UNIQUE")){
+                toast = Toast.makeText(this, getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG);
+                etShielingName.requestFocus();
+
+                // TODO Tester ici
+
+
+            } else{
                 saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), currentPhotoPath, latitude, longitude);
                 onBackPressed();
                 toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
-            }else{
-                toast = Toast.makeText(this, getString(R.string.shieling_edit_name_empty), Toast.LENGTH_LONG);
-                etShielingName.requestFocus();
             }
 
             toast.show();
@@ -150,6 +164,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         //navigationView.setCheckedItem(position);
 
     }
+
 
     private boolean removePicture() {
         currentPhotoPath = "";

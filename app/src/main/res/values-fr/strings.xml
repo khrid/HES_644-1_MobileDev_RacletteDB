@@ -116,4 +116,11 @@
     <string name="title_shieling_loc">Emplacement</string>
     <string name="shieling_edit_name_empty">Le nom de l\'alpage ne peut pas être vide</string>
     <string name="cheese_edit_name_empty">Le nom du fromage ne peut pas être vide</string>
+    <string name="shieling_edit_name_duplicate">Un alpage avec ce nom existe déjà</string>
+    <string name="send_notification_title">Envoyer notification</string>
+    <string name="send_notification_header">Entête notification</string>
+    <string name="send_notification_text">Texte notification</string>
+    <string name="send_notification_header_empty">L\'entête de la notification ne peut pas être vide</string>
+    <string name="send_notification_success">Notification envoyée avec succès</string>
+    <string name="send_notification_send">Envoyer</string>
 </resources>
