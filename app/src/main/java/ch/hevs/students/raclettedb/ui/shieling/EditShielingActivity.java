@@ -53,7 +53,6 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
 
     private ShielingEntity shieling = new ShielingEntity();
     private boolean isEditMode;
-    private Toast toast;
     private String toastString;
     private EditText etShielingName;
     private EditText etShielingDescription;
@@ -95,28 +94,12 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         etShielingDescription = findViewById(R.id.etShielingDescription);
         Button btSaveShieling = findViewById(R.id.btSaveShieling);
         btSaveShieling.setOnClickListener(view -> {
-            if (etShielingName.getText().toString().isEmpty()) {
-                toast = Toast.makeText(this, getString(R.string.shieling_edit_name_empty), Toast.LENGTH_LONG);
-                etShielingName.requestFocus();
-            } else if (etShielingName.getText().toString().equals("UNIQUE")) {
-                toast = Toast.makeText(this, getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG);
-                etShielingName.requestFocus();
-
-                // TODO Implémenter unicité ici
-
-
-            } else {
-                saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), currentPhotoPath, latitude, longitude);
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                onBackPressed();
-                //toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
+            saveChanges(etShielingName.getText().toString(), etShielingDescription.getText().toString(), currentPhotoPath, latitude, longitude);
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
-            //toast.show();
         });
 
         shielingId = getIntent().getStringExtra("shielingId");
@@ -175,8 +158,6 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         mapFragment.setListener(() -> nsvEditShieling.requestDisallowInterceptTouchEvent(true));
 
         mapFragment.getMapAsync(this);
-        //navigationView.setCheckedItem(position);
-
     }
 
 
@@ -201,9 +182,6 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 ivShieling.setImageResource(R.drawable.placeholder_shieling);
                 shieling.setImagepath(BaseActivity.IMAGE_CHEESE_DEFAULT);
                 currentPhotoPath = imageFile.getAbsolutePath();
-                //shieling.setImagepath(imageFile.getAbsolutePath());
-                //ivShieling.setTag(currentPhotoPath);
-                //ivShieling.setImageBitmap(bitmap);
             } else if (requestCode == 2) {
                 Uri selectedImage = data.getData();
                 try {
@@ -216,9 +194,6 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     currentPhotoPath = "";
                     ivShieling.setImageResource(R.drawable.placeholder_shieling);
                     currentPhotoPath = f.getAbsolutePath();
-
-                    //shieling.setImagepath(f.getAbsolutePath());
-                    //ivShieling.setImageBitmap(bitmap);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -242,8 +217,8 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
             latitude = 0.0f;
             longitude = 0.0f;
         }
-        if (isEditMode) {
-            if (!"".equals(shielingName)) {
+        if(!shielingName.isEmpty()){
+            if (isEditMode) {
                 shieling.setOldName(shieling.getName());
                 shieling.setName(shielingName);
                 shieling.setId(shieling.getName());
@@ -279,58 +254,64 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     @Override
                     public void onSuccess() {
                         Log.d(TAG, "updateShieling: success");
-                        Toast.makeText(activity, getString(R.string.shieling_edit_edited), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG).show();
+                        onBackPressed();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         Log.d(TAG, "updateShieling: failure", e);
                         Toast.makeText(getApplicationContext(), getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
+                        etShielingName.requestFocus();
+                    }
+                });
+            } else {
+                ShielingEntity newShieling = new ShielingEntity();
+                newShieling.setName(shielingName);
+                newShieling.setDescription(description);
+                newShieling.setLatitude(latitude);
+                newShieling.setLongitude(longitude);
+                if (BaseApp.CLOUD_ACTIVE) {
+                    try {
+                        if (!TextUtils.isEmpty(imagePath)) {
+                            Log.d(TAG, "shieling getImagePath not empty");
+                            if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                                if (bitmap != null) {
+                                    Log.d(TAG, "shieling getImagePath not equals to default, updating");
+                                    newShieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
+                                } else {
+                                    Log.d(TAG, "shieling getImagePath not equals to default, but has not changed.");
+                                }
+                            } else {
+                                Log.d(TAG, "shieling getImagePath equals to default");
+                            }
+                        } else {
+                            Log.d(TAG, "shieling getImagePath empty");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    newShieling.setImagepath(imagePath);
+                }
+                viewModel.createShieling(newShieling, new OnAsyncEventListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "createShieling: success");
+                        Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG).show();
+                        onBackPressed();
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.d(TAG, "createShieling: failure", e);
+                        Toast.makeText(getApplicationContext(), getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
+                        etShielingName.requestFocus();
                     }
                 });
             }
-        } else {
-            ShielingEntity newShieling = new ShielingEntity();
-            newShieling.setName(shielingName);
-            newShieling.setDescription(description);
-            newShieling.setLatitude(latitude);
-            newShieling.setLongitude(longitude);
-            if (BaseApp.CLOUD_ACTIVE) {
-                try {
-                    if (!TextUtils.isEmpty(imagePath)) {
-                        Log.d(TAG, "shieling getImagePath not empty");
-                        if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                            if (bitmap != null) {
-                                Log.d(TAG, "shieling getImagePath not equals to default, updating");
-                                newShieling.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_SHIELINGS, bitmap));
-                            } else {
-                                Log.d(TAG, "shieling getImagePath not equals to default, but has not changed.");
-                            }
-                        } else {
-                            Log.d(TAG, "shieling getImagePath equals to default");
-                        }
-                    } else {
-                        Log.d(TAG, "shieling getImagePath empty");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                newShieling.setImagepath(imagePath);
-            }
-            viewModel.createShieling(newShieling, new OnAsyncEventListener() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "createShieling: success");
-                    Toast.makeText(activity, getString(R.string.shieling_new_created), Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    Log.d(TAG, "createShieling: failure", e);
-                    Toast.makeText(activity, getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
-                }
-            });
+        }else{
+            Toast.makeText(this, getString(R.string.shieling_edit_name_empty), Toast.LENGTH_LONG).show();
         }
     }
 

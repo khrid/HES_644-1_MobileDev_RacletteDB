@@ -15,30 +15,24 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
 
 import java.io.ByteArrayOutputStream;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
 import ch.hevs.students.raclettedb.database.entity.CheeseEntity;
-import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.database.repository.CheeseRepository;
 import ch.hevs.students.raclettedb.database.repository.ShielingRepository;
 import ch.hevs.students.raclettedb.ui.cheese.CheeseDetailActivity;
 import ch.hevs.students.raclettedb.ui.shieling.ShielingDetailActivity;
 import ch.hevs.students.raclettedb.util.LocaleUtils;
 import ch.hevs.students.raclettedb.util.MediaUtils;
-import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
 
 public class MainActivity extends BaseActivity {
 
@@ -74,27 +68,12 @@ public class MainActivity extends BaseActivity {
 
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
-        //recreate();
-
 
         setTitle(getString(R.string.app_name));
         navigationView.setCheckedItem(R.id.nav_none);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         initiateView();
-
-        /*ShielingRepository shielingRepository = ((BaseApp) getApplication()).getShielingRepository();
-        shielingRepository.insert(new ShielingEntity("ATest", "test", "", 0.0f, 0.0f), new OnAsyncEventListener() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "createUserWithEmail: success");
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.d(TAG, "createUserWithEmail: failure", e);
-            }
-        });*/
 
         //Génération d'un token pour réception de notification Firebase Cloud Messaging
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
@@ -205,15 +184,13 @@ public class MainActivity extends BaseActivity {
 
                 ivMainShieling.setImageResource(R.drawable.placeholder_shieling);
                 if(!TextUtils.isEmpty(shielingEntities.get(0).getImagepath())) {
-                    //if(!shielingEntities.get(0).getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                        if(BaseApp.CLOUD_ACTIVE) {
-                            mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shielingEntities.get(0).getImagepath(), getApplicationContext(), ivMainShieling);
-                        } else {
-                            Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagepath());
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
-                            ivMainShieling.setImageBitmap(bitmap);
-                        }
-                    //}
+                    if(BaseApp.CLOUD_ACTIVE) {
+                        mediaUtils.getFromFirebase(MediaUtils.TARGET_SHIELINGS, shielingEntities.get(0).getImagepath(), getApplicationContext(), ivMainShieling);
+                    } else {
+                        Bitmap bitmap = BitmapFactory.decodeFile(shielingEntities.get(0).getImagepath());
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, new ByteArrayOutputStream());
+                        ivMainShieling.setImageBitmap(bitmap);
+                    }
                 }
 
             } else {

@@ -115,10 +115,7 @@ public class SendNotificationActivity extends BaseActivity {
             notificationObj.put("title",header);
             notificationObj.put("body",text);
 
-
             json.put("notification",notificationObj);
-
-
 
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL,
                     json,

@@ -103,7 +103,6 @@ public class EditCheeseActivity extends BaseActivity {
                     e.printStackTrace();
                 }
                 onBackPressed();
-                //startActivity(new Intent(this, CheesesActivity.class));
 
                 toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
             }else{
@@ -179,7 +178,6 @@ public class EditCheeseActivity extends BaseActivity {
                 }
             }
         }
-        //Log.d(TAG, "cheese imagePath after onActivityResult ->" + cheese.getImagepath());
     }
 
     private void setupViewModels() {
