@@ -4,7 +4,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-import androidx.room.Database;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,80 +46,143 @@ public class ShielingRepository {
     }
 
     public void insert(final ShielingEntity shieling, final OnAsyncEventListener callback) {
-        DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference("shielings");
-        //String key = reference.push().getKey();
+
+
         FirebaseDatabase.getInstance()
                 .getReference("shielings")
-                .child(shieling.getName())
-                .setValue(shieling, (databaseError, databaseReference) -> {
-                    if (databaseError != null) {
-                        callback.onFailure(databaseError.toException());
-                    } else {
-                        callback.onSuccess();
-                    }
-                });
+                .child(shieling.getName()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // contrôle unicité du nom d'alpage (case sensitive !)
+                if(!snapshot.exists()) {
+                    DatabaseReference reference = FirebaseDatabase.getInstance()
+                            .getReference("shielings");
+                    //String key = reference.push().getKey();
+                    FirebaseDatabase.getInstance()
+                            .getReference("shielings")
+                            .child(shieling.getName())
+                            .setValue(shieling, (databaseError, databaseReference) -> {
+                                if (databaseError != null) {
+                                    callback.onFailure(databaseError.toException());
+                                } else {
+                                    callback.onSuccess();
+                                }
+                            });
+                } else {
+                    Log.d(TAG, "Shieling with same name already exists");
+                    callback.onFailure(new Exception("Shieling with same name already exists"));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     public void update(final ShielingEntity shieling, final OnAsyncEventListener callback) {
-        FirebaseDatabase.getInstance()
-                .getReference("shielings")
-                .child(shieling.getName())
-                .updateChildren(shieling.toMap(), (databaseError, databaseReference) -> {
-                    if (databaseError != null) {
-                        callback.onFailure(databaseError.toException());
-                    } else {
-                        callback.onSuccess();
-                    }
-                });
 
-        if(!shieling.getName().equals(shieling.getOldName())) {
+        // est ce qu'on change le nom ?
+        // non
+        if ( shieling.getName().equals(shieling.getOldName())) {
+            // on fait la mise à jour
             FirebaseDatabase.getInstance()
                     .getReference("shielings")
-                    .child(shieling.getOldName())
-                    .removeValue((databaseError, databaseReference) -> {
+                    .child(shieling.getName())
+                    .updateChildren(shieling.toMap(), (databaseError, databaseReference) -> {
                         if (databaseError != null) {
                             callback.onFailure(databaseError.toException());
                         } else {
                             callback.onSuccess();
                         }
                     });
+        } else {
+            // oui on change de nom
 
-            // we also need to move existing cheese for this shieling
-            DatabaseReference oldTree = FirebaseDatabase.getInstance()
-                    .getReference("cheeses")
-                    .child(shieling.getOldName());
-
-            oldTree.addValueEventListener(new ValueEventListener() {
+            // est ce que le nouveau nom existe déjà ?
+            FirebaseDatabase.getInstance()
+                    .getReference("shielings")
+                    .child(shieling.getName()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        Log.d(TAG, snapshot.getChildrenCount()+"");
-                        for (DataSnapshot childSnapshot :
-                                snapshot.getChildren()) {
-                            CheeseEntity entity = childSnapshot.getValue(CheeseEntity.class);
-                            entity.setId(childSnapshot.getKey());
-                            entity.setShieling(shieling.getName());
+                    // le nouveau nom n'existe pas, on fait la mise à jour
+                    if (!snapshot.exists()) {
+                        FirebaseDatabase.getInstance()
+                                .getReference("shielings")
+                                .child(shieling.getOldName())
+                                .removeValue((databaseError, databaseReference) -> {
+                                    if (databaseError != null) {
+                                        callback.onFailure(databaseError.toException());
+                                    } else {
+                                        callback.onSuccess();
+                                    }
+                                });
 
-                            FirebaseDatabase.getInstance()
-                                    .getReference("cheeses")
-                                    .child(shieling.getName())
-                                    .child(entity.getId())
-                                    .setValue(entity);
-                        }
+                        FirebaseDatabase.getInstance()
+                                .getReference("shielings")
+                                .child(shieling.getName())
+                                .updateChildren(shieling.toMap(), (databaseError, databaseReference) -> {
+                                    if (databaseError != null) {
+                                        callback.onFailure(databaseError.toException());
+                                    } else {
+                                        callback.onSuccess();
+                                    }
+                                });
+
+                        // on doit également déplacer les fromages dans la nouvelle branche
+                        DatabaseReference oldTree = FirebaseDatabase.getInstance()
+                                .getReference("cheeses")
+                                .child(shieling.getOldName());
+
+                        oldTree.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    Log.d(TAG, snapshot.getChildrenCount() + "");
+                                    for (DataSnapshot childSnapshot :
+                                            snapshot.getChildren()) {
+                                        CheeseEntity entity = childSnapshot.getValue(CheeseEntity.class);
+                                        entity.setId(childSnapshot.getKey());
+                                        entity.setShieling(shieling.getName());
+
+                                        FirebaseDatabase.getInstance()
+                                                .getReference("cheeses")
+                                                .child(shieling.getName())
+                                                .child(entity.getId())
+                                                .setValue(entity);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.d(TAG, error.toException().toString());
+                            }
+                        });
+
+                        FirebaseDatabase.getInstance()
+                                .getReference("cheeses")
+                                .child(shieling.getOldName())
+                                .removeValue();
+                    } else {
+                        // le nouveau nom existe déjà, on informe l'utilisateur
+                        callback.onFailure(new Exception("Shieling with same name already exists"));
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d(TAG, error.toException().toString());
+
                 }
             });
+        }
 
-            FirebaseDatabase.getInstance()
-                    .getReference("cheeses")
-                    .child(shieling.getOldName())
-                    .removeValue();
+
+        if (!shieling.getName().equals(shieling.getOldName())) {
+
+        } else {
+
         }
     }
 

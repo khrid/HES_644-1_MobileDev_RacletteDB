@@ -1,5 +1,6 @@
 package ch.hevs.students.raclettedb.ui.shieling;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -72,6 +73,8 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
 
     String shielingId;
 
+    Activity activity;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_edit_shieling, frameLayout);
         mediaUtils = new MediaUtils(this);
+        activity = this;
 
         navigationView.setCheckedItem(position);
 
@@ -109,10 +113,10 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     e.printStackTrace();
                 }
                 onBackPressed();
-                toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
+                //toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
             }
 
-            toast.show();
+            //toast.show();
         });
 
         shielingId = getIntent().getStringExtra("shielingId");
@@ -275,11 +279,13 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     @Override
                     public void onSuccess() {
                         Log.d(TAG, "updateShieling: success");
+                        Toast.makeText(activity, getString(R.string.shieling_edit_edited), Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         Log.d(TAG, "updateShieling: failure", e);
+                        Toast.makeText(getApplicationContext(), getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -316,11 +322,13 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                 @Override
                 public void onSuccess() {
                     Log.d(TAG, "createShieling: success");
+                    Toast.makeText(activity, getString(R.string.shieling_new_created), Toast.LENGTH_LONG).show();
                 }
 
                 @Override
                 public void onFailure(Exception e) {
                     Log.d(TAG, "createShieling: failure", e);
+                    Toast.makeText(activity, getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
                 }
             });
         }
