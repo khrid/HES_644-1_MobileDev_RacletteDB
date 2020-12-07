@@ -93,24 +93,14 @@ public class EditCheeseActivity extends BaseActivity {
 
         btSaveCheese = findViewById(R.id.btSaveCheese);
         btSaveCheese.setOnClickListener(view -> {
-            if(!etCheeseName.getText().toString().isEmpty()) {
-                Log.d(TAG, "btnSaveCheese clicked");
-                saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), currentPhotoPath);
+            Log.d(TAG, "btnSaveCheese clicked");
+            saveChanges(etCheeseName.getText().toString(), etCheeseDescription.getText().toString(), etCheeseType.getText().toString(), ((ShielingEntity) spinCheeseShieling.getSelectedItem()).getId(), currentPhotoPath);
 
-                try {
-                    Thread.sleep(1500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                onBackPressed();
-
-                toast = Toast.makeText(this, toastString, Toast.LENGTH_LONG);
-            }else{
-                toast = Toast.makeText(this, getString(R.string.cheese_edit_name_empty), Toast.LENGTH_LONG);
-                etCheeseName.requestFocus();
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
-            toast.show();
         });
 
 
@@ -266,10 +256,10 @@ public class EditCheeseActivity extends BaseActivity {
     private void saveChanges(String cheeseName, String description, String cheeseType, String shieling, String imagePath) {
         Log.d(TAG, "inside saveChanges, imagePath given = " + imagePath);
         Log.d(TAG, "currentPhotoPath = "+ currentPhotoPath);
-        if (isEditMode) {
-            Log.d(TAG, "isEditMode true");
-            if (!"".equals(cheeseName)) {
-                Log.d(TAG, "cheeseName not empty");
+        if(!cheeseName.isEmpty()){
+            Log.d(TAG, "cheeseName not empty");
+            if (isEditMode) {
+                Log.d(TAG, "isEditMode true");
                 cheese.setName(cheeseName);
                 cheese.setDescription(description);
                 cheese.setType(cheeseType);
@@ -305,6 +295,8 @@ public class EditCheeseActivity extends BaseActivity {
                     @Override
                     public void onSuccess() {
                         Log.d(TAG, "updateCheese: success");
+                        onBackPressed();
+                        Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -312,48 +304,54 @@ public class EditCheeseActivity extends BaseActivity {
                         Log.d(TAG, "updateCheese: failure", e);
                     }
                 });
-            }
-        } else {
-            CheeseEntity newCheese = new CheeseEntity();
-            newCheese.setName(cheeseName);
-            newCheese.setDescription(description);
-            newCheese.setType(cheeseType);
-            newCheese.setShieling(shieling);
-            if(BaseApp.CLOUD_ACTIVE) {
-                try {
-                    if (!TextUtils.isEmpty(imagePath)) {
-                        Log.d(TAG, "cheese getImagePath not empty");
-                        if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
-                            if(bitmap != null) {
-                                Log.d(TAG, "cheese getImagePath not equals to default, updating");
-                                newCheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+            } else {
+                CheeseEntity newCheese = new CheeseEntity();
+                newCheese.setName(cheeseName);
+                newCheese.setDescription(description);
+                newCheese.setType(cheeseType);
+                newCheese.setShieling(shieling);
+                if(BaseApp.CLOUD_ACTIVE) {
+                    try {
+                        if (!TextUtils.isEmpty(imagePath)) {
+                            Log.d(TAG, "cheese getImagePath not empty");
+                            if (!imagePath.equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
+                                if(bitmap != null) {
+                                    Log.d(TAG, "cheese getImagePath not equals to default, updating");
+                                    newCheese.setImagepath(mediaUtils.saveToFirebase(MediaUtils.TARGET_CHEESES, bitmap));
+                                } else {
+                                    Log.d(TAG, "cheese getImagePath not equals to default, but has not changed.");
+                                }
                             } else {
-                                Log.d(TAG, "cheese getImagePath not equals to default, but has not changed.");
+                                Log.d(TAG, "cheese getImagePath equals to default");
                             }
                         } else {
-                            Log.d(TAG, "cheese getImagePath equals to default");
+                            Log.d(TAG, "cheese getImagePath empty");
                         }
-                    } else {
-                        Log.d(TAG, "cheese getImagePath empty");
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } else {
+                    newCheese.setImagepath(imagePath);
                 }
-            } else {
-                newCheese.setImagepath(imagePath);
-            }
-            cheeseViewModel.createCheese(newCheese, new OnAsyncEventListener() {
-                @Override
-                public void onSuccess() {
-                    Log.d(TAG, "createCheese: success");
-                }
+                cheeseViewModel.createCheese(newCheese, new OnAsyncEventListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "createCheese: success");
+                        onBackPressed();
+                        Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG).show();
+                    }
 
-                @Override
-                public void onFailure(Exception e) {
-                    Log.d(TAG, "createCheese: failure", e);
-                }
-            });
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.d(TAG, "createCheese: failure", e);
+                    }
+                });
+            }
+        }else{
+            etCheeseName.requestFocus();
+            Toast.makeText(this, getString(R.string.cheese_edit_name_empty), Toast.LENGTH_LONG).show();
         }
+
     }
 
 }

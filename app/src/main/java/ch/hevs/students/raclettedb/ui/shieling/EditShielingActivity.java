@@ -254,15 +254,15 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     @Override
                     public void onSuccess() {
                         Log.d(TAG, "updateShieling: success");
-                        Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG).show();
                         onBackPressed();
+                        Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         Log.d(TAG, "updateShieling: failure", e);
-                        Toast.makeText(getApplicationContext(), getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
                         etShielingName.requestFocus();
+                        Toast.makeText(getApplicationContext(), getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
                     }
                 });
             } else {
@@ -298,19 +298,20 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
                     @Override
                     public void onSuccess() {
                         Log.d(TAG, "createShieling: success");
-                        Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG).show();
                         onBackPressed();
+                        Toast.makeText(getApplicationContext(), toastString, Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         Log.d(TAG, "createShieling: failure", e);
-                        Toast.makeText(getApplicationContext(), getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
                         etShielingName.requestFocus();
+                        Toast.makeText(getApplicationContext(), getString(R.string.shieling_edit_name_duplicate), Toast.LENGTH_LONG).show();
                     }
                 });
             }
         }else{
+            etShielingName.requestFocus();
             Toast.makeText(this, getString(R.string.shieling_edit_name_empty), Toast.LENGTH_LONG).show();
         }
     }
