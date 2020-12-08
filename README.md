@@ -7,7 +7,7 @@ This application has been developped during our Android & Cloud development cour
 
 # Useful informations
 ### Admin password
-    BestCheeses
+`BestCheeses` by default (current value in Firebase console > Remote Config > `admin_password` parameter)
 
 ### Remove a cheese / shieling
 When displaying the cheeses / shielings list, long press on the desired item. Be aware when removing a shieling, all of its related cheeses will be deleted.
@@ -18,7 +18,18 @@ Long press on the picture while in edit mode
 ### Edit a shieling location
 Long press on the marker, then move at wanted location
 
-# Project goals
+# Project gaols - Firebase
+## Initial scope
+- [x] Room initial scope and existing nice to have
+- [x] Firebase	integration:
+	- [x] Synchronization mechanism of data onto the cloud with Firebase Realtime Database
+## "Nice to have"
+- [x] Other Firebase utilities :
+	- [x] **Firebase Storage** : cheeses and shielings uploaded picture are stored in the Firebase Storage, therefore every user can see one element's picture 
+	- [x] **Firebase Cloud Messaging** : the application can receive notification sent from the application itself, or from the Firebase console
+	- [x] **Firebase Remote Config** : the admin password is set from the Firebase console
+
+# Project goals - Room
 ## Initial scope
  - [x] User interface allowing to
 	 - [x] Show the dataset information
