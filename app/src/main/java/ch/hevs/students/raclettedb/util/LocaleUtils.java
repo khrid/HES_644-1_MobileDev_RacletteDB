@@ -23,7 +23,7 @@ public class LocaleUtils {
      */
     public static void changeLocale(String code, Activity activity) {
 
-        // les paramètres partagés
+        // shared preferences
         settings = activity.getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         // l'editeur pour les modifier
         editor = settings.edit();
@@ -34,14 +34,14 @@ public class LocaleUtils {
 
         Log.d(TAG, "call from "+activity.getComponentName()+", code=" + code);
         Log.d(TAG, settings.toString());
-        // Changement de langue
+        // language change
         Locale locale = new Locale(code);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
         config.locale = locale;
         Resources resources = activity.getResources();
         resources.updateConfiguration(config, resources.getDisplayMetrics());
-        // On force la recréation de l'activity pour prendre en compte la nouvelle locale
+        // We force the recreation of the activity to take into consideration the new locale
         activity.recreate();
         Log.d(TAG, "language in prefs after apply : "+settings.getString(BaseActivity.PREFS_APP_LANGUAGE, BaseActivity.PREFS_APP_LANGUAGE_DEFAULT)+", has changed : " + settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false));
     }

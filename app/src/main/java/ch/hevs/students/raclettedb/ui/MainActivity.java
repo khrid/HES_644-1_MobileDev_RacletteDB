@@ -54,7 +54,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
-        // Récupération du stockage commun
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
         // Est-ce que l'utilisateur est admin ?
@@ -75,9 +74,10 @@ public class MainActivity extends BaseActivity {
 
         initiateView();
 
-        //Génération d'un token pour réception de notification Firebase Cloud Messaging
+        // Token generation of Firebase Cloud Messaging
         FirebaseMessaging.getInstance().setAutoInitEnabled(true);
-        FirebaseMessaging.getInstance().subscribeToTopic("racletteDB"); // pour envoi à ce sujet depuis l'application
+        // The feature that allows the admin to send notification will send to this topic
+        FirebaseMessaging.getInstance().subscribeToTopic("racletteDB");
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity {
         if (settings.getBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false)) {
             editor.putBoolean(BaseActivity.PREFS_APP_LANGUAGE_CHANGED, false);
             editor.apply();
-            // On force la recréation de l'activity pour prendre en compte la nouvelle locale
+            // We force the recreation of the activity to take into consideration the new locale
             Log.d(TAG, "Recreating activity");
             recreate();
         }
@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity {
             Toast.makeText(this, getString(R.string.admin_mode_active), Toast.LENGTH_SHORT).show();
         }
 
-        // on vide le tablelayout
+        // we empty the tablelayout
         TableLayout tl = findViewById(R.id.tableLayout);
         cheeseRepository = ((BaseApp) getApplication()).getCheeseRepository();
         cheeseRepository.getAllCheeses().observe(MainActivity.this, cheeseEntities -> {
@@ -118,15 +118,15 @@ public class MainActivity extends BaseActivity {
             TableRow trLabels = new TableRow(this);
             for (CheeseEntity cheeseEntity :
                     cheeseEntities) {
-                // Pour chaque item, on ajout un élément dans le TableRow Image et le TableRow label
+                // For each item, we add an item in the TableRow Image and in the TableRow label
                 if (i < 3) {
-                    // Textview avec le nom du fromage
+                    // Textview with the name of the cheese
                     TextView tv = new TextView(this);
                     tv.setText(cheeseEntity.getName());
                     tv.setTypeface(ResourcesCompat.getFont(this, R.font.dk_lemon_yellow_sun));
                     tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                     tv.setOnClickListener(v -> showCheese(cheeseEntity.getId(), cheeseEntity.getShieling()));
-                    // Imageview pour le logo
+                    // Imageview for the logo
                     ImageView iv = new ImageView(this);
                     if(!TextUtils.isEmpty(cheeseEntity.getImagepath())) {
                         if(!cheeseEntity.getImagepath().equals(BaseActivity.IMAGE_CHEESE_DEFAULT)) {
@@ -151,18 +151,17 @@ public class MainActivity extends BaseActivity {
                     iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
                     iv.setOnClickListener(v -> showCheese(cheeseEntity.getId(), cheeseEntity.getShieling()));
-                    // on les ajoute dans le TableRow respective
+                    // we add them in the right TableRow
                     trImages.addView(iv);
                     trLabels.addView(tv);
-                    // incrément du compteur
                     i++;
                 }
             }
-            // si on a qqch à afficher, on ajouter les rows à la TableLayout
+            // we add the rows in the TableLayout if we have something to display
             if (i > 0) {
                 tl.addView(trImages);
                 tl.addView(trLabels);
-            } else { // Sinon affiche d'un message
+            } else { // else we display a message
                 Log.d(TAG, "No cheeses");
                 TextView tv = new TextView(this);
                 tv.setText(getString(R.string.no_cheese));

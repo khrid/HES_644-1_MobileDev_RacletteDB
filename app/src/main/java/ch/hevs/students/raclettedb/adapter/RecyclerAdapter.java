@@ -98,7 +98,6 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.Vie
                         return newCheese.getName().equals(oldCheese.getName())
                                 && newCheese.getType().equals(oldCheese.getType())
                                 && newCheese.getDescription().equals(oldCheese.getDescription())
-                                //&& ((Integer)newCheese.getEan()).equals(((Integer)oldCheese.getEan())
                         ;
                     }
                     if (mData instanceof ShielingEntity) {

@@ -53,11 +53,10 @@ public class ShielingRepository {
                 .child(shieling.getName()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // contrôle unicité du nom d'alpage (case sensitive !)
+                // check if the shieling name is unique (case sensitive !)
                 if(!snapshot.exists()) {
                     DatabaseReference reference = FirebaseDatabase.getInstance()
                             .getReference("shielings");
-                    //String key = reference.push().getKey();
                     FirebaseDatabase.getInstance()
                             .getReference("shielings")
                             .child(shieling.getName())
@@ -83,10 +82,10 @@ public class ShielingRepository {
 
     public void update(final ShielingEntity shieling, final OnAsyncEventListener callback) {
 
-        // est ce qu'on change le nom ?
-        // non
+        // has the name changed ?
+        // it has not
         if ( shieling.getName().equals(shieling.getOldName())) {
-            // on fait la mise à jour
+            // we are updating
             FirebaseDatabase.getInstance()
                     .getReference("shielings")
                     .child(shieling.getName())
@@ -98,15 +97,15 @@ public class ShielingRepository {
                         }
                     });
         } else {
-            // oui on change de nom
+            // it has
 
-            // est ce que le nouveau nom existe déjà ?
+            // is the new name already used ?
             FirebaseDatabase.getInstance()
                     .getReference("shielings")
                     .child(shieling.getName()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    // le nouveau nom n'existe pas, on fait la mise à jour
+                    // it is not, we are updating
                     if (!snapshot.exists()) {
                         FirebaseDatabase.getInstance()
                                 .getReference("shielings")
@@ -130,7 +129,7 @@ public class ShielingRepository {
                                     }
                                 });
 
-                        // on doit également déplacer les fromages dans la nouvelle branche
+                        // we have to move the cheeses in the new branch
                         DatabaseReference oldTree = FirebaseDatabase.getInstance()
                                 .getReference("cheeses")
                                 .child(shieling.getOldName());
@@ -166,7 +165,7 @@ public class ShielingRepository {
                                 .child(shieling.getOldName())
                                 .removeValue();
                     } else {
-                        // le nouveau nom existe déjà, on informe l'utilisateur
+                        // the new name is already used
                         callback.onFailure(new Exception("Shieling with same name already exists"));
                     }
                 }

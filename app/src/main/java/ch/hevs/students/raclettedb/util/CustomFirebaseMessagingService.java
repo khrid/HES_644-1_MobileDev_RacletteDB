@@ -7,7 +7,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
+public class CustomFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "TAG-"+ BaseApp.APP_NAME+"-"+ BaseActivity.class.getSimpleName();
 

@@ -1,13 +1,7 @@
 package ch.hevs.students.raclettedb.ui.notification;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,11 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
-import androidx.lifecycle.ViewModelProviders;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,31 +16,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import ch.hevs.students.raclettedb.BaseApp;
 import ch.hevs.students.raclettedb.R;
-import ch.hevs.students.raclettedb.database.entity.ShielingEntity;
 import ch.hevs.students.raclettedb.ui.BaseActivity;
-import ch.hevs.students.raclettedb.util.CustomSupportMapFragment;
-import ch.hevs.students.raclettedb.util.MediaUtils;
-import ch.hevs.students.raclettedb.util.OnAsyncEventListener;
-import ch.hevs.students.raclettedb.viewmodel.shieling.ShielingViewModel;
+
 
 public class SendNotificationActivity extends BaseActivity {
 
@@ -70,7 +46,6 @@ public class SendNotificationActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
-        // Récupération du stockage commun
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
         super.onCreate(savedInstanceState);
@@ -104,7 +79,6 @@ public class SendNotificationActivity extends BaseActivity {
 
 
     public void sendNotification(String header, String text) {
-
         String URL = "https://fcm.googleapis.com/fcm/send";
         RequestQueue mRequestQue = Volley.newRequestQueue(this);
 
@@ -136,7 +110,7 @@ public class SendNotificationActivity extends BaseActivity {
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String,String> header = new HashMap<>();
                     header.put("content-type","application/json");
-                    // On donne la clé récupérée dans la console Firebase Cloud Messaging sur le projet
+                    // The key comes from the Firebase Cloud Messaging settings
                     header.put("authorization","key=AAAAsY4AhL4:APA91bHQj-bdWDS5Tbd_WEngxVhah-pENff0ZWFBIzgwfYNLxNXX9jGLwZ_6wp-PWd03q3X0fUG8yxSmSyuys6e-Q3djNlS08OqsjJTlNXP-A4m-P8s9h06Bn4cfLpwjGawXZQAu4v4u");
                     return header;
                 }

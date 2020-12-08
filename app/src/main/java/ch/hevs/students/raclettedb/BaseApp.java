@@ -14,7 +14,8 @@ public class BaseApp extends Application {
 
     public static final String APP_NAME = "RacletteDB";
 
-    public static final String ADMIN_PASSWORD = "BestCheeses";
+    // Comes from Firebase Remote Config
+    //public static final String ADMIN_PASSWORD = "BestCheeses";
 
     public static final LatLng NO_LOCATION = new LatLng(46.2878787, 7.5330482);
 

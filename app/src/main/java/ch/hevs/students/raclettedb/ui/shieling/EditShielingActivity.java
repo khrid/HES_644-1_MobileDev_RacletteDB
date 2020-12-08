@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -78,7 +77,6 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
-        // Récupération du stockage commun
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
         super.onCreate(savedInstanceState);
@@ -212,7 +210,7 @@ public class EditShielingActivity extends BaseActivity implements OnMapReadyCall
     }
 
     private void saveChanges(String shielingName, String description, String imagePath, float latitude, float longitude) {
-        // si on a pas bougé le marqueur, on va considérer qu'il n'y a pas de localisation => on set à 0 / 0
+        // if the user did not move the map pointer, we consider that there is no location -> we set at 0 / 0
         if (latitude == BaseApp.NO_LOCATION.latitude && longitude == BaseApp.NO_LOCATION.longitude) {
             latitude = 0.0f;
             longitude = 0.0f;

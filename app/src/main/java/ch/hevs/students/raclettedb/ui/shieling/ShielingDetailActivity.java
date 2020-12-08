@@ -56,7 +56,6 @@ public class ShielingDetailActivity extends BaseActivity implements OnMapReadyCa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Récupération du stockage commun
         settings = getSharedPreferences(BaseActivity.PREFS_NAME, 0);
         editor = settings.edit();
         super.onCreate(savedInstanceState);
