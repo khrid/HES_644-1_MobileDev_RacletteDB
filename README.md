@@ -18,6 +18,9 @@ Long press on the picture while in edit mode
 ### Edit a shieling location
 Long press on the marker, then move at wanted location
 
+### Send a notification
+When in admin mode, the "Send nofication" menu is available in the drawer. The user can then send a notification that will be displayed to **other** users.
+
 # Project gaols - Firebase
 ## Initial scope
 - [x] Room initial scope and existing nice to have
